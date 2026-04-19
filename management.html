@@ -234,8 +234,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 <div class="tabs">
   <div class="tab active" data-tab="dashboard">Dashboard</div>
   <div class="tab" data-tab="schedule">Schedule</div>
-  <div class="tab" data-tab="schedule">Schedule</div>
-  <div class="tab" data-tab="staff">Staff</div>  <div class="tab" data-tab="staff">Staff</div>
+  <div class="tab" data-tab="staff">Staff</div>
   <div class="tab" data-tab="payroll">Payroll</div>
   <div class="tab" data-tab="financials">Financials</div>
   <div class="tab" data-tab="resources">Resources</div>
@@ -828,7 +827,7 @@ function renderFinancials() {
       const statusBadge = d.status === 'verified' ? '<span class="badge badge-green">Verified</span>' :
         d.status === 'pending' ? '<span class="badge badge-orange">Pending</span>' :
         '<span class="badge badge-blue">' + (d.status||'—') + '</span>';
-      return `<tr><td>${d.ddate||'—'}</td><td>${d.u||'—'}</td><td>${CLINICS[d.clinic]||d.clinic||'—'}</td><td>$${(parseFloat(d.deposit)||0).toFixed(2)}</td><td>$${(parseFloat(d.cheques)||0).toFixed(2)}</td><td><strong>$${(parseFloat(d.sum)||0).toFixed(2)}</strong></td><td>${statusBadge}</td></tr>`;
+      return `<tr><td>${d.ddate||'—'}</td><td>${resolveStaffName(d.depositUID)||'—'}</td><td>${CLINICS[d.clinic]||d.clinic||'—'}</td><td>$${(parseFloat(d.sum)||0).toFixed(2)}</td><td>${d.cheques?'Yes':'—'}</td><td><strong>$${(parseFloat(d.sum)||0).toFixed(2)}</strong></td><td>${statusBadge}</td></tr>`;
     }).join('');
   }
 }
