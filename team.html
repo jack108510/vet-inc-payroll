@@ -5,501 +5,250 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vet INC — Team Portal</title>
 <style>
-:root {
-  --bg: #f0f6ff; --surface: #ffffff; --surface2: #eff6ff; --border: #dbeafe;
-  --primary: #2563eb; --primary-light: #60a5fa; --text: #1e3a5f; --muted: #64748b;
-  --green: #16a34a; --green-light: #bbf7d0; --red: #dc2626; --red-light: #fecaca;
-  --orange: #f59e0b; --orange-light: #fef3c7;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f6ff;--surface:#ffffff;--surface2:#eff6ff;--border:#dbeafe;
+  --primary:#2563eb;--primary-light:#60a5fa;--text:#1e3a5f;--muted:#64748b;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-.header { background:var(--surface); border-bottom:2px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 3px rgba(0,0,0,.06); position:sticky; top:0; z-index:100; }
-.logo { font-size:22px; font-weight:800; color:var(--primary); letter-spacing:-0.5px; }
-.logo span { color:var(--text); font-weight:400; font-size:14px; margin-left:8px; }
-.header-right { display:flex; align-items:center; gap:16px; font-size:14px; }
-.header-right select { padding:6px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; color:var(--text); background:var(--surface2); cursor:pointer; }
-#headerTime { color:var(--muted); font-size:13px; }
-.tabs { background:var(--surface); border-bottom:1px solid var(--border); display:flex; padding:0 24px; gap:0; overflow-x:auto; }
-.tab { padding:12px 20px; font-size:14px; font-weight:500; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; white-space:nowrap; user-select:none; }
-.tab:hover { color:var(--primary); }
-.tab.active { color:var(--primary); border-bottom-color:var(--primary); font-weight:600; }
-.content { max-width:1100px; margin:0 auto; padding:24px; }
-.section { display:none; }
-.section.active { display:block; }
-.card { background:var(--surface); border-radius:12px; padding:24px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,.06); border:1px solid var(--border); }
-.card h2 { font-size:18px; margin-bottom:16px; color:var(--text); }
-.card h3 { font-size:15px; margin-bottom:12px; color:var(--text); }
-.badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
-.badge-draft { background:var(--surface2); color:var(--muted); }
-.badge-submitted { background:var(--orange-light); color:#92400e; }
-.badge-approved { background:var(--green-light); color:var(--green); }
-.btn { padding:10px 24px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; }
-.btn-primary { background:var(--primary); color:#fff; }
-.btn-primary:hover { background:#1d4ed8; }
-.btn-green { background:var(--green); color:#fff; font-size:18px; padding:16px 40px; border-radius:12px; }
-.btn-green:hover { background:#15803d; }
-.btn-green:disabled { background:#a3a3a3; cursor:not-allowed; }
-.btn-red { background:var(--red); color:#fff; font-size:18px; padding:16px 40px; border-radius:12px; }
-.btn-red:hover { background:#b91c1c; }
-.btn-red:disabled { background:#a3a3a3; cursor:not-allowed; }
-.btn-sm { padding:6px 14px; font-size:13px; border-radius:6px; }
-table { width:100%; border-collapse:collapse; }
-th,td { padding:10px 12px; text-align:left; font-size:13px; border-bottom:1px solid var(--border); }
-th { background:var(--surface2); color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
-td input { width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px; text-align:center; }
-td input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 2px rgba(37,99,235,.15); }
-.clock-display { font-size:64px; font-weight:700; color:var(--text); text-align:center; padding:20px 0; letter-spacing:2px; }
-.clock-date { text-align:center; color:var(--muted); font-size:16px; margin-bottom:24px; }
-.clock-buttons { display:flex; gap:20px; justify-content:center; margin:24px 0; }
-.clock-log { margin-top:24px; }
-.schedule-day { display:flex; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); }
-.schedule-day:last-child { border-bottom:none; }
-.schedule-day .day-name { width:120px; font-weight:600; font-size:14px; }
-.schedule-day .shift-block { padding:6px 14px; border-radius:8px; font-size:13px; font-weight:500; }
-.shift-work { background:#dbeafe; color:var(--primary); }
-.shift-off { background:#f3f4f6; color:var(--muted); }
-.pay-period { border:1px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; cursor:pointer; transition:box-shadow .2s; }
-.pay-period:hover { box-shadow:0 2px 8px rgba(0,0,0,.08); }
-.pay-summary { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:14px 18px; font-size:14px; align-items:center; }
-.pay-summary .period-dates { font-weight:600; }
-.pay-summary .amount { text-align:right; }
-.pay-detail { display:none; padding:0 18px 18px; border-top:1px solid var(--border); }
-.pay-detail.open { display:block; }
-.pay-detail table { margin-top:12px; }
-.doc-item { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
-.doc-item:last-child { border-bottom:none; }
-.doc-item .doc-info { display:flex; align-items:center; gap:12px; }
-.doc-icon { width:40px; height:40px; border-radius:8px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:18px; }
-.week-nav { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.week-nav button { background:var(--surface2); border:1px solid var(--border); padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; }
-.week-nav span { font-weight:600; font-size:14px; }
-.ytd-card { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
-.ytd-stat { text-align:center; padding:16px; background:var(--surface2); border-radius:10px; }
-.ytd-stat .ytd-label { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
-.ytd-stat .ytd-value { font-size:24px; font-weight:700; color:var(--text); }
-.flex-between { display:flex; justify-content:space-between; align-items:center; }
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:var(--surface);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 12px rgba(37,99,235,.07);position:sticky;top:0;z-index:50}
+.logo{font-size:22px;font-weight:700;letter-spacing:-.5px}.logo span{color:var(--primary)}
+.staff-info{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.staff-info .badge{background:var(--surface2);color:var(--primary);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.tabs{display:flex;gap:6px;padding:16px 28px 0;max-width:900px;margin:0 auto}
+.tab{padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--muted);border:1px solid var(--border);transition:.15s}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.main{max-width:900px;margin:0 auto;padding:20px 28px 40px}
+.card{background:var(--surface);border-radius:12px;box-shadow:0 1px 12px rgba(37,99,235,.07);padding:24px;margin-bottom:16px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.status{font-size:12px;padding:4px 12px;border-radius:20px;font-weight:600}
+.status.draft{background:#fef3c7;color:#92400e}
+.status.submitted{background:#dbeafe;color:#1e40af}
+.status.approved{background:#d1fae5;color:#065f46}
+.week-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.week-nav button{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text)}
+.week-nav button:hover{background:var(--surface2)}
+.week-nav span{font-size:14px;font-weight:600}
+table.timesheet{width:100%;border-collapse:collapse}
+.timesheet th{text-align:left;padding:8px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:2px solid var(--border)}
+.timesheet td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:14px}
+.timesheet tr:last-child td{border-bottom:none}
+.timesheet input[type=number]{width:70px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-align:center;outline:none}
+.timesheet input[type=number]:focus{border-color:var(--primary)}
+.timesheet input[type=text]{width:100%;max-width:260px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none}
+.timesheet input[type=text]:focus{border-color:var(--primary)}
+.total-row{font-weight:700;background:var(--surface2)}
+.total-row td{border-bottom:none!important}
+.btn{padding:10px 24px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#1d4ed8}
+.btn-primary:disabled{background:var(--primary-light);cursor:not-allowed}
+.schedule-toggle{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:16px;width:fit-content}
+.schedule-toggle button{padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted)}
+.schedule-toggle button.active{background:var(--primary);color:#fff}
+.shift-list{list-style:none}
+.shift-list li{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.shift-list li:last-child{border-bottom:none}
+.shift-day{font-weight:600;width:80px}
+.shift-time{color:var(--muted)}
+.shift-off{color:#cbd5e1;font-style:italic}
+.grid-table{width:100%;border-collapse:collapse;font-size:13px}
+.grid-table th{padding:10px 8px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:2px solid var(--border)}
+.grid-table th:first-child{text-align:left}
+.grid-table td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--border)}
+.grid-table td:first-child{text-align:left;font-weight:600}
+.grid-table tr:last-child td{border-bottom:none}
+.shift-chip{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;color:#fff}
+.role-vet{background:#2563eb}.role-tech{background:#16a34a}.role-reception{background:#9333ea}
+.role-assistant{background:#ea580c}.role-manager{background:#ec4899}
+.doc-list{list-style:none}
+.doc-list li{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.doc-list li:last-child{border-bottom:none}
+.doc-left{display:flex;align-items:center;gap:12px}
+.doc-icon{width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.doc-name{font-weight:600;font-size:14px}
+.doc-date{font-size:12px;color:var(--muted)}
+.btn-outline{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--primary);font-size:13px;font-weight:600;cursor:pointer}
+.btn-outline:hover{background:var(--surface2)}
+.hidden{display:none}
+@media(max-width:640px){
+  .tabs{padding:12px 12px 0;gap:4px;flex-wrap:wrap}
+  .main{padding:16px 12px}
+  .card{padding:16px}
+  .grid-table{font-size:11px}
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">🩺 Vet INC<span>Team Portal</span></div>
-  <div class="header-right">
-    <select id="staffSelect" onchange="switchStaff()">
-      <option value="sarah">Sarah K. — Vet Tech</option>
-      <option value="mike">Mike R. — Receptionist</option>
-      <option value="lisa">Dr. Lisa M. — Veterinarian</option>
-    </select>
-    <span id="headerTime"></span>
+<header>
+  <div class="logo">Vet <span>INC</span></div>
+  <div class="staff-info">
+    <span class="badge">Vet Tech</span>
+    <span>Sarah K.</span>
+    <div class="avatar">SK</div>
   </div>
-</div>
+</header>
 
 <div class="tabs">
-  <div class="tab active" onclick="showTab('timesheet')">📋 My Timesheet</div>
-  <div class="tab" onclick="showTab('timeclock')">🕐 Time Clock</div>
-  <div class="tab" onclick="showTab('schedule')">📅 My Schedule</div>
-  <div class="tab" onclick="showTab('paystubs')">💰 My Pay Stubs</div>
-  <div class="tab" onclick="showTab('documents')">📄 Documents</div>
+  <div class="tab active" onclick="switchTab('timesheet')">My Timesheet</div>
+  <div class="tab" onclick="switchTab('schedule')">Schedule</div>
+  <div class="tab" onclick="switchTab('documents')">Documents</div>
 </div>
 
-<div class="content">
+<div class="main">
 
-<!-- MY TIMESHEET -->
-<div class="section active" id="sec-timesheet">
-  <div class="card">
-    <div class="flex-between" style="margin-bottom:16px">
-      <h2 style="margin:0">Weekly Timesheet</h2>
-      <span class="badge badge-draft" id="tsStatus">Draft</span>
-    </div>
-    <div class="week-nav">
-      <button onclick="changeWeek(-1)">← Previous</button>
-      <span id="weekLabel"></span>
-      <button onclick="changeWeek(1)">Next →</button>
-    </div>
-    <table id="timesheetTable">
-      <thead>
-        <tr><th>Day</th><th>Clock In</th><th>Clock Out</th><th>Break (min)</th><th>Total Hours</th></tr>
-      </thead>
-      <tbody id="tsBody"></tbody>
-      <tfoot>
-        <tr style="font-weight:700;background:var(--surface2)">
-          <td colspan="4" style="text-align:right;padding-right:12px">WEEK TOTAL</td>
-          <td id="weekTotal" style="text-align:center">0.00</td>
-        </tr>
-      </tfoot>
-    </table>
-    <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
-      <button class="btn btn-primary" id="submitBtn" onclick="submitTimesheet()">Submit Timesheet</button>
-      <span id="submitMsg" style="color:var(--green);font-weight:600;display:none">✓ Submitted for approval</span>
-    </div>
-  </div>
-</div>
-
-<!-- TIME CLOCK -->
-<div class="section" id="sec-timeclock">
-  <div class="card" style="text-align:center">
-    <h2>Time Clock</h2>
-    <div class="clock-display" id="liveClock">00:00:00</div>
-    <div class="clock-date" id="liveDate"></div>
-    <div style="margin-bottom:20px">
-      <label style="font-size:14px;color:var(--muted);margin-right:8px">Staff Member:</label>
-      <select id="clockStaff" style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px">
-        <option>Sarah K.</option>
-        <option>Mike R.</option>
-        <option>Dr. Lisa M.</option>
-      </select>
-    </div>
-    <div class="clock-buttons">
-      <button class="btn btn-green" id="clockInBtn" onclick="clockIn()">🕐 CLOCK IN</button>
-      <button class="btn btn-red" id="clockOutBtn" onclick="clockOut()" disabled>🕐 CLOCK OUT</button>
-    </div>
-    <div id="clockStatus" style="font-size:15px;margin-top:8px;color:var(--muted)"></div>
-  </div>
-  <div class="card clock-log">
-    <h3>Today's Log</h3>
-    <table>
-      <thead><tr><th>Time In</th><th>Time Out</th><th>Hours</th></tr></thead>
-      <tbody id="clockLogBody">
-        <tr><td>08:02</td><td>12:00</td><td>3.97</td></tr>
-        <tr><td>12:30</td><td>—</td><td id="currentHours">—</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="card">
-    <h3>This Week</h3>
-    <div style="display:flex;gap:24px;font-size:14px">
-      <div><span style="color:var(--muted)">Total Hours:</span> <strong id="weekHoursClock">27.50</strong></div>
-      <div><span style="color:var(--muted)">Overtime:</span> <strong style="color:var(--orange)">0.00</strong></div>
-    </div>
-  </div>
-</div>
-
-<!-- MY SCHEDULE -->
-<div class="section" id="sec-schedule">
-  <div class="card">
-    <div class="flex-between" style="margin-bottom:16px">
-      <h2 style="margin:0">My Schedule</h2>
-      <div class="week-nav" style="margin:0">
-        <button onclick="changeScheduleWeek(-1)">←</button>
-        <span id="scheduleWeekLabel">This Week</span>
-        <button onclick="changeScheduleWeek(1)">→</button>
+  <!-- TIMESHEET TAB -->
+  <div id="tab-timesheet">
+    <div class="card">
+      <div class="card-title">
+        <span>Weekly Timesheet</span>
+        <span class="status draft" id="ts-status">Draft</span>
+      </div>
+      <div class="week-nav">
+        <button onclick="changeWeek(-1)">← Prev</button>
+        <span id="week-label"></span>
+        <button onclick="changeWeek(1)">Next →</button>
+      </div>
+      <table class="timesheet">
+        <thead><tr><th>Day</th><th>Hours Worked</th><th>Notes</th></tr></thead>
+        <tbody id="ts-body"></tbody>
+        <tfoot>
+          <tr class="total-row"><td colspan="1">Weekly Total</td><td id="ts-total" colspan="2">0 hrs</td></tr>
+        </tfoot>
+      </table>
+      <div style="margin-top:18px;text-align:right">
+        <button class="btn btn-primary" id="ts-submit" onclick="submitTimesheet()">Submit for Approval</button>
       </div>
     </div>
-    <div id="scheduleView"></div>
   </div>
-</div>
 
-<!-- MY PAY STUBS -->
-<div class="section" id="sec-paystubs">
-  <div class="card">
-    <h2>Year-to-Date Summary</h2>
-    <div class="ytd-card">
-      <div class="ytd-stat"><div class="ytd-label">Gross Pay</div><div class="ytd-value">$9,408.00</div></div>
-      <div class="ytd-stat"><div class="ytd-label">Deductions</div><div class="ytd-value" style="color:var(--red)">$1,504.12</div></div>
-      <div class="ytd-stat"><div class="ytd-label">Net Pay</div><div class="ytd-value" style="color:var(--green)">$7,903.88</div></div>
-    </div>
-  </div>
-  <div class="card">
-    <h2>Recent Pay Stubs</h2>
-    <div id="payStubList">
-
-      <div class="pay-period" onclick="togglePayDetail(this)">
-        <div class="pay-summary">
-          <div class="period-dates">Apr 1 – Apr 14, 2026</div>
-          <div class="amount" style="color:var(--muted)">$784.00</div>
-          <div class="amount" style="color:var(--red)">$125.34</div>
-          <div class="amount" style="font-weight:700;color:var(--green)">$658.66</div>
-        </div>
-        <div class="pay-detail">
-          <table>
-            <tr><td style="width:50%">Regular Hours (80h × $28.00)</td><td style="text-align:right">$2,240.00</td></tr>
-            <tr><td>Overtime (0h × $42.00)</td><td style="text-align:right">$0.00</td></tr>
-            <tr style="font-weight:700;background:var(--surface2)"><td>Gross Pay</td><td style="text-align:right">$2,240.00</td></tr>
-            <tr><td>CPP Contribution</td><td style="text-align:right;color:var(--red)">-$118.02</td></tr>
-            <tr><td>EI Premium</td><td style="text-align:right;color:var(--red)">-$37.41</td></tr>
-            <tr><td>Federal Income Tax</td><td style="text-align:right;color:var(--red)">-$224.00</td></tr>
-            <tr><td>Provincial Income Tax</td><td style="text-align:right;color:var(--red)">-$112.00</td></tr>
-            <tr style="font-weight:700;background:var(--surface2)"><td>Total Deductions</td><td style="text-align:right;color:var(--red)">-$491.43</td></tr>
-            <tr style="font-weight:700"><td>Net Pay</td><td style="text-align:right;color:var(--green)">$1,748.57</td></tr>
-          </table>
-        </div>
+  <!-- SCHEDULE TAB -->
+  <div id="tab-schedule" class="hidden">
+    <div class="card">
+      <div class="card-title"><span>Schedule</span></div>
+      <div class="schedule-toggle">
+        <button class="active" onclick="toggleSchedule('my',this)">My Schedule</button>
+        <button onclick="toggleSchedule('team',this)">Full Team</button>
       </div>
-
-      <div class="pay-period" onclick="togglePayDetail(this)">
-        <div class="pay-summary">
-          <div class="period-dates">Mar 17 – Mar 31, 2026</div>
-          <div class="amount" style="color:var(--muted)">$1,680.00</div>
-          <div class="amount" style="color:var(--red)">$268.80</div>
-          <div class="amount" style="font-weight:700;color:var(--green)">$1,411.20</div>
-        </div>
-        <div class="pay-detail">
-          <table>
-            <tr><td style="width:50%">Regular Hours (72h × $28.00)</td><td style="text-align:right">$2,016.00</td></tr>
-            <tr><td>Overtime (0h × $42.00)</td><td style="text-align:right">$0.00</td></tr>
-            <tr style="font-weight:700;background:var(--surface2)"><td>Gross Pay</td><td style="text-align:right">$2,016.00</td></tr>
-            <tr><td>CPP Contribution</td><td style="text-align:right;color:var(--red)">-$106.22</td></tr>
-            <tr><td>EI Premium</td><td style="text-align:right;color:var(--red)">-$33.67</td></tr>
-            <tr><td>Federal Income Tax</td><td style="text-align:right;color:var(--red)">-$201.60</td></tr>
-            <tr><td>Provincial Income Tax</td><td style="text-align:right;color:var(--red)">-$100.80</td></tr>
-            <tr style="font-weight:700;background:var(--surface2)"><td>Total Deductions</td><td style="text-align:right;color:var(--red)">-$442.29</td></tr>
-            <tr style="font-weight:700"><td>Net Pay</td><td style="text-align:right;color:var(--green)">$1,573.71</td></tr>
-          </table>
-        </div>
+      <div class="week-nav">
+        <button onclick="changeSchedWeek(-1)">← Prev</button>
+        <span id="sched-week-label"></span>
+        <button onclick="changeSchedWeek(1)">Next →</button>
       </div>
-
-      <div class="pay-period" onclick="togglePayDetail(this)">
-        <div class="pay-summary">
-          <div class="period-dates">Mar 3 – Mar 16, 2026</div>
-          <div class="amount" style="color:var(--muted)">$1,792.00</div>
-          <div class="amount" style="color:var(--red)">$286.72</div>
-          <div class="amount" style="font-weight:700;color:var(--green)">$1,505.28</div>
-        </div>
-        <div class="pay-detail">
-          <table>
-            <tr><td style="width:50%">Regular Hours (80h × $28.00)</td><td style="text-align:right">$2,240.00</td></tr>
-            <tr><td>Overtime (4h × $42.00)</td><td style="text-align:right">$168.00</td></tr>
-            <tr style="font-weight:700;background:var(--surface2)"><td>Gross Pay</td><td style="text-align:right">$2,408.00</td></tr>
-            <tr><td>CPP Contribution</td><td style="text-align:right;color:var(--red)">-$126.82</td></tr>
-            <tr><td>EI Premium</td><td style="text-align:right;color:var(--red)">-$40.21</td></tr>
-            <tr><td>Federal Income Tax</td><td style="text-align:right;color:var(--red)">-$240.80</td></tr>
-            <tr><td>Provincial Income Tax</td><td style="text-align:right;color:var(--red)">-$120.40</td></tr>
-            <tr style="font-weight:700;background:var(--surface2)"><td>Total Deductions</td><td style="text-align:right;color:var(--red)">-$528.23</td></tr>
-            <tr style="font-weight:700"><td>Net Pay</td><td style="text-align:right;color:var(--green)">$1,879.77</td></tr>
-          </table>
-        </div>
+      <div id="my-schedule">
+        <ul class="shift-list" id="my-shifts"></ul>
       </div>
-
-    </div>
-    <div style="margin-top:8px;font-size:13px;color:var(--muted)">Showing Gross / Deductions / Net — click to expand details</div>
-  </div>
-</div>
-
-<!-- DOCUMENTS -->
-<div class="section" id="sec-documents">
-  <div class="card">
-    <h2>My Documents</h2>
-    <div class="doc-item">
-      <div class="doc-info"><div class="doc-icon">📋</div><div><strong>TD1 - Personal Tax Credits</strong><br><span style="font-size:12px;color:var(--muted)">2026 Tax Year</span></div></div>
-      <button class="btn btn-primary btn-sm">View</button>
-    </div>
-    <div class="doc-item">
-      <div class="doc-info"><div class="doc-icon">📋</div><div><strong>TD1AB - Alberta Tax Credits</strong><br><span style="font-size:12px;color:var(--muted)">2026 Tax Year</span></div></div>
-      <button class="btn btn-primary btn-sm">View</button>
-    </div>
-    <div class="doc-item">
-      <div class="doc-info"><div class="doc-icon">📝</div><div><strong>Employment Contract</strong><br><span style="font-size:12px;color:var(--muted)">Signed Jan 15, 2025</span></div></div>
-      <button class="btn btn-primary btn-sm">View</button>
-    </div>
-    <div class="doc-item">
-      <div class="doc-info"><div class="doc-icon">📖</div><div><strong>Staff Handbook</strong><br><span style="font-size:12px;color:var(--muted)">Updated March 2026</span></div></div>
-      <button class="btn btn-primary btn-sm">View</button>
-    </div>
-    <div class="doc-item">
-      <div class="doc-info"><div class="doc-icon">🦷</div><div><strong>Benefits Enrollment Form</strong><br><span style="font-size:12px;color:var(--muted)">Group insurance & dental</span></div></div>
-      <button class="btn btn-primary btn-sm">View</button>
-    </div>
-    <div class="doc-item">
-      <div class="doc-info"><div class="doc-icon">🔒</div><div><strong>Confidentiality Agreement</strong><br><span style="font-size:12px;color:var(--muted)">Signed Jan 15, 2025</span></div></div>
-      <button class="btn btn-primary btn-sm">View</button>
+      <div id="team-schedule" class="hidden">
+        <table class="grid-table">
+          <thead><tr><th>Staff</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
+          <tbody id="team-grid"></tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- DOCUMENTS TAB -->
+  <div id="tab-documents" class="hidden">
+    <div class="card">
+      <div class="card-title"><span>Documents</span></div>
+      <ul class="doc-list" id="doc-list"></ul>
+    </div>
+  </div>
 
 </div>
 
 <script>
-// --- TAB SWITCHING ---
-function showTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i)=>{ t.classList.remove('active'); });
-  document.querySelectorAll('.section').forEach(s=>{ s.classList.remove('active'); });
-  const tabs = ['timesheet','timeclock','schedule','paystubs','documents'];
-  const idx = tabs.indexOf(name);
-  document.querySelectorAll('.tab')[idx].classList.add('active');
-  document.getElementById('sec-'+name).classList.add('active');
-}
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const today=new Date();
+function getWeekStart(d){const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);return new Date(d.getFullYear(),d.getMonth(),diff)}
+function fmtRange(start){const end=new Date(start);end.setDate(end.getDate()+6);const s=start.toLocaleDateString('en-US',{month:'short',day:'numeric'});const e=end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});return s+' — '+e}
 
-// --- HEADER CLOCK ---
-function updateHeaderTime() {
-  const now = new Date();
-  const opts = { weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' };
-  document.getElementById('headerTime').textContent = now.toLocaleDateString('en-CA', opts);
-}
-setInterval(updateHeaderTime, 1000);
-updateHeaderTime();
+// Timesheet data
+const timesheets=[
+  {offset:-2,hours:[8,8,8,8,8,0,0],notes:['','','','','','',''],status:'approved'},
+  {offset:-1,hours:[8,7.5,8,8,7,0,0],notes:['','','Training','','','',''],status:'approved'},
+  {offset:0,hours:[8,8,8,8,7,0,0],notes:['','','','','','',''],status:'draft'}
+];
+let currentWeek=0;
 
-// --- LIVE CLOCK ---
-function updateLiveClock() {
-  const now = new Date();
-  document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
-  document.getElementById('liveDate').textContent = now.toLocaleDateString('en-CA', opts);
-}
-setInterval(updateLiveClock, 1000);
-updateLiveClock();
-
-// --- TIMESHEET ---
-let currentWeekOffset = 0;
-const timesheetData = {};
-function getWeekDates(offset) {
-  const now = new Date();
-  const day = now.getDay();
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - ((day+6)%7) + offset*7);
-  const dates = [];
-  for(let i=0;i<7;i++){ const d=new Date(monday); d.setDate(monday.getDate()+i); dates.push(d); }
-  return dates;
-}
-function fmtDate(d){ return d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}); }
-function dayName(d){ return d.toLocaleDateString('en-CA',{weekday:'short'}); }
-
-const currentWeekData = {
-  timesheetStatus: 'draft',
-  days: [
-    {in:'08:02',out:'16:05',break:30},
-    {in:'08:00',out:'16:30',break:30},
-    {in:'07:55',out:'16:00',break:30},
-    {in:'08:10',out:'16:15',break:30},
-    {in:'08:00',out:'15:45',break:30},
-    {in:'',out:'',break:0},
-    {in:'',out:'',break:0}
-  ]
-};
-
-function renderTimesheet() {
-  const dates = getWeekDates(currentWeekOffset);
-  const label = fmtDate(dates[0]) + ' — ' + fmtDate(dates[6]);
-  document.getElementById('weekLabel').textContent = label;
-  const tbody = document.getElementById('tsBody');
-  tbody.innerHTML = '';
-  let total = 0;
-  const isCurrentWeek = currentWeekOffset === 0;
-  const data = isCurrentWeek ? currentWeekData.days : null;
-  const submitted = isCurrentWeek && currentWeekData.timesheetStatus === 'submitted';
-
-  const statusEl = document.getElementById('tsStatus');
-  const submitBtn = document.getElementById('submitBtn');
-  const submitMsg = document.getElementById('submitMsg');
-
-  if(isCurrentWeek) {
-    if(currentWeekData.timesheetStatus==='draft'){ statusEl.className='badge badge-draft'; statusEl.textContent='Draft'; submitBtn.style.display=''; submitMsg.style.display='none'; }
-    else if(currentWeekData.timesheetStatus==='submitted'){ statusEl.className='badge badge-submitted'; statusEl.textContent='Pending Approval'; submitBtn.style.display='none'; submitMsg.style.display=''; }
-    else { statusEl.className='badge badge-approved'; statusEl.textContent='Approved'; submitBtn.style.display='none'; submitMsg.style.display='none'; }
-  } else {
-    statusEl.className='badge badge-approved'; statusEl.textContent='Approved (Past)';
-    submitBtn.style.display='none'; submitMsg.style.display='none';
-  }
-
-  const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  for(let i=0;i<7;i++){
-    const d = data ? data[i] : {in:'',out:'',break:0};
-    const disabled = !isCurrentWeek || submitted;
-    const readOnly = disabled ? 'readonly' : '';
-    const bg = i%2===0 ? '' : 'style="background:var(--surface2)"';
-    const hours = calcHours(d.in,d.out,d.break);
-    if(hours) total += hours;
-    tbody.innerHTML += `<tr ${bg}>
-      <td style="font-weight:600">${dayNames[i]}<br><span style="font-size:11px;color:var(--muted)">${fmtDate(dates[i])}</span></td>
-      <td><input type="time" value="${d.in}" ${readOnly} onchange="recalcTimesheet()"></td>
-      <td><input type="time" value="${d.out}" ${readOnly} onchange="recalcTimesheet()"></td>
-      <td><input type="number" value="${d.break}" ${readOnly} min="0" max="120" onchange="recalcTimesheet()" style="width:70px"></td>
-      <td style="text-align:center;font-weight:600">${hours ? hours.toFixed(2) : '—'}</td>
-    </tr>`;
-  }
-  document.getElementById('weekTotal').textContent = total.toFixed(2);
-}
-function calcHours(inTime,outTime,brk){
-  if(!inTime||!outTime) return 0;
-  const [ih,im]=inTime.split(':').map(Number);
-  const [oh,om]=outTime.split(':').map(Number);
-  let diff = (oh*60+om)-(ih*60+im)-brk;
-  if(diff<=0) return 0;
-  return diff/60;
-}
-function recalcTimesheet(){
+function renderTimesheet(){
+  const ts=timesheets[currentWeek];
+  const ws=getWeekStart(new Date(today));ws.setDate(ws.getDate()+ts.offset*7);
+  document.getElementById('week-label').textContent=fmtRange(ws);
+  document.getElementById('ts-status').textContent=ts.status.charAt(0).toUpperCase()+ts.status.slice(1);
+  document.getElementById('ts-status').className='status '+ts.status;
+  const readonly=ts.status!=='draft';
+  const tbody=document.getElementById('ts-body');
+  tbody.innerHTML='';
   let total=0;
-  document.querySelectorAll('#tsBody tr').forEach(tr=>{
-    const inputs=tr.querySelectorAll('input');
-    if(inputs.length<3) return;
-    const h=calcHours(inputs[0].value,inputs[1].value,Number(inputs[2].value));
-    tr.cells[4].textContent=h?h.toFixed(2):'—';
-    total+=h;
+  DAYS.forEach((d,i)=>{
+    total+=ts.hours[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${d}</td><td><input type="number" min="0" max="24" step="0.5" value="${ts.hours[i]}" ${readonly?'disabled':''} onchange="updateHours(${i},this.value)"></td><td><input type="text" placeholder="Optional" value="${ts.notes[i]}" ${readonly?'disabled':''} onchange="updateNotes(${i},this.value)"></td>`;
+    tbody.appendChild(tr);
   });
-  document.getElementById('weekTotal').textContent=total.toFixed(2);
+  document.getElementById('ts-total').textContent=total+' hrs';
+  document.getElementById('ts-submit').disabled=readonly;
 }
-function changeWeek(dir){ currentWeekOffset+=dir; renderTimesheet(); }
-function submitTimesheet(){
-  currentWeekData.timesheetStatus='submitted';
-  renderTimesheet();
-}
-renderTimesheet();
 
-// --- CLOCK IN/OUT ---
-let isClockedIn = true;
-function clockIn(){
-  isClockedIn=true;
-  document.getElementById('clockInBtn').disabled=true;
-  document.getElementById('clockOutBtn').disabled=false;
-  document.getElementById('clockStatus').innerHTML='<span style="color:var(--green)">✓ Clocked in at '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})+'</span>';
-  const tbody=document.getElementById('clockLogBody');
-  const tr=document.createElement('tr');
-  tr.innerHTML='<td>'+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})+'</td><td>—</td><td>—</td>';
-  tbody.appendChild(tr);
-}
-function clockOut(){
-  isClockedIn=false;
-  document.getElementById('clockInBtn').disabled=false;
-  document.getElementById('clockOutBtn').disabled=true;
-  const now=new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('clockStatus').innerHTML='<span style="color:var(--red)">✓ Clocked out at '+now+'</span>';
-  const rows=document.querySelectorAll('#clockLogBody tr');
-  const last=rows[rows.length-1];
-  if(last){ last.cells[1].textContent=now; last.cells[2].textContent='0.00'; }
-}
-// init clock state
-document.getElementById('clockInBtn').disabled=true;
-document.getElementById('clockOutBtn').disabled=false;
-document.getElementById('clockStatus').innerHTML='<span style="color:var(--green)">✓ Currently clocked in since 12:30</span>';
+function updateHours(i,v){timesheets[currentWeek].hours[i]=parseFloat(v)||0;renderTimesheet()}
+function updateNotes(i,v){timesheets[currentWeek].notes[i]=v}
+function changeWeek(dir){currentWeek=Math.max(0,Math.min(timesheets.length-1,currentWeek+dir));renderTimesheet()}
+function submitTimesheet(){timesheets[currentWeek].status='submitted';renderTimesheet()}
 
-// --- SCHEDULE ---
-let scheduleWeekOffset = 0;
-const scheduleData = [
-  {day:'Monday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Tuesday',shift:'8:00 AM – 4:30 PM',type:'work'},
-  {day:'Wednesday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Thursday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Friday',shift:'8:00 AM – 3:30 PM',type:'work'},
-  {day:'Saturday',shift:'OFF',type:'off'},
-  {day:'Sunday',shift:'OFF',type:'off'}
+// Schedule data
+const staff=[
+  {name:'Dr. Patel',role:'vet',shifts:['8:00–16:00','8:00–16:00','8:00–16:00','8:00–16:00','8:00–14:00','OFF','OFF']},
+  {name:'Dr. Chen',role:'vet',shifts:['OFF','8:00–16:00','8:00–16:00','8:00–16:00','8:00–16:00','9:00–13:00','OFF']},
+  {name:'Sarah K.',role:'tech',shifts:['8:00–16:00','8:00–16:00','8:00–16:00','8:00–16:00','8:00–15:00','OFF','OFF']},
+  {name:'Mike R.',role:'tech',shifts:['9:00–17:00','9:00–17:00','OFF','9:00–17:00','9:00–17:00','9:00–13:00','OFF']},
+  {name:'Lisa T.',role:'reception',shifts:['7:30–15:30','7:30–15:30','7:30–15:30','7:30–15:30','7:30–15:30','OFF','OFF']},
+  {name:'Emma W.',role:'reception',shifts:['OFF','OFF','12:00–20:00','12:00–20:00','12:00–20:00','8:00–16:00','10:00–14:00']},
+  {name:'Jake P.',role:'assistant',shifts:['8:00–14:00','8:00–14:00','8:00–14:00','OFF','8:00–14:00','8:00–12:00','OFF']},
+  {name:'Rosa M.',role:'manager',shifts:['8:00–17:00','8:00–17:00','8:00–17:00','8:00–17:00','8:00–17:00','OFF','OFF']}
 ];
-const scheduleData2 = [
-  {day:'Monday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Tuesday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Wednesday',shift:'OFF',type:'off'},
-  {day:'Thursday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Friday',shift:'8:00 AM – 4:00 PM',type:'work'},
-  {day:'Saturday',shift:'9:00 AM – 1:00 PM',type:'work'},
-  {day:'Sunday',shift:'OFF',type:'off'}
-];
+const roleClass={vet:'role-vet',tech:'role-tech',reception:'role-reception',assistant:'role-assistant',manager:'role-manager'};
+let schedWeek=0;
+
 function renderSchedule(){
-  const label = scheduleWeekOffset===0 ? 'This Week' : scheduleWeekOffset===1 ? 'Next Week' : 'Week of ...';
-  document.getElementById('scheduleWeekLabel').textContent = label;
-  const data = scheduleWeekOffset===0 ? scheduleData : scheduleData2;
-  const view = document.getElementById('scheduleView');
-  view.innerHTML = data.map(d =>
-    `<div class="schedule-day">
-      <div class="day-name">${d.day}</div>
-      <div class="shift-block ${d.type==='work'?'shift-work':'shift-off'}">${d.shift}</div>
-    </div>`
-  ).join('');
+  const ws=getWeekStart(new Date(today));ws.setDate(ws.getDate()+schedWeek*7);
+  document.getElementById('sched-week-label').textContent=fmtRange(ws);
+  const me=staff.find(s=>s.name==='Sarah K.');
+  document.getElementById('my-shifts').innerHTML=me.shifts.map((sh,i)=>`<li><span class="shift-day">${DAYS[i]}</span><span class="${sh==='OFF'?'shift-off':'shift-time'}">${sh}</span></li>`).join('');
+  document.getElementById('team-grid').innerHTML=staff.map(s=>`<tr><td><span class="shift-chip ${roleClass[s.role]}">${s.name}</span></td>${s.shifts.map(sh=>`<td style="${sh==='OFF'?'color:#cbd5e1;font-style:italic':''}">${sh}</td>`).join('')}</tr>`).join('');
 }
-function changeScheduleWeek(dir){ scheduleWeekOffset+=dir; if(scheduleWeekOffset<0)scheduleWeekOffset=0; if(scheduleWeekOffset>1)scheduleWeekOffset=1; renderSchedule(); }
-renderSchedule();
+function changeSchedWeek(d){schedWeek+=d;renderSchedule()}
+function toggleSchedule(view,btn){
+  document.querySelectorAll('.schedule-toggle button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('my-schedule').classList.toggle('hidden',view!=='my');
+  document.getElementById('team-schedule').classList.toggle('hidden',view!=='team');
+}
 
-// --- PAY STUBS ---
-function togglePayDetail(el){
-  const detail = el.querySelector('.pay-detail');
-  detail.classList.toggle('open');
+// Documents
+const docs=[
+  {name:'TD1 Personal Tax Credits Return',icon:'📋',date:'Jan 15, 2026',type:'PDF'},
+  {name:'TD1AB Alberta Tax Credits Return',icon:'📋',date:'Jan 15, 2026',type:'PDF'},
+  {name:'Employee Handbook',icon:'📖',date:'Feb 1, 2026',type:'PDF'},
+  {name:'Respectful Workplace Policy',icon:'🤝',date:'Feb 1, 2026',type:'PDF'},
+  {name:'Employment Contract',icon:'📝',date:'Dec 1, 2025',type:'PDF'}
+];
+document.getElementById('doc-list').innerHTML=docs.map(d=>`<li><div class="doc-left"><div class="doc-icon">${d.icon}</div><div><div class="doc-name">${d.name}</div><div class="doc-date">${d.type} · Uploaded ${d.date}</div></div></div><button class="btn-outline" onclick="alert('Document preview — ${d.name}')">View</button></li>`).join('');
+
+// Tab switching
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  ['timesheet','schedule','documents'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab);
+  });
 }
+
+renderTimesheet();
+renderSchedule();
 </script>
 </body>
 </html>
