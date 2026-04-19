@@ -412,30 +412,30 @@ let timeclockData=null;
 async function loadTimeclockForWeek(mon,sun){
   const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
   const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
-  const active=getActiveUsers();
-  let all=[];
-  for(const u of active){
-    for(const ds of dateStrs){
-      try{
-        const rows=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&post_author=eq.${u.ID}&post_title=like.*${ds}*&limit=10`);
-        all=all.concat(rows);
-      }catch(e){}
-    }
-  }
-  return all;
+  
+  // Load ALL timeclock posts at once (cached after first load)
+  const all=await loadTimeclock();
+  
+  // Filter to just this week's dates
+  return all.filter(p=>{
+    const parts=p.post_title.split('-');
+    return parts.length>=2 && dateStrs.includes(parts[1]);
+  });
 }
 
+let timeclockLoaded=false;
 async function loadTimeclock(){
-  if(timeclockData)return timeclockData;
-  const active=getActiveUsers();
-  let all=[];
-  for(const u of active){
-    try{
-      const rows=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&post_author=eq.${u.ID}&limit=5000`);
-      all=all.concat(rows);
-    }catch(e){}
+  if(timeclockLoaded && timeclockData)return timeclockData;
+  // Load all timeclock posts in pages of 1000
+  let all=[],offset=0;
+  while(true){
+    const batch=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&limit=1000&offset=${offset}&order=ID.desc`);
+    all=all.concat(batch);
+    if(batch.length<1000)break;
+    offset+=1000;
   }
   timeclockData=all;
+  timeclockLoaded=true;
   return all;
 }
 
@@ -612,7 +612,7 @@ async function renderSchedule(){
   document.getElementById('schedWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
   
   const card=document.getElementById('schedCard');
-  card.innerHTML='<div class="loading-msg">Loading shifts...</div>';
+  card.innerHTML='<div class="loading-msg">Loading shifts...<br><small style="color:var(--muted)">Fetching timeclock data (one-time load, then cached)</small></div>';
   
   try{
     const clinic=document.getElementById('clinicFilter')?.value||'';
