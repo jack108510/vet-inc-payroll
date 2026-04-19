@@ -490,32 +490,38 @@ function resolveStaffName(staffId) {
   return u ? (u.display_name || '—') : '—';
 }
 
-// Load shifts from csi_postmeta — loaded ONCE, cached, filtered locally
+// Load shifts from csi_postmeta for a specific date range
 async function loadShifts(startDate, endDate) {
   const startStr = formatDateYYYYMMDD(startDate);
   const endStr = formatDateYYYYMMDD(endDate);
+  const cacheKey = `${startStr}-${endStr}`;
+  if (state.shiftsCache[cacheKey]) return state.shiftsCache[cacheKey];
+
+  // Step 1: Get post IDs with event_date in range
+  const edRows = await sbFetch('csi_postmeta', `?select=post_id&meta_key=eq.event_date&meta_value=gte.${startStr}&meta_value=lte.${endStr}`);
+  if (!edRows.length) { state.shiftsCache[cacheKey] = []; return []; }
+  const postIds = [...new Set(edRows.map(r => r.post_id))];
   
-  // Load all postmeta once
-  if (!state._postmetaLoaded) {
-    const keys = ['start_stamp','end_stamp','staff_member','clinic','event_date','lunch','payrate','ot_reason','scheduled_start_shift','scheduled_end_shift'];
-    let allMeta = [];
-    // Fetch all at once using OR filter
-    const orParts = keys.map(k => `meta_key.eq.${k}`).join(',');
-    allMeta = await sbFetch('csi_postmeta', `?select=post_id,meta_key,meta_value&or=(${orParts})&limit=50000`);
-    
-    state._byPost = {};
-    allMeta.forEach(m => {
-      if (!state._byPost[m.post_id]) state._byPost[m.post_id] = {};
-      state._byPost[m.post_id][m.meta_key] = m.meta_value;
-    });
-    state._postmetaLoaded = true;
+  // Step 2: Get all postmeta for those posts (batch if needed)
+  let allMeta = [];
+  for (let i = 0; i < postIds.length; i += 100) {
+    const batch = postIds.slice(i, i + 100);
+    const idList = batch.join(',');
+    const rows = await sbFetch('csi_postmeta', `?select=post_id,meta_key,meta_value&post_id=in.(${idList})`);
+    allMeta = allMeta.concat(rows);
   }
 
+  // Group by post_id
+  const byPost = {};
+  allMeta.forEach(m => {
+    if (!byPost[m.post_id]) byPost[m.post_id] = {};
+    byPost[m.post_id][m.meta_key] = m.meta_value;
+  });
+
   const shifts = [];
-  Object.entries(state._byPost).forEach(([postId, meta]) => {
+  Object.entries(byPost).forEach(([postId, meta]) => {
     const ed = meta.event_date;
-    if (!ed) return;
-    if (ed < startStr || ed > endStr) return;
+    if (!ed || ed < startStr || ed > endStr) return;
 
     const start = meta.start_stamp;
     const end = meta.end_stamp;
@@ -553,7 +559,7 @@ async function loadShifts(startDate, endDate) {
     });
   });
 
-  return shifts;
+  state.shiftsCache[cacheKey] = shifts;
   return shifts;
 }
 
