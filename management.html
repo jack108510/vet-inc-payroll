@@ -22,114 +22,160 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
   font-size: 14px;
   color: var(--text);
   background: var(--bg);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
+
 /* Header */
 .header {
   position: sticky; top: 0; z-index: 100;
   background: var(--surface);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 1.5rem;
-  height: 60px;
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  padding: 0 2rem;
+  height: 64px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
 }
-.header-left { display: flex; align-items: center; gap: .75rem; }
+.header-left { display: flex; align-items: center; gap: 1rem; }
 .logo {
-  width: 36px; height: 36px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 12px;
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 700; font-size: 16px;
+  color: #fff; font-weight: 700; font-size: 18px;
+  box-shadow: 0 2px 8px rgba(37,99,235,.25);
 }
-.brand { font-size: 18px; font-weight: 700; color: var(--text); }
-.brand-sub { font-size: 13px; color: var(--muted); margin-left: .5rem; }
+.brand { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+.brand-sub { font-size: 13px; color: var(--muted); margin-left: .5rem; font-weight: 400; }
 .header-center { display: flex; align-items: center; gap: .5rem; }
 .clinic-selector {
-  padding: 8px 16px; border: 2px solid var(--primary); border-radius: 10px;
-  font-size: 14px; font-weight: 600; font-family: inherit;
-  background: var(--surface); color: var(--primary);
+  padding: 9px 36px 9px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 13px; font-weight: 500; font-family: inherit;
+  background: var(--surface); color: var(--text);
   cursor: pointer; outline: none; min-width: 180px;
-  transition: all .2s;
+  transition: all .2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
 }
-.clinic-selector:hover { background: var(--surface2); }
-.clinic-selector:focus { box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+.clinic-selector:hover { border-color: var(--primary-light); background: var(--surface2); }
+.clinic-selector:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 .header-right { display: flex; align-items: center; gap: .75rem; }
 .user-badge {
-  display: flex; align-items: center; gap: .5rem;
-  background: var(--surface2); padding: 6px 14px; border-radius: 8px;
+  display: flex; align-items: center; gap: .6rem;
+  background: var(--surface2); padding: 7px 16px; border-radius: 12px;
   font-weight: 500; font-size: 13px;
+  transition: background .2s;
 }
+.user-badge:hover { background: var(--border); }
 .avatar {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 30px; height: 30px; border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), var(--purple));
   color: #fff; display: flex; align-items: center; justify-content: center;
   font-weight: 600; font-size: 12px;
 }
+
 /* Tabs */
 .tabs {
-  position: sticky; top: 60px; z-index: 99;
+  position: sticky; top: 64px; z-index: 99;
   background: var(--surface);
-  height: 52px;
-  display: flex; align-items: center; gap: .5rem;
-  padding: 0 1.5rem;
-  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .4rem;
+  padding: .6rem 2rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .tab {
-  padding: 8px 18px; border-radius: 8px;
+  padding: 9px 20px; border-radius: 50px;
   font-size: 13px; font-weight: 500;
   cursor: pointer; white-space: nowrap;
-  border: 1px solid var(--border);
-  background: var(--surface);
+  border: none;
+  background: transparent;
   color: var(--muted);
-  transition: all .2s;
+  transition: all .25s ease;
+  user-select: none;
 }
 .tab:hover { background: var(--surface2); color: var(--text); }
-.tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.tab.active {
+  background: var(--primary); color: #fff;
+  box-shadow: 0 2px 8px rgba(37,99,235,.25);
+}
+
 /* Content */
-.content { padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
-.section { display: none; animation: fadeIn .3s ease; }
+.content { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+.section { display: none; animation: fadeIn .35s ease; }
 .section.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
 /* Cards */
 .card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.04);
-  margin-bottom: 1rem;
+  background: var(--surface);
+  border-radius: 16px; padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(0,0,0,.04);
 }
 .card-title {
-  font-size: 13px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: .5px; margin-bottom: .75rem;
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .6px; margin-bottom: 1rem;
 }
-/* Stat Cards */
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+/* Stat Cards — 3 columns, colored left border */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
 .stat-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  background: var(--surface);
+  border-radius: 16px; padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  border: 1px solid rgba(0,0,0,.04);
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
-.stat-label { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .3px; }
-.stat-value { font-size: 28px; font-weight: 700; color: var(--text); margin-top: .25rem; }
-.stat-sub { font-size: 12px; color: var(--muted); margin-top: .25rem; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.stat-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 4px; border-radius: 4px 0 0 4px;
+}
+.stat-card:nth-child(1)::before { background: var(--primary); }
+.stat-card:nth-child(2)::before { background: var(--emerald); }
+.stat-card:nth-child(3)::before { background: var(--orange); }
+.stat-card:nth-child(4)::before { background: var(--purple); }
+.stat-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: .75rem;
+}
+.stat-card:nth-child(1) .stat-icon { background: #dbeafe; }
+.stat-card:nth-child(2) .stat-icon { background: #d1fae5; }
+.stat-card:nth-child(3) .stat-icon { background: #ffedd5; }
+.stat-card:nth-child(4) .stat-icon { background: #ede9fe; }
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.stat-value { font-size: 32px; font-weight: 700; color: var(--text); margin-top: .15rem; letter-spacing: -.5px; }
+.stat-sub { font-size: 12px; color: var(--muted); margin-top: .2rem; }
+
 /* Tables */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th {
-  background: var(--surface2); font-size: 12px; font-weight: 600;
-  color: var(--muted); text-transform: uppercase; letter-spacing: .3px;
-  padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border);
+  background: var(--surface2); font-size: 11px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: .4px;
+  padding: 12px 16px; text-align: left;
+  border-bottom: 1px solid var(--border);
 }
-td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
-tr:hover td { background: var(--surface2); }
+td { padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,.04); font-size: 13px; }
+tbody tr:nth-child(even) td { background: rgba(239,246,255,.3); }
+tbody tr { transition: background .15s; }
+tbody tr:hover td { background: var(--surface2); }
+
 /* Badges */
 .badge {
-  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
   font-size: 11px; font-weight: 600;
+  transition: transform .15s;
 }
 .badge-green { background: #dcfce7; color: var(--green); }
 .badge-red { background: #fee2e2; color: var(--red); }
@@ -137,49 +183,64 @@ tr:hover td { background: var(--surface2); }
 .badge-orange { background: #ffedd5; color: var(--orange); }
 .badge-purple { background: #ede9fe; color: var(--purple); }
 .badge-yellow { background: #fef3c7; color: #b45309; }
+
 /* Buttons */
 .btn {
-  padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
-  cursor: pointer; border: none; transition: all .2s;
+  padding: 9px 18px; border-radius: 10px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; transition: all .2s ease;
 }
 .btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: #1d4ed8; }
-.btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-.btn-ghost:hover { background: var(--surface2); }
+.btn-primary:hover { background: #1d4ed8; box-shadow: 0 2px 8px rgba(37,99,235,.25); }
+.btn-ghost {
+  background: var(--surface); color: var(--text); border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surface2); border-color: var(--primary-light); }
 .btn-green { background: var(--green); color: #fff; }
-.btn-green:hover { background: #15803d; }
+.btn-green:hover { background: #15803d; box-shadow: 0 2px 8px rgba(22,163,74,.25); }
 .btn-red { background: var(--red); color: #fff; }
 .btn-red:hover { background: #dc2626; }
-.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
 .btn-orange { background: var(--orange); color: #fff; }
 .btn-orange:hover { background: #c2410c; }
+
 /* Inputs */
 input, select {
-  padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+  padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 10px;
   font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text);
-  outline: none; transition: border-color .2s;
+  outline: none; transition: all .2s ease;
 }
 input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+
 /* Grid helpers */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
 .flex { display: flex; align-items: center; gap: .75rem; }
 .flex-between { display: flex; align-items: center; justify-content: space-between; }
+
 /* Schedule */
-.week-nav { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+.week-nav { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+.week-nav strong { font-size: 15px; min-width: 160px; text-align: center; }
 .week-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem;
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: .6rem;
 }
 .week-day {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  min-height: 200px; padding: .5rem;
+  background: var(--surface); border: 1px solid rgba(0,0,0,.04); border-radius: 14px;
+  min-height: 220px; padding: .65rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  transition: box-shadow .2s;
 }
-.week-day-header { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; padding: 4px; }
-.week-day-header span { display: block; font-size: 16px; color: var(--text); font-weight: 700; }
+.week-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.week-day-header {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; padding: 6px; letter-spacing: .3px;
+}
+.week-day-header span { display: block; font-size: 18px; color: var(--text); font-weight: 700; margin-top: 2px; }
 .shift-block {
-  margin-top: .35rem; padding: 6px 8px; border-radius: 6px;
-  font-size: 11px; line-height: 1.3;
+  margin-top: .4rem; padding: 8px 10px; border-radius: 8px;
+  font-size: 11px; line-height: 1.35;
+  transition: transform .15s;
 }
+.shift-block:hover { transform: translateX(2px); }
 .shift-block.tg { background: #dbeafe; color: var(--primary); border-left: 3px solid var(--primary); }
 .shift-block.ros { background: #dcfce7; color: var(--green); border-left: 3px solid var(--green); }
 .shift-block.rvv { background: #ede9fe; color: var(--purple); border-left: 3px solid var(--purple); }
@@ -187,6 +248,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .shift-block.upc { background: #fef3c7; color: #b45309; border-left: 3px solid #b45309; }
 .shift-block .shift-name { font-weight: 600; }
 .shift-block .shift-time { opacity: .85; }
+
 /* Spinner */
 .spinner {
   display: flex; align-items: center; justify-content: center; padding: 3rem; color: var(--muted);
@@ -197,27 +259,34 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   animation: spin .6s linear infinite; margin-left: .5rem;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
 /* Activity */
 .activity-item {
-  display: flex; align-items: flex-start; gap: .75rem;
-  padding: .75rem 0; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: .85rem;
+  padding: .85rem 0; border-bottom: 1px solid rgba(0,0,0,.04);
 }
 .activity-item:last-child { border-bottom: none; }
 .activity-dot {
-  width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+  width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
 }
 .activity-text { font-size: 13px; }
-.activity-time { font-size: 11px; color: var(--muted); }
+.activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
 /* Action buttons in tables */
-.btn-group { display: flex; gap: .35rem; }
+.btn-group { display: flex; gap: .4rem; }
+
 /* Responsive */
+@media (max-width: 900px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .week-grid { grid-template-columns: repeat(3, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
 @media (max-width: 768px) {
   .content { padding: 1rem; }
-  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stats { grid-template-columns: 1fr; }
   .week-grid { grid-template-columns: repeat(2, 1fr); }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .header { padding: 0 1rem; }
-  .tabs { padding: 0 .5rem; }
+  .tabs { padding: .5rem .75rem; }
   .header-center { display: none; }
 }
 </style>
@@ -267,10 +336,9 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   <!-- Dashboard -->
   <div class="section active" id="sec-dashboard">
     <div class="stats" id="dash-stats">
-      <div class="stat-card"><div class="stat-label">Active Staff</div><div class="stat-value" id="stat-staff">—</div></div>
-      <div class="stat-card"><div class="stat-label">Clocked In Today</div><div class="stat-value" id="stat-clockedin">—</div></div>
-      <div class="stat-card"><div class="stat-label">Weekly Payroll</div><div class="stat-value" id="stat-weeklypay">—</div></div>
-      <div class="stat-card"><div class="stat-label">Pending OT</div><div class="stat-value" id="stat-pendingot">—</div></div>
+      <div class="stat-card"><div class="stat-icon">⏱</div><div class="stat-label">Clocked In Today</div><div class="stat-value" id="stat-clockedin">—</div></div>
+      <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Weekly Payroll</div><div class="stat-value" id="stat-weeklypay">—</div></div>
+      <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">Pending OT</div><div class="stat-value" id="stat-pendingot">—</div></div>
     </div>
     <div class="grid-2">
       <div class="card">
@@ -299,11 +367,11 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Staff -->
   <div class="section" id="sec-staff">
-    <div class="flex" style="margin-bottom:1rem;">
-      <input type="text" id="staff-search" placeholder="Search staff..." oninput="renderStaff()" style="width:220px;">
+    <div class="flex" style="margin-bottom:1.25rem;">
+      <input type="text" id="staff-search" placeholder="Search staff..." oninput="renderStaff()" style="width:240px;">
       <select id="staff-pos-filter" onchange="renderStaff()"><option value="">All Positions</option></select>
     </div>
-    <div class="card" style="padding:0;">
+    <div class="card" style="padding:0; overflow:hidden;">
       <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Clinic</th><th>Position</th><th>Status</th></tr></thead>
       <tbody id="staff-table"><tr><td colspan="5" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -311,7 +379,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Payroll -->
   <div class="section" id="sec-payroll">
-    <div class="flex-between" style="margin-bottom:1rem;">
+    <div class="flex-between" style="margin-bottom:1.25rem;">
       <div class="week-nav">
         <button class="btn btn-ghost btn-sm" onclick="changePayWeek(-1)">← Prev</button>
         <strong id="pay-week-label">—</strong>
@@ -320,12 +388,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
       <button class="btn btn-primary btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
     <div class="stats" id="pay-stats">
-      <div class="stat-card"><div class="stat-label">Total Hours</div><div class="stat-value" id="pay-total-hours">—</div></div>
-      <div class="stat-card"><div class="stat-label">Total Gross</div><div class="stat-value" id="pay-total-gross">—</div></div>
-      <div class="stat-card"><div class="stat-label">Staff Count</div><div class="stat-value" id="pay-staff-count">—</div></div>
-      <div class="stat-card"><div class="stat-label">Avg Hours/Staff</div><div class="stat-value" id="pay-avg-hours">—</div></div>
+      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">Total Hours</div><div class="stat-value" id="pay-total-hours">—</div></div>
+      <div class="stat-card"><div class="stat-icon">💵</div><div class="stat-label">Total Gross</div><div class="stat-value" id="pay-total-gross">—</div></div>
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Staff Count</div><div class="stat-value" id="pay-staff-count">—</div></div>
+      <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-label">Avg Hours/Staff</div><div class="stat-value" id="pay-avg-hours">—</div></div>
     </div>
-    <div class="card" style="padding:0;">
+    <div class="card" style="padding:0; overflow:hidden;">
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Clinic</th><th>Position</th><th>Hours</th><th>Rate</th><th>Gross</th></tr></thead>
       <tbody id="pay-table"><tr><td colspan="6" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -333,17 +401,16 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Financials -->
   <div class="section" id="sec-financials">
-    <div class="flex" style="margin-bottom:1rem;">
+    <div class="flex" style="margin-bottom:1.25rem;">
       <input type="date" id="fin-date-from" onchange="renderFinancials()">
       <input type="date" id="fin-date-to" onchange="renderFinancials()">
     </div>
     <div class="stats" id="fin-stats">
-      <div class="stat-card"><div class="stat-label">Total Deposits</div><div class="stat-value" id="fin-total-deposit">—</div></div>
-      <div class="stat-card"><div class="stat-label">Total Cheques</div><div class="stat-value" id="fin-total-cheques">—</div></div>
-      <div class="stat-card"><div class="stat-label">Total Sum</div><div class="stat-value" id="fin-total-sum">—</div></div>
-      <div class="stat-card"><div class="stat-label">Entries</div><div class="stat-value" id="fin-entries">—</div></div>
+      <div class="stat-card"><div class="stat-icon">🏦</div><div class="stat-label">Total Deposits</div><div class="stat-value" id="fin-total-deposit">—</div></div>
+      <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Total Cheques</div><div class="stat-value" id="fin-total-cheques">—</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Total Sum</div><div class="stat-value" id="fin-total-sum">—</div></div>
     </div>
-    <div class="card" style="padding:0;">
+    <div class="card" style="padding:0; overflow:hidden;">
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>User</th><th>Clinic</th><th>Deposit</th><th>Cheques</th><th>Sum</th><th>Status</th></tr></thead>
       <tbody id="fin-table"><tr><td colspan="7" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -351,7 +418,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Overtime -->
   <div class="section" id="sec-overtime">
-    <div class="card" style="padding:0;">
+    <div class="card" style="padding:0; overflow:hidden;">
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Date</th><th>Regular Hours</th><th>OT Hours</th><th>Start Time</th><th>End Time</th><th>Clinic</th><th>Notes</th><th>Status</th></tr></thead>
       <tbody id="ot-table"><tr><td colspan="9" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -359,7 +426,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Time Off -->
   <div class="section" id="sec-timeoff">
-    <div class="card" style="padding:0;">
+    <div class="card" style="padding:0; overflow:hidden;">
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Date(s)</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
       <tbody id="to-table"><tr><td colspan="5" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -367,11 +434,11 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Open Shifts -->
   <div class="section" id="sec-openshifts">
-    <div class="flex-between" style="margin-bottom:1rem;">
+    <div class="flex-between" style="margin-bottom:1.25rem;">
       <div></div>
       <button class="btn btn-orange btn-sm" onclick="alert('Reminder sent! (visual only)')">📧 Send Reminder</button>
     </div>
-    <div class="card" style="padding:0;">
+    <div class="card" style="padding:0; overflow:hidden;">
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Day</th><th>Start Time</th><th>Hours</th><th>Clinic</th><th>Notes</th></tr></thead>
       <tbody id="os-table"><tr><td colspan="6" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -506,7 +573,7 @@ function resolveStaffName(staffId) {
   return u ? (u.display_name || '—') : '—';
 }
 
-// Load shifts from csi_postmeta
+// Load shifts from csi_postmeta — with deduplication by post_id
 async function loadShifts(startDate, endDate) {
   const startStr = formatDateYYYYMMDD(startDate);
   const endStr = formatDateYYYYMMDD(endDate);
@@ -515,6 +582,7 @@ async function loadShifts(startDate, endDate) {
 
   const edRows = await sbFetch('csi_postmeta', `?select=post_id&meta_key=eq.event_date&meta_value=gte.${startStr}&meta_value=lte.${endStr}`);
   if (!edRows.length) { state.shiftsCache[cacheKey] = []; return []; }
+  // Deduplicate post_ids immediately
   const postIds = [...new Set(edRows.map(r => r.post_id))];
   
   let allMeta = [];
@@ -525,14 +593,20 @@ async function loadShifts(startDate, endDate) {
     allMeta = allMeta.concat(rows);
   }
 
+  // Group meta by post_id — this naturally deduplicates since we key by post_id
   const byPost = {};
   allMeta.forEach(m => {
     if (!byPost[m.post_id]) byPost[m.post_id] = {};
+    // If a meta_key appears multiple times for the same post_id, keep the last one
     byPost[m.post_id][m.meta_key] = m.meta_value;
   });
 
   const shifts = [];
+  const seenPostIds = new Set(); // Extra safety: ensure each post_id yields at most one shift
   Object.entries(byPost).forEach(([postId, meta]) => {
+    if (seenPostIds.has(postId)) return;
+    seenPostIds.add(postId);
+
     const ed = meta.event_date;
     if (!ed || ed < startStr || ed > endStr) return;
 
@@ -581,12 +655,8 @@ async function loadShifts(startDate, endDate) {
   return shifts;
 }
 
-// Dashboard
+// Dashboard — 3 cards (Active Staff removed)
 async function renderDashboard() {
-  const activeStaff = state.users.filter(u => getPosition(u.ID) !== 'terminated');
-  const filteredStaff = state.globalClinic ? activeStaff.filter(u => getClinicCode(u.ID) === state.globalClinic) : activeStaff;
-  document.getElementById('stat-staff').textContent = filteredStaff.length;
-
   const pendingOT = state.overtime.filter(o => o.status === 'pending');
   document.getElementById('stat-pendingot').textContent = pendingOT.length;
 
@@ -657,7 +727,7 @@ async function renderSchedule() {
     const day = new Date(ws); day.setDate(day.getDate()+i);
     const dayShifts = filtered.filter(s => s.date.toDateString() === day.toDateString());
     const isToday = day.toDateString() === new Date().toDateString();
-    html += `<div class="week-day" style="${isToday?'border-color:var(--primary);':''}">
+    html += `<div class="week-day" style="${isToday?'border-color:var(--primary);box-shadow:0 0 0 1px var(--primary),0 2px 8px rgba(37,99,235,.12);':''}">
       <div class="week-day-header">${days[i]}<span>${day.getDate()}</span></div>
       ${dayShifts.length === 0 ? '<div style="font-size:11px;color:var(--muted);padding:4px;">No shifts</div>' :
         dayShifts.map(s => {
@@ -790,7 +860,6 @@ function renderFinancials() {
   document.getElementById('fin-total-deposit').textContent = '$' + totalDep.toFixed(2);
   document.getElementById('fin-total-cheques').textContent = '$' + totalChq.toFixed(2);
   document.getElementById('fin-total-sum').textContent = '$' + totalSum.toFixed(2);
-  document.getElementById('fin-entries').textContent = data.length;
 
   const tbody = document.getElementById('fin-table');
   if (data.length === 0) {
@@ -810,7 +879,6 @@ async function renderOvertime() {
   const tbody = document.getElementById('ot-table');
   tbody.innerHTML = '<tr><td colspan="9" class="spinner">Loading overtime</td></tr>';
 
-  // Load 4 weeks of shifts to find OT records
   const now = new Date();
   const start = new Date(now); start.setDate(start.getDate() - 28); start.setHours(0,0,0,0);
   const end = new Date(now); end.setDate(end.getDate() + 7); end.setHours(0,0,0,0);
@@ -856,7 +924,6 @@ async function renderOvertime() {
 }
 
 function handleOT(postId, action) {
-  // Visual-only for now — would need service role key to update
   const row = event.target.closest('tr');
   const statusTd = row.querySelector('td:last-child');
   if (action === 'approve') {
@@ -869,15 +936,11 @@ function handleOT(postId, action) {
 // Time Off Tab
 async function renderTimeOff() {
   const tbody = document.getElementById('to-table');
-  // Check if there's holiday/timeoff data in postmeta
-  // For now, show placeholder structure
-  // Try to find shifts with type indicating time off
   const now = new Date();
   const start = new Date(now); start.setDate(start.getDate() - 30); start.setHours(0,0,0,0);
   const end = new Date(now); end.setDate(end.getDate() + 30); end.setHours(0,0,0,0);
   
   const allShifts = await loadShifts(start, end);
-  // Look for shifts that might be time-off related (no staff, or specific type)
   const timeOffShifts = allShifts.filter(s => {
     const type = s.meta?.type || '';
     return type === 'holiday' || type === 'time_off' || type === 'vacation' || type === 'time off';
@@ -913,7 +976,6 @@ async function renderOpenShifts() {
   const end = new Date(start); end.setDate(end.getDate() + 14);
   const allShifts = await loadShifts(start, end);
   
-  // Open shifts: no staff assigned
   const openShifts = allShifts.filter(s => !s.staffId || s.staffId === 0);
   const filtered = applyClinicFilter(openShifts);
 
