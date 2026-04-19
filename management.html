@@ -240,15 +240,20 @@ async function sbFetch(table,query=''){
 async function initLogin(){
   try{
     allUsers=await sbFetch('csi_users','?order=display_name');
-    const sel=document.getElementById('loginSelect');
-    allUsers.forEach(u=>{
-      const o=document.createElement('option');
-      o.value=u.ID;o.textContent=u.display_name||u.user_nicename||u.user_login;
-      sel.appendChild(o);
-    });
-    document.getElementById('loginLoading').style.display='none';
-    sel.style.display='block';
-    document.getElementById('loginBtn').style.display='block';
+    // Management portal: only Scott Wilde can login
+    const scott=allUsers.find(u=>u.user_login==='S.wilde'||u.display_name==='Scott Wilde');
+    if(scott){
+      currentUser=scott;
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('appSidebar').style.display='flex';
+      document.getElementById('appMain').style.display='flex';
+      document.getElementById('headerUser').textContent=currentUser.display_name;
+      await loadUserMeta();
+      loadDashboard();
+      setInterval(updateClock,1000);updateClock();
+    }else{
+      document.getElementById('loginLoading').textContent='Access denied. Scott Wilde only.';
+    }
   }catch(e){
     document.getElementById('loginLoading').textContent='Error loading: '+e.message;
   }
