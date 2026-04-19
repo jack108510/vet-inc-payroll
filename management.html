@@ -5,762 +5,341 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vet INC — Payroll Management</title>
 <style>
-:root{--bg:#f0f6ff;--surface:#ffffff;--surface2:#eff6ff;--border:#dbeafe;--primary:#2563eb;--primary-light:#60a5fa;--text:#1e3a5f;--muted:#64748b;--navy:#0f172a;--danger:#ef4444;--success:#22c55e;--warning:#f59e0b;--orange:#f97316}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
-/* LOGIN */
-#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
-.login-box{background:#fff;border-radius:20px;padding:40px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
-.login-box h1{font-size:28px;color:var(--navy);margin-bottom:4px}.login-box h1 span{color:var(--primary)}
-.login-box p{color:var(--muted);margin-bottom:24px;font-size:14px}
-.login-box select{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;margin-bottom:16px;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center}
-.login-box button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
-.login-box button:hover{background:#1d4ed8}
-.login-box .loading{color:var(--muted);font-size:13px;margin-top:8px}
-/* SIDEBAR */
-.sidebar{width:240px;background:var(--navy);color:#fff;display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-logo{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.08)}.sidebar-logo h1{font-size:22px;font-weight:700;letter-spacing:-.5px}.sidebar-logo h1 span{color:var(--primary-light)}.sidebar-logo p{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
-.sidebar-nav{flex:1;padding:12px}
-.nav-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:rgba(255,255,255,.6);transition:all .15s;margin-bottom:2px}
-.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}.nav-item.active{background:var(--primary);color:#fff}
-.nav-item svg{width:18px;height:18px;flex-shrink:0}
-.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.3)}
-/* MAIN */
+:root{--sidebar:#1e293b;--sidebar-hover:#334155;--primary:#3b82f6;--primary-light:#dbeafe;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--bg:#f1f5f9;--surface:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 10px 30px rgba(0,0,0,.12);--font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--sidebar-w:240px;--header-h:60px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.5;overflow:hidden;height:100vh}
+
+#loginScreen{display:flex;align-items:center;justify-content:center;height:100vh;width:100vw;background:linear-gradient(135deg,#1e293b 0%,#3b82f6 50%,#1e293b 100%);position:fixed;inset:0;z-index:9999;transition:opacity .4s,visibility .4s}
+#loginScreen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.login-card{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-radius:16px;padding:48px 40px;width:380px;box-shadow:var(--shadow-lg);text-align:center}
+.login-card h1{font-size:1.6rem;margin-bottom:4px}
+.login-card p{color:var(--muted);margin-bottom:28px;font-size:.95rem}
+.login-card input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;font-size:1rem;outline:none;transition:border-color .2s}
+.login-card input:focus{border-color:var(--primary)}
+.login-card button{width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .2s,transform .1s}
+.login-card button:hover{background:#2563eb}
+.login-card button:active{transform:scale(.98)}
+.login-error{color:var(--danger);margin-top:12px;font-size:.85rem;min-height:20px}
+
+#app{display:flex;height:100vh;opacity:0;transition:opacity .4s}
+#app.visible{opacity:1}
+
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--sidebar);color:#fff;display:flex;flex-direction:column;height:100vh;transition:transform .3s;z-index:100}
+.sidebar-brand{padding:20px 24px;font-size:1.25rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sidebar-brand span{color:var(--primary)}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 24px;cursor:pointer;transition:background .2s;color:rgba(255,255,255,.65);font-size:.95rem;border-left:3px solid transparent;user-select:none}
+.nav-item:hover{background:var(--sidebar-hover);color:#fff}
+.nav-item.active{background:var(--sidebar-hover);color:#fff;border-left-color:var(--primary)}
+.nav-item svg{width:20px;height:20px;flex-shrink:0}
+.sidebar-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,.08);font-size:.8rem;color:rgba(255,255,255,.4)}
+
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center}
-.header h2{font-size:20px;font-weight:600}
-.header-right{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted)}
-.header-clock{font-variant-numeric:tabular-nums}
-.clinic-select{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--surface)}
-.content{flex:1;overflow-y:auto;padding:24px 32px}
-.section{display:none}.section.active{display:block}
-/* CARDS & STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:var(--surface);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.stat-card .label{font-size:13px;color:var(--muted);margin-bottom:6px}
-.stat-card .value{font-size:28px;font-weight:700}
-.stat-card .sub{font-size:12px;color:var(--muted);margin-top:4px}
-.card{background:var(--surface);border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:24px;overflow-x:auto}
-.card-title{font-size:16px;font-weight:600;margin-bottom:16px}
-/* TABLE */
+.header{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.header-left{display:flex;align-items:center;gap:16px}
+.header h2{font-size:1.2rem;font-weight:600}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger svg{width:24px;height:24px}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-user{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.9rem}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem}
+.content{flex:1;overflow-y:auto;padding:28px}
+
+.page{display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow-md)}
+.card-header{font-size:1.05rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+.stat-card{background:var(--surface);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--primary);border-radius:0 2px 2px 0}
+.stat-card.green::after{background:var(--success)}
+.stat-card.yellow::after{background:var(--warning)}
+.stat-card.red::after{background:var(--danger)}
+.stat-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.stat-value{font-size:1.8rem;font-weight:700}
+.stat-sub{font-size:.8rem;color:var(--muted);margin-top:4px}
+
+.table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;border-bottom:1px solid var(--border)}
-td{padding:12px;border-bottom:1px solid var(--border);font-size:14px}
-tr:last-child td{border-bottom:none}tr:hover{background:var(--surface2)}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
-.badge-green{background:#dcfce7;color:#166534}.badge-blue{background:#dbeafe;color:#1e40af}
-.badge-orange{background:#ffedd5;color:#9a3412}.badge-red{background:#fee2e2;color:#991b1b}
-.badge-gray{background:#f1f5f9;color:#475569}
-.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
-.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#1d4ed8}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--surface2)}
-.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}
-.btn-sm{padding:4px 10px;font-size:12px}
-.btn-group{display:flex;gap:8px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.toolbar select,.toolbar input{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--surface)}
-.avatar{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
-.terminated-row{opacity:.5}
-.loading-msg{text-align:center;padding:40px;color:var(--muted)}
-.week-nav{display:flex;align-items:center;gap:12px}
-.week-nav span{font-size:14px;font-weight:600;min-width:220px;text-align:center}
-.empty-state{text-align:center;padding:40px;color:var(--muted)}
-.empty-state p{margin-top:8px}
-@media(max-width:768px){.sidebar{display:none}.stats-row{grid-template-columns:repeat(2,1fr)}.content{padding:16px}}
+th{text-align:left;padding:10px 14px;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:2px solid var(--border);font-weight:600}
+td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:.9rem}
+tr:hover td{background:var(--bg)}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-active{background:#dcfce7;color:#166534}
+.badge-terminated{background:#fee2e2;color:#991b1b}
+.badge-pending{background:#fef3c7;color:#92400e}
+.badge-approved{background:#dcfce7;color:#166534}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:500;transition:background .2s,transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#2563eb}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{background:var(--bg)}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+
+select,.input{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:var(--font);outline:none;transition:border-color .2s;background:var(--surface)}
+select:focus,.input:focus{border-color:var(--primary)}
+
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.cal-nav{display:flex;align-items:center;gap:8px}
+.cal-nav button{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.cal-nav button:hover{background:var(--bg)}
+.cal-nav .week-label{font-weight:600;font-size:1rem;min-width:220px;text-align:center}
+
+.cal-grid{display:grid;grid-template-columns:60px repeat(7,1fr);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.cal-day-header{padding:10px 4px;text-align:center;font-size:.75rem;font-weight:600;background:var(--surface);border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.cal-day-header:last-child{border-right:none}
+.cal-day-header.weekend{background:#f8fafc}
+.cal-day-header.today{color:var(--primary)}
+.cal-day-header .day-num{font-size:1.1rem;display:block;font-weight:700}
+.cal-day-header .day-name{color:var(--muted)}
+.cal-time-label{padding:4px 6px;font-size:.65rem;color:var(--muted);text-align:right;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:48px;display:flex;align-items:flex-start;justify-content:flex-end}
+.cal-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;min-height:48px;padding:1px}
+.cal-cell:last-child{border-right:none}
+.cal-cell.weekend{background:#fafbfc}
+
+.shift-block{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 5px;font-size:.68rem;color:#fff;cursor:pointer;overflow:hidden;transition:transform .15s,box-shadow .15s;z-index:2;white-space:nowrap}
+.shift-block:hover{transform:scale(1.03);box-shadow:var(--shadow-md);z-index:5}
+.shift-block .s-name{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.shift-block .s-time{opacity:.85;font-size:.6rem}
+.sc0{background:#3b82f6}.sc1{background:#8b5cf6}.sc2{background:#ec4899}.sc3{background:#f59e0b}.sc4{background:#10b981}.sc5{background:#6366f1}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:var(--surface);border-radius:12px;padding:28px;width:440px;max-width:90vw;box-shadow:var(--shadow-lg);transform:translateY(10px);transition:transform .2s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal h3{margin-bottom:16px;font-size:1.15rem}
+.modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.modal-row:last-child{border-bottom:none}
+.modal-label{color:var(--muted);font-size:.85rem}
+.modal-value{font-weight:600}
+
+.clock-display{font-size:4rem;font-weight:200;text-align:center;padding:30px;letter-spacing:2px}
+.clock-date{text-align:center;color:var(--muted);margin-bottom:24px;font-size:1rem}
+.clock-btn{display:block;margin:0 auto 32px;padding:16px 48px;font-size:1.1rem;font-weight:600;border:none;border-radius:12px;cursor:pointer;transition:background .2s,transform .1s;color:#fff}
+.clock-btn:active{transform:scale(.97)}
+.clock-btn.in{background:var(--success)}.clock-btn.in:hover{background:#16a34a}
+.clock-btn.out{background:var(--danger)}.clock-btn.out:hover{background:#dc2626}
+
+.feed-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.feed-text{font-size:.85rem}
+.feed-time{font-size:.75rem;color:var(--muted)}
+
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:120px}
+.bar{flex:1;border-radius:4px 4px 0 0;background:var(--primary);min-height:4px;transition:height .4s;position:relative;cursor:pointer}
+.bar:hover{opacity:.8}
+.bar-group{text-align:center;flex:1}
+.bar-group .bar-label{font-size:.6rem;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state svg{width:48px;height:48px;margin-bottom:12px;opacity:.4}
+
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:block}
+  .grid-4{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .grid-4{grid-template-columns:1fr}
+  .content{padding:16px}
+  .cal-grid{grid-template-columns:40px repeat(7,1fr)}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
-<div class="login-box">
-  <h1>Vet <span>INC</span></h1>
-  <p>Payroll Management Portal</p>
-  <div id="loginLoading" class="loading">Loading staff...</div>
-  <select id="loginSelect" style="display:none"><option value="">— Select your name —</option></select>
-  <button id="loginBtn" style="display:none" onclick="doLogin()">Enter Management Portal</button>
-</div>
-</div>
-
-<!-- APP -->
-<aside class="sidebar" id="appSidebar" style="display:none">
-  <div class="sidebar-logo"><h1>Vet <span>INC</span></h1><p>Payroll Management</p></div>
-  <nav class="sidebar-nav">
-    <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
-    <div class="nav-item" data-section="staff" onclick="showSection('staff')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Staff Directory</div>
-    <div class="nav-item" data-section="timesheets" onclick="showSection('timesheets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>Timesheets</div>
-    <div class="nav-item" data-section="payroll" onclick="showSection('payroll')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Payroll</div>
-    <div class="nav-item" data-section="schedule" onclick="showSection('schedule')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Schedule</div>
-    <div class="nav-item" data-section="financials" onclick="showSection('financials')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Financials</div>
-  </nav>
-  <div class="sidebar-footer">Vet INC v2.0 · © 2026</div>
-</aside>
-
-<div class="main" id="appMain" style="display:none">
-  <header class="header">
-    <h2 id="sectionTitle">Dashboard</h2>
-    <div class="header-right">
-      <select class="clinic-select" id="clinicFilter" onchange="onClinicChange()">
-        <option value="">All Clinics</option>
-        <option value="tg">Tudor Glen</option>
-        <option value="ros">Rosslyn</option>
-        <option value="rvv">River Valley</option>
-        <option value="gcc">GCC</option>
-        <option value="upc">UPC</option>
-      </select>
-      <span id="headerUser"></span>
-      <span class="header-clock" id="clock"></span>
-    </div>
-  </header>
-  <div class="content">
-
-    <!-- DASHBOARD -->
-    <div class="section active" id="sec-dashboard">
-      <div class="stats-row" id="dashStats">
-        <div class="stat-card"><div class="label">Total Staff</div><div class="value" id="dashTotal">—</div><div class="sub" id="dashTotalSub"></div></div>
-        <div class="stat-card"><div class="label">Clocked In Today</div><div class="value" id="dashActive">—</div><div class="sub" id="dashActiveSub"></div></div>
-        <div class="stat-card"><div class="label">Weekly Payroll Cost</div><div class="value" id="dashWeekly">—</div><div class="sub">Estimated gross</div></div>
-        <div class="stat-card"><div class="label">Pending OT Requests</div><div class="value" id="dashOT">—</div><div class="sub" id="dashOTSub"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Staff by Position</div>
-        <div id="dashPositionBreakdown"></div>
-      </div>
-    </div>
-
-    <!-- STAFF DIRECTORY -->
-    <div class="section" id="sec-staff">
-      <div class="toolbar">
-        <input type="text" id="staffSearch" placeholder="Search staff..." oninput="renderStaff()">
-        <div class="btn-group">
-          <label style="font-size:13px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="showTerminated" onchange="renderStaff()"> Show terminated</label>
-        </div>
-      </div>
-      <div class="card">
-        <table>
-          <thead><tr><th></th><th>Name</th><th>Position</th><th>Clinic</th><th>Email</th><th>Status</th></tr></thead>
-          <tbody id="staffBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TIMESHEETS -->
-    <div class="section" id="sec-timesheets">
-      <div class="toolbar">
-        <div class="week-nav">
-          <button class="btn btn-outline" onclick="changeTsWeek(-1)">← Prev</button>
-          <span id="tsWeekLabel"></span>
-          <button class="btn btn-outline" onclick="changeTsWeek(1)">Next →</button>
-          <button class="btn btn-primary btn-sm" onclick="changeTsWeek(0)">This Week</button>
-        </div>
-      </div>
-      <div class="card" id="tsCard">
-        <div class="loading-msg">Select a week to view timesheets</div>
-      </div>
-    </div>
-
-    <!-- PAYROLL -->
-    <div class="section" id="sec-payroll">
-      <div class="toolbar">
-        <div class="week-nav">
-          <button class="btn btn-outline" onclick="changePayWeek(-1)">← Prev</button>
-          <span id="payWeekLabel"></span>
-          <button class="btn btn-outline" onclick="changePayWeek(1)">Next →</button>
-        </div>
-        <button class="btn btn-outline" onclick="exportPayrollCSV()">Export CSV</button>
-      </div>
-      <div class="stats-row" id="payStats"></div>
-      <div class="card">
-        <table>
-          <thead><tr><th>Staff</th><th>Position</th><th>Clinic</th><th>Hours</th><th>Rate</th><th>Gross Pay</th></tr></thead>
-          <tbody id="payrollBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SCHEDULE -->
-    <div class="section" id="sec-schedule">
-      <div class="toolbar">
-        <div class="week-nav">
-          <button class="btn btn-outline" onclick="changeSchedWeek(-1)">← Prev</button>
-          <span id="schedWeekLabel"></span>
-          <button class="btn btn-outline" onclick="changeSchedWeek(1)">Next →</button>
-        </div>
-      </div>
-      <div class="card" id="schedCard">
-        <div class="loading-msg">Select a week to view schedule</div>
-      </div>
-    </div>
-
-    <!-- FINANCIALS -->
-    <div class="section" id="sec-financials">
-      <div class="toolbar">
-        <input type="date" id="finDateFrom" onchange="loadFinancials()">
-        <span>to</span>
-        <input type="date" id="finDateTo" onchange="loadFinancials()">
-      </div>
-      <div class="card">
-        <div class="card-title">Daily Totals</div>
-        <table>
-          <thead><tr><th>Date</th><th>Clinic</th><th>Target</th><th>Average</th></tr></thead>
-          <tbody id="finTotalsBody"></tbody>
-        </table>
-      </div>
-      <div class="card">
-        <div class="card-title">Daily Deposits</div>
-        <table>
-          <thead><tr><th>Date</th><th>User</th><th>Clinic</th><th>Deposit</th><th>Cheques</th><th>Sum</th><th>Status</th></tr></thead>
-          <tbody id="finDepositBody"></tbody>
-        </table>
-      </div>
-    </div>
-
+  <div class="login-card">
+    <h1>🐾 Vet INC</h1>
+    <p>Payroll Management Portal</p>
+    <input type="password" id="loginPass" placeholder="Enter password" autocomplete="off">
+    <button onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">🐾 Vet <span>INC</span></div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">© 2026 Vet INC</div>
+  </aside>
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <h2 id="pageTitle">Dashboard</h2>
+      </div>
+      <div class="header-right">
+        <div class="header-user"><div class="avatar">SW</div> Scott Wilde</div>
+      </div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalBody"></div>
+</div>
+
 <script>
-const SB_URL='https://rnqhhzatlxmyvccdvqkr.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJucWhoemF0bHhteXZjY2R2cWtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTQ5ODUsImV4cCI6MjA5MDU5MDk4NX0.zokle21pVEPG5bIOFiyZIWYkYIwhkolWNOhJ7Cbub30';
-const PAY_RATES={doctor:85,aht:28,rvt:30,receptionist:22,terminated:0};
-const DEFAULT_RATE=25;
-const CLINIC_NAMES={tg:'Tudor Glen',ros:'Rosslyn',rvv:'River Valley',gcc:'GCC',upc:'UPC'};
+const SB='https://rnqhhzatlxmyvccdvqkr.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJucWhoemF0bHhteXZjY2R2cWtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTQ5ODUsImV4cCI6MjA5MDU5MDk4NX0.zokle21pVEPG5bIOFiyZIWYkYIwhkolWNOhJ7Cbub30';
+const CLINICS={tg:'Tudor Glen',ros:'Rosslyn',rvv:'River Valley',gcc:'GCC',upc:'UPC'};
+const RATES={doctor:85,aht:28,rvt:30,receptionist:22,terminated:0};
+const DEFRATE=25;
+const ICONS={
+  dashboard:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+  schedule:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+  timeclock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+  staff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+  payroll:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+  financials:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
+  resources:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+};
+const PAGES=[
+  {id:'dashboard',label:'Dashboard'},{id:'schedule',label:'Schedule'},
+  {id:'timeclock',label:'Time Clock'},{id:'staff',label:'Staff Directory'},
+  {id:'payroll',label:'Payroll'},{id:'financials',label:'Financials'},
+  {id:'resources',label:'Resources'}
+];
 
-let allUsers=[],userMeta={},currentUser=null;
-let tsWeekOffset=0,payWeekOffset=0,schedWeekOffset=0;
+let curPage='dashboard',staffMap={},tcPosts=[],metaMap={},otReqs=[],deposits=[],pfTotals=[],dataLoaded=false;
+let schWeekOff=0,schClinic='',payWeekOff=0,finClinic='',clockInterval=null;
 
-async function sbFetch(table,query=''){
-  const r=await fetch(`${SB_URL}/rest/v1/${table}${query}`,{
-    headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,'Content-Type':'application/json'}
-  });
-  if(!r.ok)throw new Error(`${table}: ${r.status}`);
-  return r.json();
+// Login
+function doLogin(){
+  if(document.getElementById('loginPass').value==='Scotia@9199'){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    init();
+  }else document.getElementById('loginError').textContent='Incorrect password';
+}
+document.getElementById('loginPass').onkeydown=e=>{if(e.key==='Enter')doLogin()};
+
+async function init(){renderNav();renderPage();await loadData()}
+
+function renderNav(){
+  const n=document.getElementById('sidebarNav');
+  n.innerHTML=PAGES.map(p=>`<div class="nav-item${p.id===curPage?' active':''}" data-p="${p.id}">${ICONS[p.id]}<span>${p.label}</span></div>`).join('');
+  n.querySelectorAll('.nav-item').forEach(el=>{el.onclick=()=>{nav(el.dataset.p);document.getElementById('sidebar').classList.remove('open')}});
 }
 
-// LOGIN
-async function initLogin(){
-  try{
-    allUsers=await sbFetch('csi_users','?order=display_name');
-    // Management portal: only Scott Wilde can login
-    const scott=allUsers.find(u=>u.user_login==='S.wilde'||u.display_name==='Scott Wilde');
-    if(scott){
-      currentUser=scott;
-      document.getElementById('loginScreen').style.display='none';
-      document.getElementById('appSidebar').style.display='flex';
-      document.getElementById('appMain').style.display='flex';
-      document.getElementById('headerUser').textContent=currentUser.display_name;
-      await loadUserMeta();
-      loadDashboard();
-      setInterval(updateClock,1000);updateClock();
-    }else{
-      document.getElementById('loginLoading').textContent='Access denied. Scott Wilde only.';
-    }
-  }catch(e){
-    document.getElementById('loginLoading').textContent='Error loading: '+e.message;
-  }
+function nav(p){curPage=p;document.getElementById('pageTitle').textContent=PAGES.find(x=>x.id===p)?.label||p;document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.p===p));renderPage()}
+
+function renderPage(){
+  const c=document.getElementById('content');
+  if(!dataLoaded){c.innerHTML='<div class="spinner"></div><div class="loading">Loading data…</div>';return}
+  ({dashboard:rDash,schedule:rSched,timeclock:rClock,staff:rStaff,payroll:rPay,financials:rFin,resources:rRes})[curPage](c);
 }
 
-async function doLogin(){
-  const uid=document.getElementById('loginSelect').value;
-  if(!uid)return alert('Please select your name');
-  currentUser=allUsers.find(u=>String(u.ID)===uid);
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('appSidebar').style.display='flex';
-  document.getElementById('appMain').style.display='flex';
-  document.getElementById('headerUser').textContent=currentUser.display_name;
-  await loadUserMeta();
-  loadDashboard();
-  setInterval(updateClock,1000);updateClock();
-}
-
-async function loadUserMeta(){
-  const meta=await sbFetch('csi_usermeta','?select=user_id,meta_key,meta_value');
-  userMeta={};
-  meta.forEach(m=>{
-    if(!userMeta[m.user_id])userMeta[m.user_id]={};
-    userMeta[m.user_id][m.meta_key]=m.meta_value;
-  });
-}
-
-function getUserClinic(uid){return userMeta[uid]?.clinic||'';}
-function getUserPosition(uid){return userMeta[uid]?.position||'';}
-function getPayRate(uid){const pos=getUserPosition(uid);return PAY_RATES[pos.toLowerCase()]||DEFAULT_RATE;}
-function getInitials(name){if(!name)return'?';const p=name.split(' ');return(p[0][0]+(p[1]?.[0]||'')).toUpperCase();}
-function avatarColor(pos){const c={doctor:'#2563eb',aht:'#22c55e',rvt:'#059669',receptionist:'#8b5cf6',terminated:'#94a3b8'};return c[pos?.toLowerCase()]||'#64748b';}
-
-// NAVIGATION
-const titles={dashboard:'Dashboard',staff:'Staff Directory',timesheets:'Timesheets',payroll:'Payroll',schedule:'Schedule',financials:'Financials'};
-function showSection(s){
-  document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
-  document.getElementById('sec-'+s).classList.add('active');
-  document.querySelector(`[data-section="${s}"]`).classList.add('active');
-  document.getElementById('sectionTitle').textContent=titles[s];
-  if(s==='staff')renderStaff();
-  if(s==='timesheets')renderTimesheets();
-  if(s==='payroll')renderPayroll();
-  if(s==='schedule')renderSchedule();
-  if(s==='financials')loadFinancials();
-}
-
-function onClinicChange(){
-  const s=document.getElementById('sectionTitle').textContent;
-  const map={Dashboard:'dashboard','Staff Directory':'staff',Timesheets:'timesheets',Payroll:'payroll',Schedule:'schedule',Financials:'financials'};
-  const sec=map[s];if(sec)showSection(sec);
-}
-
-function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleString('en-CA',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
-
-function getWeekRange(offset){
-  const now=new Date();const day=now.getDay();const diff=now.getDate()-day+(day===0?-6:1);
-  const mon=new Date(now.setDate(diff));mon.setDate(mon.getDate()+offset*7);
-  const sun=new Date(mon);sun.setDate(sun.getDate()+6);
-  return{mon,sun};
-}
-
-function fmtDate(d){return d.toLocaleDateString('en-CA',{month:'short',day:'numeric'})}
-function fmtDateFull(d){return d.toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})}
-
-function getActiveUsers(){
-  const clinic=document.getElementById('clinicFilter')?.value||'';
-  return allUsers.filter(u=>{
-    const pos=getUserPosition(u.ID);
-    if(pos?.toLowerCase()==='terminated')return false;
-    if(clinic&&getUserClinic(u.ID)!==clinic)return false;
-    return true;
-  });
-}
-
-function getAllUsersFiltered(){
-  const clinic=document.getElementById('clinicFilter')?.value||'';
-  const showTerm=document.getElementById('showTerminated')?.checked||false;
-  const search=(document.getElementById('staffSearch')?.value||'').toLowerCase();
-  return allUsers.filter(u=>{
-    const pos=getUserPosition(u.ID);
-    if(!showTerm&&pos?.toLowerCase()==='terminated')return false;
-    if(clinic&&getUserClinic(u.ID)!==clinic)return false;
-    if(search&&!(u.display_name||'').toLowerCase().includes(search)&&!(u.user_email||'').toLowerCase().includes(search))return false;
-    return true;
-  });
-}
-
-// DASHBOARD
-async function loadDashboard(){
-  const active=getActiveUsers();
-  document.getElementById('dashTotal').textContent=active.length;
-  document.getElementById('dashTotalSub').textContent=`${allUsers.length} total, ${allUsers.length-active.length} terminated`;
-
-  // Count by position
-  const posCount={};
-  active.forEach(u=>{const p=getUserPosition(u.ID)||'unknown';posCount[p]=(posCount[p]||0)+1;});
-  let posHtml='<table><thead><tr><th>Position</th><th>Count</th><th>Avg Rate</th></tr></thead><tbody>';
-  Object.entries(posCount).sort((a,b)=>b[1]-a[1]).forEach(([p,c])=>{
-    const rate=PAY_RATES[p.toLowerCase()]||DEFAULT_RATE;
-    posHtml+=`<tr><td>${p}</td><td>${c}</td><td>$${rate}/hr</td></tr>`;
-  });
-  posHtml+='</tbody></table>';
-  document.getElementById('dashPositionBreakdown').innerHTML=posHtml;
-
-  // Clocked in today - check timeclock
-  try{
-    const today=new Date();const ymd=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
-    const posts=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title&limit=1000`);
-    let todayClock=0;
-    posts.forEach(p=>{
-      const parts=p.post_title.split('-');
-      if(parts.length>=3){
-        const d=parseInt(parts[1]);
-        if(d===ymd)todayClock++;
-      }
-    });
-    document.getElementById('dashActive').textContent=Math.floor(todayClock/2);
-    document.getElementById('dashActiveSub').textContent=`From ${active.length} active staff`;
-  }catch(e){
-    document.getElementById('dashActive').textContent='—';
-  }
-
-  // Weekly payroll estimate
-  let totalWeekly=0;
-  active.forEach(u=>{totalWeekly+=getPayRate(u.ID)*40;});
-  document.getElementById('dashWeekly').textContent='$'+totalWeekly.toLocaleString();
-
-  // OT requests
-  try{
-    const ot=await sbFetch('overtime_requests','?status=eq.Pending&select=id');
-    document.getElementById('dashOT').textContent=ot.length;
-    document.getElementById('dashOTSub').textContent=ot.length+' pending review';
-  }catch(e){
-    document.getElementById('dashOT').textContent='0';
-    document.getElementById('dashOTSub').textContent='Table may not exist';
-  }
-}
-
-// STAFF DIRECTORY
-function renderStaff(){
-  const users=getAllUsersFiltered();
-  const body=document.getElementById('staffBody');
-  if(!users.length){body.innerHTML='<tr><td colspan="6" class="empty-state">No staff found</td></tr>';return;}
-  body.innerHTML=users.map(u=>{
-    const pos=getUserPosition(u.ID)||'—';
-    const clinic=CLINIC_NAMES[getUserClinic(u.ID)]||getUserClinic(u.ID)||'—';
-    const isTerm=pos.toLowerCase()==='terminated';
-    return`<tr class="${isTerm?'terminated-row':''}"><td><div class="avatar" style="background:${avatarColor(pos)}">${getInitials(u.display_name)}</div></td><td><strong>${u.display_name||u.user_nicename||'—'}</strong></td><td>${pos}</td><td>${clinic}</td><td>${u.user_email||'—'}</td><td><span class="badge ${isTerm?'badge-gray':'badge-green'}">${isTerm?'Terminated':'Active'}</span></td></tr>`;
-  }).join('');
-}
-
-// TIMESHEETS
-let timeclockData=null;
-async function loadTimeclockForWeek(mon,sun){
-  const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
-  const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
-  
-  // Load ALL timeclock posts at once (cached after first load)
-  const all=await loadTimeclock();
-  
-  // Filter to just this week's dates
-  return all.filter(p=>{
-    const parts=p.post_title.split('-');
-    return parts.length>=2 && dateStrs.includes(parts[1]);
-  });
-}
-
-let timeclockLoaded=false;
-async function loadTimeclock(){
-  if(timeclockLoaded && timeclockData)return timeclockData;
-  // Load all timeclock posts in pages of 1000
-  let all=[],offset=0;
+// Fetch helper
+async function sbF(t,q=''){
+  let rows=[],off=0;
   while(true){
-    const batch=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&limit=1000&offset=${offset}&order=ID.desc`);
-    all=all.concat(batch);
-    if(batch.length<1000)break;
-    offset+=1000;
+    const r=await fetch(`${SB}/rest/v1/${t}?${q}&offset=${off}&limit=1000`,{headers:{apikey:SK,Authorization:`Bearer ${SK}`}});
+    const b=await r.json();if(!b.length)break;rows=rows.concat(b);if(b.length<1000)break;off+=1000;
   }
-  timeclockData=all;
-  timeclockLoaded=true;
-  return all;
+  return rows;
 }
 
-function parseTimeclockTitle(title){
-  // Format: {userID}-{YYYYMMDD}-{unix_timestamp}-{FirstName}-{LastName}
-  const parts=title.split('-');
-  if(parts.length<3)return null;
-  return{
-    userId:parts[0],
-    dateStr:parts[1],
-    timestamp:parseInt(parts[2]),
-    firstName:parts[3]||'',
-    lastName:parts.slice(4).join(' ')||''
-  };
-}
-
-function changeTsWeek(d){tsWeekOffset=d===0?0:tsWeekOffset+d;renderTimesheets();}
-
-async function renderTimesheets(){
-  const{mon,sun}=getWeekRange(tsWeekOffset);
-  document.getElementById('tsWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
-  
-  const card=document.getElementById('tsCard');
-  card.innerHTML='<div class="loading-msg">Loading timeclock data...</div>';
-  
+async function loadData(){
   try{
-    const posts=await loadTimeclock();
-    const clinic=document.getElementById('clinicFilter')?.value||'';
-    const monStr=mon.getFullYear()*10000+(mon.getMonth()+1)*100+mon.getDate();
-    const sunStr=sun.getFullYear()*10000+(sun.getMonth()+1)*100+sun.getDate();
-    
-    // Group by userId and date
-    const shifts={};
-    posts.forEach(p=>{
-      const parsed=parseTimeclockTitle(p.post_title);
-      if(!parsed)return;
-      const d=parseInt(parsed.dateStr);
-      if(d<monStr||d>sunStr)return;
-      if(clinic){
-        const uc=getUserClinic(parsed.userId);
-        if(uc!==clinic)return;
-      }
-      const key=parsed.userId+'-'+parsed.dateStr;
-      if(!shifts[key])shifts[key]={userId:parsed.userId,date:parsed.dateStr,times:[]};
-      shifts[key].times.push(parsed.timestamp);
-    });
-    
-    // Group by user
-    const userShifts={};
-    Object.values(shifts).forEach(s=>{
-      if(!userShifts[s.userId])userShifts[s.userId]=[];
-      s.times.sort((a,b)=>a-b);
-      const hours=s.times.length>=2?(s.times[1]-s.times[0])/3600:0;
-      userShifts[s.userId].push({date:s.date,clockIn:s.times[0],clockOut:s.times.length>=2?s.times[1]:null,hours:Math.max(0,hours)});
-    });
-    
-    // Get active users
-    const active=getActiveUsers();
-    
-    let html='<table><thead><tr><th>Staff</th><th>Position</th><th>Days Worked</th><th>Total Hours</th><th>Details</th></tr></thead><tbody>';
-    
-    active.forEach(u=>{
-      const uid=String(u.ID);
-      const shifts=userShifts[uid]||[];
-      const totalHrs=shifts.reduce((s,sh)=>s+sh.hours,0);
-      const pos=getUserPosition(u.ID)||'—';
-      
-      html+=`<tr>
-        <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:${avatarColor(pos)}">${getInitials(u.display_name)}</div><strong>${u.display_name||'—'}</strong></div></td>
-        <td>${pos}</td>
-        <td>${shifts.length}</td>
-        <td><strong>${totalHrs.toFixed(1)}h</strong></td>
-        <td>${shifts.map(s=>{
-          const dt=new Date(s.date.replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3'));
-          const ci=new Date(s.clockIn*1000);
-          const co=s.clockOut?new Date(s.clockOut*1000):null;
-          return`<span title="${ci.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})}${co?' → '+co.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'}):''}">${fmtDate(dt)}: ${s.hours.toFixed(1)}h</span>`;
-        }).join(', ')||'No entries'}</td>
-      </tr>`;
-    });
-    
-    html+='</tbody></table>';
-    card.innerHTML=html;
-  }catch(e){
-    card.innerHTML=`<div class="empty-state"><p>Error: ${e.message}</p></div>`;
-  }
+    const[u,m,p,ot,dep,tot]=await Promise.all([
+      sbF('csi_users'),sbF('csi_usermeta'),
+      sbF('csi_posts','post_type=eq.timeclock&select=ID,post_title,post_date&order=post_date.desc&limit=5000'),
+      sbF('overtime_requests'),sbF('csi_daily_deposit','order=ddate.desc&limit=500'),
+      sbF('csi_pf_totals','order=mdy.desc&limit=500')
+    ]);
+    u.forEach(x=>{staffMap[x.ID]={id:x.ID,login:x.user_login,name:x.display_name,email:x.user_email}});
+    m.forEach(x=>{if(!metaMap[x.user_id])metaMap[x.user_id]={};metaMap[x.user_id][x.meta_key]=x.meta_value});
+    Object.keys(staffMap).forEach(id=>{const md=metaMap[id]||{};staffMap[id].clinic=md.clinic||'';staffMap[id].position=md.position||''});
+    tcPosts=p.map(parseTc).filter(Boolean);
+    otReqs=ot;deposits=dep;pfTotals=tot;dataLoaded=true;renderPage();
+  }catch(e){console.error(e);document.getElementById('content').innerHTML='<div class="loading">Error loading data.</div>'}
 }
 
-// PAYROLL
-function changePayWeek(d){payWeekOffset=d===0?0:payWeekOffset+d;renderPayroll();}
-
-async function renderPayroll(){
-  const{mon,sun}=getWeekRange(payWeekOffset);
-  document.getElementById('payWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
-  
-  const body=document.getElementById('payrollBody');
-  body.innerHTML='<tr><td colspan="6" class="loading-msg">Loading...</td></tr>';
-  
-  try{
-    const posts=await loadTimeclock();
-    const clinic=document.getElementById('clinicFilter')?.value||'';
-    const monStr=mon.getFullYear()*10000+(mon.getMonth()+1)*100+mon.getDate();
-    const sunStr=sun.getFullYear()*10000+(sun.getMonth()+1)*100+sun.getDate();
-    
-    const userHours={};
-    posts.forEach(p=>{
-      const parsed=parseTimeclockTitle(p.post_title);
-      if(!parsed)return;
-      const d=parseInt(parsed.dateStr);
-      if(d<monStr||d>sunStr)return;
-      if(clinic&&getUserClinic(parsed.userId)!==clinic)return;
-      const key=parsed.userId+'-'+parsed.dateStr;
-      if(!userHours[key])userHours[key]={userId:parsed.userId,times:[]};
-      userHours[key].times.push(parsed.timestamp);
-    });
-    
-    // Aggregate per user
-    const userTotals={};
-    Object.values(userHours).forEach(s=>{
-      s.times.sort((a,b)=>a-b);
-      const hrs=s.times.length>=2?Math.max(0,(s.times[1]-s.times[0])/3600):0;
-      if(!userTotals[s.userId])userTotals[s.userId]=0;
-      userTotals[s.userId]+=hrs;
-    });
-    
-    const active=getActiveUsers();
-    let totalGross=0,totalHrs=0;
-    
-    let html='';
-    active.forEach(u=>{
-      const uid=String(u.ID);
-      const hrs=userTotals[uid]||0;
-      const rate=getPayRate(u.ID);
-      const gross=hrs*rate;
-      totalGross+=gross;totalHrs+=hrs;
-      const pos=getUserPosition(u.ID)||'—';
-      const uclinic=CLINIC_NAMES[getUserClinic(u.ID)]||'—';
-      html+=`<tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:${avatarColor(pos)}">${getInitials(u.display_name)}</div>${u.display_name||'—'}</div></td><td>${pos}</td><td>${uclinic}</td><td>${hrs.toFixed(1)}</td><td>$${rate}/hr</td><td><strong>$${gross.toFixed(2)}</strong></td></tr>`;
-    });
-    
-    body.innerHTML=html||'<tr><td colspan="6" class="empty-state">No data</td></tr>';
-    
-    document.getElementById('payStats').innerHTML=`
-      <div class="stat-card"><div class="label">Total Hours</div><div class="value">${totalHrs.toFixed(1)}</div></div>
-      <div class="stat-card"><div class="label">Total Gross</div><div class="value">$${totalGross.toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
-      <div class="stat-card"><div class="label">Staff</div><div class="value">${active.length}</div></div>
-      <div class="stat-card"><div class="label">Avg $/hr</div><div class="value">$${totalHrs>0?(totalGross/totalHrs).toFixed(2):'0.00'}</div></div>
-    `;
-  }catch(e){
-    body.innerHTML=`<tr><td colspan="6" class="empty-state">${e.message}</td></tr>`;
-  }
+function parseTc(p){
+  const parts=p.post_title.split('-');if(parts.length<5)return null;
+  const uid=parseInt(parts[0]),ds=parts[1],ts=parseInt(parts[2]);if(isNaN(ts))return null;
+  const fn=parts[3],ln=parts.slice(4).join('-');
+  return{id:p.ID,uid,date:ds,ts,time:new Date(ts*1000),name:`${fn} ${ln}`,postDate:p.postDate};
 }
 
-function exportPayrollCSV(){
-  const rows=document.querySelectorAll('#payrollBody tr');
-  let csv='Staff,Position,Clinic,Hours,Rate,Gross Pay\n';
-  rows.forEach(r=>{const cells=r.querySelectorAll('td');if(cells.length>=6){csv+=Array.from(cells).map(c=>`"${c.textContent.trim()}"`).join(',')+'\n';}});
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='payroll-export.csv';a.click();
+function getShifts(s,e){
+  const m={};tcPosts.forEach(p=>{const k=`${p.uid}-${p.date}`;if(!m[k])m[k]={uid:p.uid,date:p.date,name:p.name,entries:[]};m[k].entries.push(p)});
+  const r=[];
+  Object.values(m).forEach(s2=>{s2.entries.sort((a,b)=>a.ts-b.ts);for(let i=0;i<s2.entries.length;i+=2){
+    const ci=s2.entries[i],co=s2.entries[i+1],ct=co?co.ts:ci.ts,h=Math.max(0,(ct-ci.ts)/3600);
+    if(s2.date>=s&&s2.date<=e){const st=staffMap[s2.uid]||{};r.push({...s2,cin:ci.time,cout:co?co.time:null,cinTs:ci.ts,coutTs:ct,hours:h,position:st.position||'',clinic:st.clinic||''})}
+  }});return r;
 }
 
-// SCHEDULE — uses timeclock data (real shifts through Apr 2026)
-function changeSchedWeek(d){schedWeekOffset=d===0?0:schedWeekOffset+d;renderSchedule();}
+function fmtT(d){return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})}
+function fmtD(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function fmtM(n){return'$'+(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',')}
+function rate(p){return RATES[p]||DEFRATE}
+function monday(d){d=new Date(d);const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);return new Date(d.setDate(diff))}
+function ds(d){return d.toISOString().slice(0,10).replace(/-/g,'')}
 
-function fmtTime(ts){
-  const d=new Date(ts*1000);
-  const h=d.getHours();const m=d.getMinutes();
-  const ap=h>=12?'PM':'AM';
-  const hh=h%12||12;
-  return `${hh}:${String(m).padStart(2,'0')} ${ap}`;
-}
-
-async function renderSchedule(){
-  const{mon,sun}=getWeekRange(schedWeekOffset);
-  document.getElementById('schedWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
-  
-  const card=document.getElementById('schedCard');
-  card.innerHTML='<div class="loading-msg">Loading shifts...<br><small style="color:var(--muted)">Fetching timeclock data (one-time load, then cached)</small></div>';
-  
-  try{
-    const clinic=document.getElementById('clinicFilter')?.value||'';
-    const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
-    const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
-    const dayNames=['MON','TUE','WED','THU','FRI','SAT','SUN'];
-    const isWeekend=[false,false,false,false,false,true,true];
-    
-    // Load timeclock data for this week
-    const posts=await loadTimeclockForWeek(mon,sun);
-    
-    // Parse and group by user
-    const userShifts={};
-    posts.forEach(p=>{
-      const parsed=parseTimeclockTitle(p.post_title);
-      if(!parsed)return;
-      if(!dateStrs.includes(parsed.dateStr))return;
-      const uid=parsed.userId;
-      if(!userShifts[uid])userShifts[uid]={};
-      if(!userShifts[uid][parsed.dateStr])userShifts[uid][parsed.dateStr]=[];
-      userShifts[uid][parsed.dateStr].push(parsed.timestamp);
-    });
-    
-    // Only show users who have shifts this week
-    const shiftedUids=Object.keys(userShifts);
-    if(!shiftedUids.length){
-      card.innerHTML='<div class="empty-state"><p style="font-size:16px">No shifts recorded for this week</p><p style="font-size:13px;margin-top:8px;color:var(--muted)">Try navigating to a week with data (timeclock records span 2022 – April 2026)</p></div>';
-      return;
-    }
-    
-    // Build user info map
-    const userInfo={};
-    shiftedUids.forEach(uid=>{
-      const u=allUsers.find(x=>String(x.ID)===uid);
-      if(u){
-        const pos=getUserPosition(u.ID)||'';
-        const cl=getUserClinic(u.ID)||'';
-        if(clinic && cl!==clinic) return;
-        userInfo[uid]={name:u.display_name||u.user_nicename||uid, position:pos, clinic:cl, rate:getPayRate(u.ID)};
-      }
-    });
-    
-    // Summary stats
-    let totalShifts=0, totalHours=0, staffCount=Object.keys(userInfo).length;
-    
-    let html=`<div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
-      <div class="stat-card"><div class="label">Staff Working</div><div class="value">${staffCount}</div></div>
-      <div class="stat-card"><div class="label">Total Shifts</div><div class="value" id="schedTotalShifts">—</div></div>
-      <div class="stat-card"><div class="label">Total Hours</div><div class="value" id="schedTotalHours">—</div></div>
+// Dashboard
+function rDash(c){
+  const now=new Date(),today=ds(now);
+  const active=Object.values(staffMap).filter(s=>s.position&&s.position!=='terminated');
+  const tShifts=getShifts(today,today);
+  const mon=monday(now),sun=new Date(mon);sun.setDate(sun.getDate()+6);
+  const wShifts=getShifts(ds(mon),ds(sun));
+  const wPay=wShifts.reduce((s,x)=>s+x.hours*rate(x.position),0);
+  const pOT=otReqs.filter(o=>o.status==='pending').length;
+  const recent=tcPosts.slice(0,12);
+  c.innerHTML=`
+    <div style="margin-bottom:24px"><h3 style="font-size:1.4rem;font-weight:700">Welcome back, Scott 👋</h3><p style="color:var(--muted)">${fmtD(now)} · ${now.toLocaleDateString('en-US',{weekday:'long'})}</p></div>
+    <div class="grid-4" style="margin-bottom:28px">
+      <div class="stat-card"><div class="stat-label">Active Staff</div><div class="stat-value" data-c="${active.length}">0</div><div class="stat-sub">Across all clinics</div></div>
+      <div class="stat-card green"><div class="stat-label">Clocked In Today</div><div class="stat-value" data-c="${tShifts.length}">0</div><div class="stat-sub">Shifts recorded</div></div>
+      <div class="stat-card yellow"><div class="stat-label">Weekly Payroll</div><div class="stat-value" data-c="${Math.round(wPay)}" data-pre="$">$0</div><div class="stat-sub">${wShifts.reduce((s,x)=>s+x.hours,0).toFixed(1)} total hrs</div></div>
+      <div class="stat-card red"><div class="stat-label">Pending OT</div><div class="stat-value" data-c="${pOT}">0</div><div class="stat-sub">Awaiting approval</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><div class="card-header">Today's Shifts</div>${tShifts.length?`<div class="table-wrap"><table><tr><th>Staff</th><th>Clinic</th><th>In</th><th>Out</th><th>Hrs</th></tr>${tShifts.map(s=>`<tr><td>${s.name}</td><td>${CLINICS[s.clinic]||s.clinic||'—'}</td><td>${fmtT(s.cin)}</td><td>${s.cout?fmtT(s.cout):'—'}</td><td>${s.hours.toFixed(1)}</td></tr>`).join('')}</table></div>`:'<p style="color:var(--muted);padding:12px 0">No shifts today</p>'}</div>
+      <div class="card"><div class="card-header">Recent Activity</div>${recent.map(e=>`<div class="feed-item"><div class="feed-dot" style="background:var(--primary)"></div><div><div class="feed-text">${e.name}</div><div class="feed-time">${e.date}${e.postDate?' · '+fmtT(new Date(e.postDate)):''}</div></div></div>`).join('')}</div>
     </div>`;
-    
-    // Calendar-style week view
-    html+=`<div class="card"><div class="card-title">Week Overview</div>`;
-    html+=`<div style="display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;font-size:13px">`;
-    
-    // Header row
-    html+=`<div style="padding:10px;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border)">STAFF</div>`;
-    days.forEach((d,i)=>{
-      const bg=isWeekend[i]?'background:var(--surface2);':'';
-      html+=`<div style="padding:10px;text-align:center;font-weight:600;border-bottom:2px solid var(--border);${bg}">${dayNames[i]}<br><span style="color:var(--muted)">${d.getDate()}</span></div>`;
-    });
-    
-    // Staff rows — sorted by name
-    const sortedUids=Object.keys(userInfo).sort((a,b)=>(userInfo[a].name||'').localeCompare(userInfo[b].name||''));
-    
-    sortedUids.forEach(uid=>{
-      const info=userInfo[uid];
-      const pos=info.position;
-      const shifts=userShifts[uid]||{};
-      let rowHrs=0, rowShifts=0;
-      
-      html+=`<div style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
-        <div class="avatar" style="background:${avatarColor(pos)};width:30px;height:30px;font-size:11px">${getInitials(info.name)}</div>
-        <div><div style="font-weight:600">${info.name}</div><div style="font-size:11px;color:var(--muted)">${pos}</div></div>
-      </div>`;
-      
-      dateStrs.forEach((ds,i)=>{
-        const times=shifts[ds];
-        const bg=isWeekend[i]?'background:var(--surface2);':'';
-        
-        if(times&&times.length>=2){
-          times.sort((a,b)=>a-b);
-          const hrs=Math.max(0,(times[times.length-1]-times[0])/3600);
-          rowHrs+=hrs;rowShifts++;totalShifts++;totalHours+=hrs;
-          html+=`<div style="padding:6px;border-bottom:1px solid var(--border);text-align:center;${bg}">
-            <div style="font-weight:600;font-size:12px;color:var(--primary)">${fmtTime(times[0])} – ${fmtTime(times[times.length-1])}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px">${hrs.toFixed(1)}h</div>
-          </div>`;
-        }else if(times&&times.length===1){
-          rowShifts++;totalShifts++;
-          html+=`<div style="padding:6px;border-bottom:1px solid var(--border);text-align:center;${bg}">
-            <div style="font-size:12px;color:var(--warning)">${fmtTime(times[0])} – ?</div>
-          </div>`;
-        }else{
-          html+=`<div style="padding:6px;border-bottom:1px solid var(--border);text-align:center;color:#cbd5e1;${bg}">—</div>`;
-        }
-      });
-    });
-    
-    html+=`</div></div>`;
-    card.innerHTML=html;
-    
-    // Update stats
-    document.getElementById('schedTotalShifts').textContent=totalShifts;
-    document.getElementById('schedTotalHours').textContent=totalHours.toFixed(1)+'h';
-    
-  }catch(e){
-    card.innerHTML=`<div class="empty-state"><p>Error: ${e.message}</p></div>`;
-  }
+  animC();
 }
 
-// FINANCIALS
-async function loadFinancials(){
-  const from=document.getElementById('finDateFrom').value;
-  const to=document.getElementById('finDateTo').value;
-  
-  // Defaults
-  if(!from||!to)return;
-  
-  const totBody=document.getElementById('finTotalsBody');
-  const depBody=document.getElementById('finDepositBody');
-  totBody.innerHTML='<tr><td colspan="4" class="loading-msg">Loading...</td></tr>';
-  
-  try{
-    const totals=await sbFetch('csi_pf_totals',`?limit=100&order=id.desc`);
-    totBody.innerHTML=totals.slice(0,50).map(t=>{
-      let row='';
-      Object.entries(CLINIC_NAMES).forEach(([code,name])=>{
-        if(t[code])row+=`<tr><td>${t.id||'—'}</td><td>${name}</td><td>${t[code]?.target||'—'}</td><td>${t[code]?.average||'—'}</td></tr>`;
-      });
-      return row;
-    }).join('')||'<tr><td colspan="4" class="empty-state">No data</td></tr>';
-  }catch(e){totBody.innerHTML=`<tr><td colspan="4">${e.message}</td></tr>`;}
-  
-  try{
-    let depQ='?select=ddate,u,clinic,deposit,cheques,sum,status&limit=100&order=id.desc';
-    const clinic=document.getElementById('clinicFilter')?.value||'';
-    if(clinic)depQ+=`&clinic=eq.${clinic}`;
-    const deposits=await sbFetch('csi_daily_deposit',depQ);
-    depBody.innerHTML=deposits.slice(0,50).map(d=>{
-      const user=allUsers.find(u=>String(u.ID)===String(d.u));
-      return`<tr><td>${d.ddate||'—'}</td><td>${user?.display_name||d.u||'—'}</td><td>${d.clinic||'—'}</td><td>$${d.deposit||0}</td><td>$${d.cheques||0}</td><td>$${d.sum||0}</td><td><span class="badge ${d.status==='complete'?'badge-green':'badge-orange'}">${d.status||'—'}</span></td></tr>`;
-    }).join('')||'<tr><td colspan="7" class="empty-state">No deposits</td></tr>';
-  }catch(e){depBody.innerHTML=`<tr><td colspan="7">${e.message}</td></tr>`;}
-}
+function animC(){document.querySelectorAll('[data-c]').forEach(el=>{const t=+el.dataset.c,pre=el.dataset.pre||'',dur=800,st=performance.now();(function f(n){const p=Math.min((n-st)/dur,1),e=1-Math.pow(1-p,3);el.textContent=pre+Math.round(e*t).toLocaleString();if(p<1)requestAnimationFrame(f)})(st)})}
 
-// INIT
-initLogin();
-</script>
-</body>
-</html>
+// Schedule
+function rSched(c){
+  const now=new Date(),mon=monday(now);mon.setDate(mon.getDate()+schWeekOff*7);
+  const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d)}
+  const sStr=ds(days[0]),eStr=ds(days[6]);
+  let shifts=getShifts(sStr,eStr);
+  if(schClinic)shifts=shifts.filter(s=>s.clinic===schClinic);
+
+  const hours=['6am','7am','8am','9am','10am','11am','12pm','1pm','2pm','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm'];
+  const todayStr=ds(now);
+  const staffColors={};let ci=0;
+  shifts.forEach(s=>{if(!(s.uid in staffColors)){staffColors[s.uid]=ci%6;ci++}});
+
+  const wlabel=`${fmtD(days[0])} — ${fmtD(days[6])}`;
+  c.
