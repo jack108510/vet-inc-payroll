@@ -406,8 +406,14 @@ function renderStaff(){
 let timeclockData=null;
 async function loadTimeclock(){
   if(timeclockData)return timeclockData;
-  const posts=await sbFetch('csi_posts','?post_type=eq.timeclock&select=post_title,post_date&limit=5000');
-  timeclockData=posts;return posts;
+  let all=[],offset=0;
+  while(true){
+    const batch=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&limit=1000&offset=${offset}`);
+    all=all.concat(batch);
+    if(batch.length<1000)break;
+    offset+=1000;
+  }
+  timeclockData=all;return all;
 }
 
 function parseTimeclockTitle(title){
@@ -567,7 +573,7 @@ function exportPayrollCSV(){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='payroll-export.csv';a.click();
 }
 
-// SCHEDULE
+// SCHEDULE — uses timeclock data (real shifts through Apr 2026)
 function changeSchedWeek(d){schedWeekOffset=d===0?0:schedWeekOffset+d;renderSchedule();}
 
 async function renderSchedule(){
@@ -575,54 +581,92 @@ async function renderSchedule(){
   document.getElementById('schedWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
   
   const card=document.getElementById('schedCard');
-  card.innerHTML='<div class="loading-msg">Loading schedule...</div>';
+  card.innerHTML='<div class="loading-msg">Loading schedule from timeclock data...</div>';
   
   try{
+    const posts=await loadTimeclock();
     const clinic=document.getElementById('clinicFilter')?.value||'';
     const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
     const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
     
-    let query='?select=sdate,clinic,user,aa8,ab8,aa10,ab10,aa12,ab12,aa2,ab2,aa4,ab4,aa6,ab6,aas,abs&limit=5000';
-    if(clinic)query+=`&clinic=eq.${clinic}`;
-    const stats=await sbFetch('csi_tomorrow_stats',query);
-    
-    // Filter to current week
-    const weekStats=stats.filter(s=>dateStrs.includes(s.sdate));
-    
-    // Group by user
-    const userSchedule={};
-    weekStats.forEach(s=>{
-      if(!userSchedule[s.user])userSchedule[s.user]=[];
-      userSchedule[s.user].push(s);
+    // Parse timeclock entries for this week
+    const weekEntries={};
+    posts.forEach(p=>{
+      const parsed=parseTimeclockTitle(p.post_title);
+      if(!parsed)return;
+      if(!dateStrs.includes(parsed.dateStr))return;
+      if(clinic&&getUserClinic(parsed.userId)!==clinic)return;
+      const key=parsed.userId;
+      if(!weekEntries[key])weekEntries[key]={};
+      if(!weekEntries[key][parsed.dateStr])weekEntries[key][parsed.dateStr]=[];
+      weekEntries[key][parsed.dateStr].push(parsed.timestamp);
     });
     
     const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     
-    let html='<table><thead><tr><th>Staff</th>';
+    let html='<table><thead><tr><th>Staff</th><th>Position</th>';
     days.forEach((d,i)=>html+=`<th>${dayNames[i]}<br>${fmtDate(d)}</th>`);
-    html+='</tr></thead><tbody>';
+    html+='<th>Total</th></tr></thead><tbody>';
     
-    Object.entries(userSchedule).forEach(([uid,entries])=>{
-      const user=allUsers.find(u=>String(u.ID)===uid);
-      const name=user?.display_name||uid;
-      html+=`<tr><td><strong>${name}</strong></td>`;
-      days.forEach((d,i)=>{
-        const ds=dateStrs[i];
-        const entry=entries.find(e=>e.sdate===ds);
-        if(entry){
-          // Sum up scheduled hours
-          const cols=['aa8','ab8','aa10','ab10','aa12','ab12','aa2','ab2','aa4','ab4','aa6','ab6','aas','abs'];
-          const hasData=cols.some(c=>entry[c]&&parseInt(entry[c])>0);
-          html+=`<td>${hasData?'<span class="badge badge-blue">Scheduled</span>':'—'}</td>`;
+    // Get filtered users (active only)
+    const active=getActiveUsers();
+    let hasData=false;
+    
+    active.forEach(u=>{
+      const uid=String(u.ID);
+      const entries=weekEntries[uid];
+      if(!entries)return;
+      hasData=true;
+      const pos=getUserPosition(u.ID)||'—';
+      let weekTotal=0;
+      
+      html+=`<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:${avatarColor(pos)};width:28px;height:28px;font-size:11px">${getInitials(u.display_name)}</div><strong>${u.display_name||'—'}</strong></div></td><td>${pos}</td>`;
+      
+      dateStrs.forEach(ds=>{
+        const times=entries[ds];
+        if(times&&times.length>=2){
+          times.sort((a,b)=>a-b);
+          const hrs=Math.max(0,(times[times.length-1]-times[0])/3600);
+          weekTotal+=hrs;
+          const ci=new Date(times[0]*1000).toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+          const co=new Date(times[times.length-1]*1000).toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+          html+=`<td><span class="badge badge-blue">${ci}–${co}</span><br><small>${hrs.toFixed(1)}h</small></td>`;
+        }else if(times&&times.length===1){
+          const ci=new Date(times[0]*1000).toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+          html+=`<td><span class="badge badge-orange">${ci}–?</span></td>`;
         }else{
           html+='<td>—</td>';
         }
       });
-      html+='</tr>';
+      
+      html+=`<td><strong>${weekTotal.toFixed(1)}h</strong></td></tr>`;
     });
     
+    if(!hasData){
+      // Also check terminated users for this week
+      const terminated=allUsers.filter(u=>getUserPosition(u.ID)?.toLowerCase()==='terminated');
+      terminated.forEach(u=>{
+        const uid=String(u.ID);
+        const entries=weekEntries[uid];
+        if(!entries)return;
+        hasData=true;
+        let weekTotal=0;
+        html+=`<tr class="terminated-row"><td>${u.display_name||uid}</td><td>terminated</td>`;
+        dateStrs.forEach(ds=>{
+          const times=entries[ds];
+          if(times&&times.length>=2){
+            times.sort((a,b)=>a-b);
+            const hrs=Math.max(0,(times[times.length-1]-times[0])/3600);
+            weekTotal+=hrs;
+            html+=`<td>${hrs.toFixed(1)}h</td>`;
+          }else{html+='<td>—</td>';}
+        });
+        html+=`<td>${weekTotal.toFixed(1)}h</td></tr>`;
+      });
+    }
+    
     html+='</tbody></table>';
-    card.innerHTML=html||'<div class="empty-state">No schedule data for this week</div>';
+    card.innerHTML=hasData?html:'<div class="empty-state"><p>No shifts found for this week</p><p style="font-size:13px;margin-top:4px">Timeclock data is available from 2022 through April 2026</p></div>';
   }catch(e){
     card.innerHTML=`<div class="empty-state"><p>Error: ${e.message}</p></div>`;
   }
