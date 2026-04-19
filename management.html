@@ -918,10 +918,10 @@ async function renderOpenShifts() {
   const filtered = applyClinicFilter(openShifts);
 
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:2rem;text-align:center;">
-      <div style="font-size:16px;margin-bottom:.5rem;">✅ No Open Shifts</div>
+    tbody.innerHTML = `<tr><td colspan="6" style="color:var(--muted);padding:2rem;text-align:center;">
+      <div style="font-size:16px;margin-bottom:.5rem;">No Open Shifts</div>
       <div style="font-size:13px;">All shifts are filled for the next 2 weeks.</div>
-    </td></tr>';
+    </td></tr>`;
     return;
   }
 
