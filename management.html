@@ -599,97 +599,126 @@ function exportPayrollCSV(){
 // SCHEDULE — uses timeclock data (real shifts through Apr 2026)
 function changeSchedWeek(d){schedWeekOffset=d===0?0:schedWeekOffset+d;renderSchedule();}
 
+function fmtTime(ts){
+  const d=new Date(ts*1000);
+  const h=d.getHours();const m=d.getMinutes();
+  const ap=h>=12?'PM':'AM';
+  const hh=h%12||12;
+  return `${hh}:${String(m).padStart(2,'0')} ${ap}`;
+}
+
 async function renderSchedule(){
   const{mon,sun}=getWeekRange(schedWeekOffset);
   document.getElementById('schedWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
   
   const card=document.getElementById('schedCard');
-  card.innerHTML='<div class="loading-msg">Loading schedule from timeclock data...</div>';
+  card.innerHTML='<div class="loading-msg">Loading shifts...</div>';
   
   try{
-    const posts=await loadTimeclockForWeek(mon,sun);
     const clinic=document.getElementById('clinicFilter')?.value||'';
     const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
     const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
+    const dayNames=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+    const isWeekend=[false,false,false,false,false,true,true];
     
-    // Parse timeclock entries for this week
-    const weekEntries={};
+    // Load timeclock data for this week
+    const posts=await loadTimeclockForWeek(mon,sun);
+    
+    // Parse and group by user
+    const userShifts={};
     posts.forEach(p=>{
       const parsed=parseTimeclockTitle(p.post_title);
       if(!parsed)return;
       if(!dateStrs.includes(parsed.dateStr))return;
-      if(clinic&&getUserClinic(parsed.userId)!==clinic)return;
-      const key=parsed.userId;
-      if(!weekEntries[key])weekEntries[key]={};
-      if(!weekEntries[key][parsed.dateStr])weekEntries[key][parsed.dateStr]=[];
-      weekEntries[key][parsed.dateStr].push(parsed.timestamp);
+      const uid=parsed.userId;
+      if(!userShifts[uid])userShifts[uid]={};
+      if(!userShifts[uid][parsed.dateStr])userShifts[uid][parsed.dateStr]=[];
+      userShifts[uid][parsed.dateStr].push(parsed.timestamp);
     });
     
-    const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    // Only show users who have shifts this week
+    const shiftedUids=Object.keys(userShifts);
+    if(!shiftedUids.length){
+      card.innerHTML='<div class="empty-state"><p style="font-size:16px">No shifts recorded for this week</p><p style="font-size:13px;margin-top:8px;color:var(--muted)">Try navigating to a week with data (timeclock records span 2022 – April 2026)</p></div>';
+      return;
+    }
     
-    let html='<table><thead><tr><th>Staff</th><th>Position</th>';
-    days.forEach((d,i)=>html+=`<th>${dayNames[i]}<br>${fmtDate(d)}</th>`);
-    html+='<th>Total</th></tr></thead><tbody>';
+    // Build user info map
+    const userInfo={};
+    shiftedUids.forEach(uid=>{
+      const u=allUsers.find(x=>String(x.ID)===uid);
+      if(u){
+        const pos=getUserPosition(u.ID)||'';
+        const cl=getUserClinic(u.ID)||'';
+        if(clinic && cl!==clinic) return;
+        userInfo[uid]={name:u.display_name||u.user_nicename||uid, position:pos, clinic:cl, rate:getPayRate(u.ID)};
+      }
+    });
     
-    // Get filtered users (active only)
-    const active=getActiveUsers();
-    let hasData=false;
+    // Summary stats
+    let totalShifts=0, totalHours=0, staffCount=Object.keys(userInfo).length;
     
-    active.forEach(u=>{
-      const uid=String(u.ID);
-      const entries=weekEntries[uid];
-      if(!entries)return;
-      hasData=true;
-      const pos=getUserPosition(u.ID)||'—';
-      let weekTotal=0;
+    let html=`<div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card"><div class="label">Staff Working</div><div class="value">${staffCount}</div></div>
+      <div class="stat-card"><div class="label">Total Shifts</div><div class="value" id="schedTotalShifts">—</div></div>
+      <div class="stat-card"><div class="label">Total Hours</div><div class="value" id="schedTotalHours">—</div></div>
+    </div>`;
+    
+    // Calendar-style week view
+    html+=`<div class="card"><div class="card-title">Week Overview</div>`;
+    html+=`<div style="display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;font-size:13px">`;
+    
+    // Header row
+    html+=`<div style="padding:10px;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border)">STAFF</div>`;
+    days.forEach((d,i)=>{
+      const bg=isWeekend[i]?'background:var(--surface2);':'';
+      html+=`<div style="padding:10px;text-align:center;font-weight:600;border-bottom:2px solid var(--border);${bg}">${dayNames[i]}<br><span style="color:var(--muted)">${d.getDate()}</span></div>`;
+    });
+    
+    // Staff rows — sorted by name
+    const sortedUids=Object.keys(userInfo).sort((a,b)=>(userInfo[a].name||'').localeCompare(userInfo[b].name||''));
+    
+    sortedUids.forEach(uid=>{
+      const info=userInfo[uid];
+      const pos=info.position;
+      const shifts=userShifts[uid]||{};
+      let rowHrs=0, rowShifts=0;
       
-      html+=`<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:${avatarColor(pos)};width:28px;height:28px;font-size:11px">${getInitials(u.display_name)}</div><strong>${u.display_name||'—'}</strong></div></td><td>${pos}</td>`;
+      html+=`<div style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+        <div class="avatar" style="background:${avatarColor(pos)};width:30px;height:30px;font-size:11px">${getInitials(info.name)}</div>
+        <div><div style="font-weight:600">${info.name}</div><div style="font-size:11px;color:var(--muted)">${pos}</div></div>
+      </div>`;
       
-      dateStrs.forEach(ds=>{
-        const times=entries[ds];
+      dateStrs.forEach((ds,i)=>{
+        const times=shifts[ds];
+        const bg=isWeekend[i]?'background:var(--surface2);':'';
+        
         if(times&&times.length>=2){
           times.sort((a,b)=>a-b);
           const hrs=Math.max(0,(times[times.length-1]-times[0])/3600);
-          weekTotal+=hrs;
-          const ci=new Date(times[0]*1000).toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-          const co=new Date(times[times.length-1]*1000).toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-          html+=`<td><span class="badge badge-blue">${ci}–${co}</span><br><small>${hrs.toFixed(1)}h</small></td>`;
+          rowHrs+=hrs;rowShifts++;totalShifts++;totalHours+=hrs;
+          html+=`<div style="padding:6px;border-bottom:1px solid var(--border);text-align:center;${bg}">
+            <div style="font-weight:600;font-size:12px;color:var(--primary)">${fmtTime(times[0])} – ${fmtTime(times[times.length-1])}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${hrs.toFixed(1)}h</div>
+          </div>`;
         }else if(times&&times.length===1){
-          const ci=new Date(times[0]*1000).toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-          html+=`<td><span class="badge badge-orange">${ci}–?</span></td>`;
+          rowShifts++;totalShifts++;
+          html+=`<div style="padding:6px;border-bottom:1px solid var(--border);text-align:center;${bg}">
+            <div style="font-size:12px;color:var(--warning)">${fmtTime(times[0])} – ?</div>
+          </div>`;
         }else{
-          html+='<td>—</td>';
+          html+=`<div style="padding:6px;border-bottom:1px solid var(--border);text-align:center;color:#cbd5e1;${bg}">—</div>`;
         }
       });
-      
-      html+=`<td><strong>${weekTotal.toFixed(1)}h</strong></td></tr>`;
     });
     
-    if(!hasData){
-      // Also check terminated users for this week
-      const terminated=allUsers.filter(u=>getUserPosition(u.ID)?.toLowerCase()==='terminated');
-      terminated.forEach(u=>{
-        const uid=String(u.ID);
-        const entries=weekEntries[uid];
-        if(!entries)return;
-        hasData=true;
-        let weekTotal=0;
-        html+=`<tr class="terminated-row"><td>${u.display_name||uid}</td><td>terminated</td>`;
-        dateStrs.forEach(ds=>{
-          const times=entries[ds];
-          if(times&&times.length>=2){
-            times.sort((a,b)=>a-b);
-            const hrs=Math.max(0,(times[times.length-1]-times[0])/3600);
-            weekTotal+=hrs;
-            html+=`<td>${hrs.toFixed(1)}h</td>`;
-          }else{html+='<td>—</td>';}
-        });
-        html+=`<td>${weekTotal.toFixed(1)}h</td></tr>`;
-      });
-    }
+    html+=`</div></div>`;
+    card.innerHTML=html;
     
-    html+='</tbody></table>';
-    card.innerHTML=hasData?html:'<div class="empty-state"><p>No shifts found for this week</p><p style="font-size:13px;margin-top:4px">Timeclock data is available from 2022 through April 2026</p></div>';
+    // Update stats
+    document.getElementById('schedTotalShifts').textContent=totalShifts;
+    document.getElementById('schedTotalHours').textContent=totalHours.toFixed(1)+'h';
+    
   }catch(e){
     card.innerHTML=`<div class="empty-state"><p>Error: ${e.message}</p></div>`;
   }
