@@ -8,11 +8,24 @@
 :root{--bg:#f0f6ff;--surface:#ffffff;--surface2:#eff6ff;--border:#dbeafe;--primary:#2563eb;--primary-light:#60a5fa;--text:#1e3a5f;--muted:#64748b;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+.login-box h1{font-size:28px;color:var(--text);margin-bottom:4px}.login-box h1 span{color:var(--primary)}
+.login-box p{color:var(--muted);margin-bottom:24px;font-size:14px}
+.login-box select{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;margin-bottom:16px;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center}
+.login-box button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+.login-box button:hover{background:#1d4ed8}
+.login-box .loading{color:var(--muted);font-size:13px;margin-top:8px}
+
+/* APP */
+#appContainer{display:none}
 .header{background:var(--surface);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
 .logo{font-size:22px;font-weight:700;color:var(--text)}.logo .inc{color:var(--primary)}
 .header-right{text-align:right}.header-right .name{font-weight:600;font-size:14px}.header-right .role{font-size:12px;color:var(--muted)}
-.tabs{background:var(--surface);padding:10px 28px 0;display:flex;gap:4px;border-bottom:1px solid var(--border)}
-.tab{padding:10px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);border-radius:10px 10px 0 0;transition:.2s}
+.tabs{background:var(--surface);padding:10px 28px 0;display:flex;gap:4px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tab{padding:10px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);border-radius:10px 10px 0 0;transition:.2s;font-family:inherit}
 .tab.active{background:var(--primary);color:#fff}.tab:hover:not(.active){background:var(--surface2);color:var(--text)}
 .content{padding:24px 28px;max-width:1200px;margin:0 auto}
 .tab-content{display:none}.tab-content.active{display:block}
@@ -21,35 +34,23 @@ h2{font-size:18px;margin-bottom:16px}
 table{width:100%;border-collapse:collapse}
 th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
 th{background:var(--surface2);font-weight:600;font-size:12px;text-transform:uppercase;color:var(--muted)}
-input[type="number"],input[type="text"],input[type="date"],input[type="time"],select,textarea{border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;outline:none;transition:.2s}
+input,select,textarea{border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;outline:none;transition:.2s}
 input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
 .btn{padding:8px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
 .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#1d4ed8}
 .btn-sm{padding:5px 10px;font-size:11px}
 .btn-outline{background:none;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--surface2)}
-.btn-danger{background:var(--danger);color:#fff}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-draft{background:#e0e7ff;color:#4338ca}.badge-submitted{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
-.badge-pending{background:#fef3c7;color:#92400e}.badge-denied{background:#fee2e2;color:#991b1b}
-.badge-new{background:var(--primary);color:#fff}
-.badge-safety{background:#fee2e2;color:#991b1b}.badge-hr{background:#dbeafe;color:#1e40af}.badge-conduct{background:#fef3c7;color:#92400e}.badge-benefits{background:#dcfce7;color:#166534}
+.badge-green{background:#dcfce7;color:#166534}.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-orange{background:#ffedd5;color:#9a3412}.badge-red{background:#fee2e2;color:#991b1b}
+.badge-pending{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
+.badge-denied{background:#fee2e2;color:#991b1b}
 .week-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .week-nav span{font-weight:600;font-size:14px;min-width:200px;text-align:center}
-.var-ok{color:var(--success);font-weight:600}.var-less{color:var(--warning);font-weight:600}.var-more{color:var(--danger);font-weight:600}
-.totals td{font-weight:700;background:var(--surface2);border-top:2px solid var(--border)}
-.role-vet{background:#dbeafe}.role-tech{background:#dcfce7}.role-reception{background:#f3e8ff}.role-assistant{background:#ffedd5}.role-manager{background:#fce7f3}.role-off{background:#f1f5f9;color:#94a3b8}
-.toggle-bar{display:flex;gap:8px;margin-bottom:16px}
-.toggle-btn{padding:8px 18px;border:1px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit}
-.toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.sub-section{display:none}.sub-section.active{display:block}
-.chat-container{display:flex;flex-direction:column;height:480px}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.chat-msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5}
-.chat-msg.user{align-self:flex-end;background:var(--primary);color:#fff;border-bottom-right-radius:4px}
-.chat-msg.ai{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
-.chat-msg .sender{font-size:11px;font-weight:600;margin-bottom:4px}
-.chat-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
-.chat-input input{flex:1}
+.loading-msg{text-align:center;padding:40px;color:var(--muted)}
+.empty-state{text-align:center;padding:30px;color:var(--muted)}
+.doc-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.doc-icon{font-size:20px}.doc-info{flex:1}.doc-name{font-weight:600;font-size:13px}.doc-date{font-size:11px;color:var(--muted)}
 .policy-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:.15s}
 .policy-item:hover{background:var(--surface2)}.policy-item:last-child{border-bottom:none}
 .policy-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0}
@@ -57,45 +58,66 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0
 .policy-info{flex:1}.policy-title{font-weight:600;font-size:13px}.policy-meta{font-size:11px;color:var(--muted);margin-top:2px}
 .policy-detail{display:none;padding:16px;background:var(--surface2);border-radius:8px;margin:8px 12px 12px;font-size:13px;line-height:1.6}
 .policy-detail.open{display:block}
-.doc-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border)}
-.doc-icon{font-size:20px}.doc-info{flex:1}.doc-name{font-weight:600;font-size:13px}.doc-date{font-size:11px;color:var(--muted)}
 .my-sched-day{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
 .my-sched-day:last-child{border:none}.my-sched-day .day-name{font-weight:600;width:80px}.my-sched-day .shift{flex:1}.my-sched-day.off{color:var(--muted)}
 </style>
 </head>
 <body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+<div class="login-box">
+  <h1>Vet <span>INC</span></h1>
+  <p>Team Portal</p>
+  <div id="loginLoading" class="loading">Loading staff...</div>
+  <select id="loginSelect" style="display:none"><option value="">— Select your name —</option></select>
+  <button id="loginBtn" style="display:none" onclick="doLogin()">Enter Team Portal</button>
+</div>
+</div>
+
+<!-- APP -->
+<div id="appContainer">
 <div class="header">
-  <div class="logo">Vet <span class="inc">INC</span></div>
-  <div class="header-right"><div class="name">Sarah K.</div><div class="role">Vet Tech · $28/hr</div></div>
+  <div class="logo">Vet <span class="inc">INC</span> <span style="font-size:14px;color:var(--muted);font-weight:400">Team Portal</span></div>
+  <div class="header-right"><div class="name" id="headerName"></div><div class="role" id="headerRole"></div></div>
 </div>
 <div class="tabs">
   <button class="tab active" onclick="showTab('timesheet',this)">My Timesheet</button>
-  <button class="tab" onclick="showTab('overtime',this)">Overtime Requests</button>
   <button class="tab" onclick="showTab('schedule',this)">Schedule</button>
+  <button class="tab" onclick="showTab('overtime',this)">Overtime Requests</button>
   <button class="tab" onclick="showTab('policies',this)">Policies</button>
   <button class="tab" onclick="showTab('documents',this)">Documents</button>
 </div>
 <div class="content">
 
+<!-- MY TIMESHEET -->
 <div id="tab-timesheet" class="tab-content active">
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="margin:0">My Timesheet</h2><span class="badge badge-draft" id="ts-status">Draft</span>
-    </div>
+    <h2>My Timesheet</h2>
     <div class="week-nav">
-      <button class="btn btn-outline btn-sm" onclick="changeWeek(-1)">← Prev</button>
-      <span id="ts-week-label"></span>
-      <button class="btn btn-outline btn-sm" onclick="changeWeek(1)">Next →</button>
+      <button class="btn btn-outline btn-sm" onclick="changeTsWeek(-1)">← Prev</button>
+      <span id="tsWeekLabel"></span>
+      <button class="btn btn-outline btn-sm" onclick="changeTsWeek(1)">Next →</button>
+      <button class="btn btn-primary btn-sm" onclick="changeTsWeek(0)">This Week</button>
     </div>
-    <table><thead><tr><th>Day</th><th>Scheduled Shift</th><th>Actual Hours</th><th>Variance</th><th>Notes</th><th></th></tr></thead><tbody id="ts-body"></tbody>
-    <tfoot><tr class="totals"><td colspan="2">Totals</td><td id="ts-total-actual"></td><td id="ts-total-var"></td><td id="ts-total-ot" colspan="2"></td></tr></tfoot></table>
-    <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
-      <button class="btn btn-primary" id="ts-submit-btn" onclick="submitTimesheet()">Submit for Approval</button>
-      <span style="font-size:12px;color:var(--muted)">Auto-calculated from your schedule</span>
-    </div>
+    <div id="tsContent"><div class="loading-msg">Loading...</div></div>
   </div>
 </div>
 
+<!-- SCHEDULE -->
+<div id="tab-schedule" class="tab-content">
+  <div class="card">
+    <h2>My Schedule</h2>
+    <div class="week-nav">
+      <button class="btn btn-outline btn-sm" onclick="changeSchedWeek(-1)">← Prev</button>
+      <span id="schedWeekLabel"></span>
+      <button class="btn btn-outline btn-sm" onclick="changeSchedWeek(1)">Next →</button>
+    </div>
+    <div id="schedContent"><div class="loading-msg">Loading...</div></div>
+  </div>
+</div>
+
+<!-- OVERTIME -->
 <div id="tab-overtime" class="tab-content">
   <div class="card">
     <h2>Submit Overtime Request</h2>
@@ -111,88 +133,324 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0
     </div>
     <button class="btn btn-primary" onclick="submitOT()">Submit Request</button>
   </div>
-  <div class="card"><h2>My Overtime Requests</h2><table><thead><tr><th>Date</th><th>Sched. End</th><th>Actual End</th><th>Hours</th><th>Reason</th><th>Status</th></tr></thead><tbody id="ot-list"></tbody></table></div>
-</div>
-
-<div id="tab-schedule" class="tab-content">
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="margin:0">Schedule</h2>
-      <div class="toggle-bar" style="margin:0">
-        <button class="toggle-btn active" onclick="toggleSched('my',this)">My Schedule</button>
-        <button class="toggle-btn" onclick="toggleSched('team',this)">Full Team</button>
-      </div>
-    </div>
-    <div class="week-nav">
-      <button class="btn btn-outline btn-sm" onclick="changeSchedWeek(-1)">← Prev</button>
-      <span id="sched-week-label"></span>
-      <button class="btn btn-outline btn-sm" onclick="changeSchedWeek(1)">Next →</button>
-    </div>
-    <div id="sched-my"></div>
-    <div id="sched-team" style="display:none"></div>
+    <h2>My Overtime Requests</h2>
+    <table><thead><tr><th>Date</th><th>Scheduled End</th><th>Actual End</th><th>Hours</th><th>Reason</th><th>Status</th></tr></thead><tbody id="otList"></tbody></table>
   </div>
 </div>
 
+<!-- POLICIES -->
 <div id="tab-policies" class="tab-content">
   <div class="card">
-    <div class="toggle-bar">
-      <button class="toggle-btn active" onclick="togglePol('ai',this)">AI Policy Aid</button>
-      <button class="toggle-btn" onclick="togglePol('list',this)">View All Policies</button>
-    </div>
-    <div id="policy-ai" class="sub-section active">
-      <div class="chat-container" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)">
-        <div class="chat-messages" id="chat-msgs">
-          <div class="chat-msg ai"><div class="sender">Policy Assistant</div>Hi Sarah! I can help you understand Vet INC workplace policies. Ask me anything about sick days, overtime, benefits, or any other policy.</div>
-          <div class="chat-msg user"><div class="sender">You</div>How many sick days do I get?</div>
-          <div class="chat-msg ai"><div class="sender">Policy Assistant</div>Full-time staff receive <b>10 paid sick days</b> per year. Part-time staff receive a pro-rated amount based on hours worked. Sick days can be used for personal illness, medical appointments, or caring for an ill family member. Please notify your manager at least 1 hour before your shift if possible.</div>
-          <div class="chat-msg user"><div class="sender">You</div>What's the overtime policy?</div>
-          <div class="chat-msg ai"><div class="sender">Policy Assistant</div>Overtime is paid at <b>1.5x your regular rate</b> after 80 hours per pay period (bi-weekly). Any hours worked beyond your scheduled shift must be pre-approved by your manager via an Overtime Request. Unauthorized overtime may not be compensated. Statutory holiday overtime is paid at 2x.</div>
-        </div>
-        <div class="chat-input">
-          <input type="text" id="chat-input" placeholder="Ask about a policy..." onkeydown="if(event.key==='Enter')sendChat()">
-          <button class="btn btn-primary" onclick="sendChat()">Send</button>
-        </div>
-      </div>
-    </div>
-    <div id="policy-list" class="sub-section"><div id="policy-items"></div></div>
+    <h2>Company Policies</h2>
+    <p style="color:var(--muted);margin-bottom:16px;font-size:13px">Unviewed policies are highlighted in blue. Click to expand.</p>
+    <div id="policyItems"></div>
   </div>
 </div>
 
+<!-- DOCUMENTS -->
 <div id="tab-documents" class="tab-content">
-  <div class="card"><h2>My Documents</h2><div id="doc-list"></div></div>
+  <div class="card">
+    <h2>My Documents</h2>
+    <div id="docList"></div>
+  </div>
 </div>
 
 </div>
+</div>
+
 <script>
-const DAYS=['Mon','Tue','Wed','Thu','Fri'],FULL_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-let curWeek=0,schedWk=0;
-const schedule={Mon:'8:00 - 16:00',Tue:'8:00 - 16:00',Wed:'8:00 - 16:00',Thu:'8:00 - 16:00',Fri:'8:00 - 16:00',Sat:'OFF',Sun:'OFF'};
-const schedH={Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0,Sun:0};
-const timesheets={0:{Mon:8.5,Tue:8,Wed:8,Thu:9,Fri:7,status:'Draft',notes:{Fri:'Left early - feeling unwell'}},'-1':{Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,status:'Approved',notes:{}},'-2':{Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,status:'Approved',notes:{}}};
-let otReqs=[{date:'Apr 14, 2026',schedEnd:'16:00',actualEnd:'16:30',hours:0.5,reason:'Patient emergency',notes:'Emergency surgery ran over',status:'Pending'},{date:'Apr 17, 2026',schedEnd:'16:00',actualEnd:'17:00',hours:1.0,reason:'Short-staffed',notes:'Covered for absent coworker',status:'Pending'},{date:'Apr 7, 2026',schedEnd:'16:00',actualEnd:'17:30',hours:1.5,reason:'Patient emergency',notes:'Critical care case',status:'Approved'},{date:'Mar 28, 2026',schedEnd:'16:00',actualEnd:'16:45',hours:0.75,reason:'Volunteered',notes:'Helped close clinic',status:'Denied'}];
-const policies=[{title:'Respectful Workplace Policy',cat:'HR',date:'Mar 1, 2026',viewed:false,text:'Vet INC is committed to providing a respectful, inclusive workplace free from harassment, discrimination, and bullying. All employees are expected to treat colleagues, clients, and animals with dignity and respect. Any reports of misconduct will be investigated promptly and confidentially.'},{title:'Social Media Policy',cat:'Conduct',date:'Feb 15, 2026',viewed:false,text:'Employees must not share confidential client or patient information on social media. Photos of animals in care require written client consent. Represent Vet INC professionally online. Violations may result in disciplinary action.'},{title:'Overtime Policy',cat:'Benefits',date:'Jan 20, 2026',viewed:false,text:'Overtime is paid at 1.5x regular rate after 80 hours per bi-weekly pay period. All overtime must be pre-approved via the Overtime Request system. Unauthorized overtime may not be compensated. Statutory holiday overtime is paid at 2x.'},{title:'Employee Handbook',cat:'HR',date:'Jan 1, 2026',viewed:true,text:'This handbook outlines your rights, responsibilities, and benefits as a Vet INC employee. It covers employment terms, workplace expectations, compensation, leave policies, and grievance procedures. All employees must acknowledge this document within their first week.'},{title:'Attendance Policy',cat:'HR',date:'Dec 10, 2025',viewed:true,text:'Employees are expected to arrive on time for all scheduled shifts. Notify your manager at least 1 hour before your shift if unable to attend. Excessive unexcused absences (3+ per month) may result in disciplinary action.'},{title:'Health & Safety',cat:'Safety',date:'Nov 5, 2025',viewed:true,text:'All staff must follow safety protocols when handling animals and equipment. Report hazards immediately. Protective equipment must be worn when required. Incident reports must be filed within 24 hours of any workplace injury.'},{title:'Drug & Alcohol Policy',cat:'Conduct',date:'Oct 15, 2025',viewed:true,text:'Vet INC maintains a drug and alcohol-free workplace. Employees must not report to work under the influence. Prescription medication that may impair performance must be reported to HR. Violations will result in immediate suspension pending investigation.'},{title:'Confidentiality Agreement',cat:'Conduct',date:'Sep 1, 2025',viewed:true,text:'All client information, medical records, and business operations are confidential. Do not discuss client cases outside of professional necessity. Breach of confidentiality may result in termination and legal action.'},{title:'Vacation Policy',cat:'Benefits',date:'Aug 1, 2025',viewed:true,text:'Full-time employees accrue 2 vacation days per month (10 days/year after 1 year, 15 after 5 years). Requests must be submitted 2 weeks in advance. Vacation conflicts are resolved by seniority.'},{title:'Emergency Procedures',cat:'Safety',date:'Jul 1, 2025',viewed:true,text:'Familiarize yourself with all emergency exits and fire extinguisher locations. In case of animal bite or scratch, follow the incident protocol immediately. For fire, evacuate all humans and animals if safe. Assembly point: north parking lot.'}];
-const docs=[{icon:'📄',name:'TD1 Federal Form',date:'Jan 15, 2026'},{icon:'📋',name:'Employment Contract',date:'Jan 10, 2026'},{icon:'💰',name:'Pay Stub - Apr 1, 2026',date:'Apr 1, 2026'},{icon:'💰',name:'Pay Stub - Mar 15, 2026',date:'Mar 15, 2026'},{icon:'💰',name:'Pay Stub - Mar 1, 2026',date:'Mar 1, 2026'},{icon:'📑',name:'2025 T4 Tax Slip',date:'Feb 28, 2026'},{icon:'📝',name:'Benefits Enrollment Form',date:'Jan 20, 2026'}];
-const team=[{name:'Dr. James M.',role:'Veterinarian',shifts:{Mon:'8:00-16:00',Tue:'8:00-16:00',Wed:'OFF',Thu:'8:00-16:00',Fri:'8:00-16:00',Sat:'9:00-13:00',Sun:'OFF'}},{name:'Dr. Lisa R.',role:'Veterinarian',shifts:{Mon:'OFF',Tue:'8:00-16:00',Wed:'8:00-16:00',Thu:'OFF',Fri:'8:00-16:00',Sat:'OFF',Sun:'OFF'}},{name:'Sarah K.',role:'Vet Tech',shifts:{Mon:'8:00-16:00',Tue:'8:00-16:00',Wed:'8:00-16:00',Thu:'8:00-16:00',Fri:'8:00-16:00',Sat:'OFF',Sun:'OFF'}},{name:'Mike T.',role:'Vet Tech',shifts:{Mon:'8:00-16:00',Tue:'OFF',Wed:'8:00-16:00',Thu:'8:00-16:00',Fri:'OFF',Sat:'9:00-17:00',Sun:'OFF'}},{name:'Emma W.',role:'Receptionist',shifts:{Mon:'8:00-17:00',Tue:'8:00-17:00',Wed:'8:00-17:00',Thu:'8:00-17:00',Fri:'8:00-17:00',Sat:'9:00-13:00',Sun:'OFF'}},{name:'Carlos P.',role:'Receptionist',shifts:{Mon:'OFF',Tue:'12:00-17:00',Wed:'8:00-17:00',Thu:'12:00-17:00',Fri:'8:00-17:00',Sat:'OFF',Sun:'OFF'}},{name:'Amy L.',role:'Assistant',shifts:{Mon:'8:00-16:00',Tue:'8:00-16:00',Wed:'OFF',Thu:'8:00-16:00',Fri:'8:00-16:00',Sat:'9:00-13:00',Sun:'OFF'}},{name:'Rachel D.',role:'Practice Manager',shifts:{Mon:'8:00-17:00',Tue:'8:00-17:00',Wed:'8:00-17:00',Thu:'8:00-17:00',Fri:'8:00-12:00',Sat:'OFF',Sun:'OFF'}}];
-function roleClass(r){return r.includes('Veterinarian')?'role-vet':r.includes('Tech')?'role-tech':r.includes('Reception')?'role-reception':r.includes('Assistant')?'role-assistant':'role-manager'}
-function showTab(id,el){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active')}
-function weekLabel(off){const d=new Date(2026,3,13);d.setDate(d.getDate()+off*7);const e=new Date(d);e.setDate(e.getDate()+4);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+e.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
-function renderTS(){const ts=timesheets[curWeek];document.getElementById('ts-week-label').textContent=weekLabel(curWeek);if(!ts){document.getElementById('ts-body').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No timesheet for this week</td></tr>';document.getElementById('ts-total-actual').textContent='';document.getElementById('ts-total-var').textContent='';document.getElementById('ts-total-ot').textContent='';document.getElementById('ts-submit-btn').style.display='none';return}document.getElementById('ts-submit-btn').style.display='';const se=document.getElementById('ts-status');se.className='badge badge-'+ts.status.toLowerCase();se.textContent=ts.status;const dis=ts.status!=='Draft'?'disabled':'';let h='',tA=0,tS=0,tOT=0;DAYS.forEach(d=>{const sh=schedH[d],a=ts[d]||0,v=a-sh,vc=v===0?'var-ok':v<0?'var-less':'var-more';tS+=sh;tA+=a;if(v>0)tOT+=v;const n=ts.notes?.[d]||'';h+='<tr><td style="font-weight:600">'+d+'</td><td>'+schedule[d]+'</td><td><input type="number" value="'+a+'" min="0" max="24" step="0.5" style="width:70px" '+dis+' onchange="updTS(\''+d+'\',this.value)"></td><td class="'+vc+'">'+(v>0?'+':'')+v+'</td><td><input type="text" value="'+n+'" style="width:160px" placeholder="Notes..." '+dis+'></td><td>'+(v>0&&ts.status==='Draft'?'<button class="btn btn-danger btn-sm" onclick="otFromTS(\''+d+'\')">Request Overtime</button>':'')+'</td></tr>'});document.getElementById('ts-body').innerHTML=h;const tv=tA-tS;document.getElementById('ts-total-actual').textContent=tA+' hrs';document.getElementById('ts-total-var').innerHTML='<span class="'+(tv===0?'var-ok':tv<0?'var-less':'var-more')+'">'+(tv>0?'+':'')+tv+'</span>';document.getElementById('ts-total-ot').textContent='OT: '+tOT+' hrs'}
-function updTS(d,v){if(timesheets[curWeek])timesheets[curWeek][d]=parseFloat(v)||0;renderTS()}
-function changeWeek(d){curWeek+=d;if(curWeek>0)curWeek=0;if(curWeek<-2)curWeek=-2;renderTS()}
-function submitTimesheet(){if(timesheets[curWeek]&&timesheets[curWeek].status==='Draft'){timesheets[curWeek].status='Submitted';renderTS()}}
-function otFromTS(day){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab')[1].classList.add('active');document.getElementById('tab-overtime').classList.add('active')}
-function renderOT(){let h='';otReqs.forEach(r=>{const sc=r.status==='Pending'?'badge-pending':r.status==='Approved'?'badge-approved':'badge-denied';h+='<tr><td>'+r.date+'</td><td>'+r.schedEnd+'</td><td>'+r.actualEnd+'</td><td>'+r.hours+'</td><td>'+r.reason+'</td><td><span class="badge '+sc+'">'+r.status+'</span></td></tr>'});document.getElementById('ot-list').innerHTML=h}
-function submitOT(){const d=document.getElementById('ot-date').value,se=document.getElementById('ot-sched-end').value,ae=document.getElementById('ot-actual-end').value,r=document.getElementById('ot-reason').value,n=document.getElementById('ot-notes').value;if(!d||!ae){alert('Please fill in date and actual end time');return}const dh=((parseInt(ae.split(':')[0])+parseInt(ae.split(':')[1])/60)-(parseInt(se.split(':')[0])+parseInt(se.split(':')[1])/60));otReqs.unshift({date:new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),schedEnd:se,actualEnd:ae,hours:Math.round(dh*100)/100,reason:r,notes:n,status:'Pending'});renderOT();document.getElementById('ot-date').value='';document.getElementById('ot-notes').value=''}
-function renderSchedMy(){const d=new Date(2026,3,12);d.setDate(d.getDate()+schedWk*7);document.getElementById('sched-week-label').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+new Date(d.getFullYear(),d.getMonth(),d.getDate()+6).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});let h='',th=0;FULL_DAYS.forEach(day=>{const s=schedule[day],off=s==='OFF';if(!off)th+=schedH[day];h+='<div class="my-sched-day'+(off?' off':'')+'"><span class="day-name">'+day+'</span><span class="shift">'+s+'</span></div>'});h+='<div style="margin-top:12px;padding-top:12px;border-top:2px solid var(--border);font-weight:600">Total: '+th+' hours/week</div>';document.getElementById('sched-my').innerHTML=h}
-function renderSchedTeam(){let h='<div style="overflow-x:auto"><table><thead><tr><th>Staff</th>';FULL_DAYS.forEach(d=>h+='<th>'+d+'</th>');h+='</tr></thead><tbody>';team.forEach(m=>{const rc=roleClass(m.role);h+='<tr><td><strong>'+m.name+'</strong><br><span class="role-label '+rc+'" style="font-size:11px;padding:1px 6px;border-radius:4px;display:inline-block">'+m.role+'</span></td>';FULL_DAYS.forEach(d=>{const s=m.shifts[d],off=s==='OFF';h+='<td class="'+(off?'role-off':rc)+'" style="font-size:12px">'+s+'</td>'});h+='</tr>'});h+='</tbody></table></div>';document.getElementById('sched-team').innerHTML=h}
-function toggleSched(v,el){el.parentElement.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('sched-my').style.display=v==='my'?'':'none';document.getElementById('sched-team').style.display=v==='team'?'':'none'}
-function changeSchedWeek(d){schedWk+=d;renderSchedMy()}
-function togglePol(v,el){el.parentElement.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('policy-ai').classList.toggle('active',v==='ai');document.getElementById('policy-list').classList.toggle('active',v==='list')}
-function renderPolicies(){const sorted=[...policies].sort((a,b)=>a.viewed-b.viewed);let h='';sorted.forEach((p,i)=>{const bc=p.cat==='Safety'?'badge-safety':p.cat==='HR'?'badge-hr':p.cat==='Conduct'?'badge-conduct':'badge-benefits';h+='<div class="policy-item" onclick="togglePolDetail('+i+')"><div class="policy-dot'+(p.viewed?' viewed':'')+'"></div><div class="policy-info"><div class="policy-title">'+p.title+' '+(!p.viewed?'<span class="badge badge-new" style="font-size:9px">NEW</span>':'')+'</div><div class="policy-meta"><span class="badge '+bc+'">'+p.cat+'</span> · '+p.date+'</div></div></div><div class="policy-detail" id="pd-'+i+'">'+p.text+'</div>'});document.getElementById('policy-items').innerHTML=h}
-function togglePolDetail(i){const el=document.getElementById('pd-'+i);el.classList.toggle('open');const p=policies[i];if(!p.viewed){p.viewed=true;renderPolicies()}}
-function sendChat(){const inp=document.getElementById('chat-input'),msg=inp.value.trim();if(!msg)return;const msgs=document.getElementById('chat-msgs');msgs.innerHTML+='<div class="chat-msg user"><div class="sender">You</div>'+msg+'</div>';const answers={'sick':'Full-time staff receive 10 paid sick days per year. Part-time staff receive a pro-rated amount. Notify your manager at least 1 hour before your shift.','overtime':'Overtime is paid at 1.5x after 80 hours per pay period. All OT must be pre-approved. Statutory holiday OT is 2x.','vacation':'Full-time employees accrue 2 vacation days per month. Submit requests 2 weeks in advance.','benefits':'Vet INC offers health insurance, dental coverage, and a matching retirement plan. See your benefits enrollment form for details.','dress':'Scrubs are required for veterinary staff. Reception staff should wear business casual. Closed-toe shoes are mandatory.','break':'You are entitled to a 30-minute unpaid lunch and two 15-minute paid breaks per 8-hour shift.'};const low=msg.toLowerCase();let ans='I don\'t have specific information about that topic. Please check the full policies list or contact HR for details.';for(const[k,v]of Object.entries(answers)){if(low.includes(k)){ans=v;break}}setTimeout(()=>{msgs.innerHTML+='<div class="chat-msg ai"><div class="sender">Policy Assistant</div>'+ans+'</div>';msgs.scrollTop=msgs.scrollHeight},500);inp.value='';msgs.scrollTop=msgs.scrollHeight}
-function renderDocs(){let h='';docs.forEach(d=>{h+='<div class="doc-item"><span class="doc-icon">'+d.icon+'</span><div class="doc-info"><div class="doc-name">'+d.name+'</div><div class="doc-date">'+d.date+'</div></div><button class="btn btn-outline btn-sm">View</button></div>'});document.getElementById('doc-list').innerHTML=h}
-renderTS();renderOT();renderSchedMy();renderSchedTeam();renderPolicies();renderDocs();
+const SB_URL='https://rnqhhzatlxmyvccdvqkr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJucWhoemF0bHhteXZjY2R2cWtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTQ5ODUsImV4cCI6MjA5MDU5MDk4NX0.zokle21pVEPG5bIOFiyZIWYkYIwhkolWNOhJ7Cbub30';
+const PAY_RATES={doctor:85,aht:28,rvt:30,receptionist:22,terminated:0};
+const DEFAULT_RATE=25;
+
+let allUsers=[],userMeta={},currentUser=null;
+let tsWeekOffset=0,schedWeekOffset=0;
+let timeclockCache=null;
+
+async function sbFetch(table,query=''){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}${query}`,{
+    headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,'Content-Type':'application/json',
+      Prefer:query.includes('insert')||query.includes('update')?'return=representation':''
+    }
+  });
+  if(!r.ok)throw new Error(`${table}: ${r.status}`);
+  return r.json();
+}
+
+async function sbInsert(table,data){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}`,{
+    method:'POST',
+    headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},
+    body:JSON.stringify(data)
+  });
+  if(!r.ok)throw new Error(`Insert ${table}: ${r.status}`);
+  return r.json();
+}
+
+// LOGIN
+async function initLogin(){
+  try{
+    allUsers=await sbFetch('csi_users','?order=display_name');
+    // Filter out terminated
+    const meta=await sbFetch('csi_usermeta','?select=user_id,meta_key,meta_value');
+    userMeta={};
+    meta.forEach(m=>{if(!userMeta[m.user_id])userMeta[m.user_id]={};userMeta[m.user_id][m.meta_key]=m.meta_value;});
+    
+    const sel=document.getElementById('loginSelect');
+    allUsers.filter(u=>(userMeta[u.ID]?.position||'').toLowerCase()!=='terminated').forEach(u=>{
+      const o=document.createElement('option');
+      o.value=u.ID;o.textContent=u.display_name||u.user_nicename||u.user_login;
+      sel.appendChild(o);
+    });
+    document.getElementById('loginLoading').style.display='none';
+    sel.style.display='block';
+    document.getElementById('loginBtn').style.display='block';
+  }catch(e){
+    document.getElementById('loginLoading').textContent='Error: '+e.message;
+  }
+}
+
+function doLogin(){
+  const uid=document.getElementById('loginSelect').value;
+  if(!uid)return alert('Please select your name');
+  currentUser=allUsers.find(u=>String(u.ID)===uid);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appContainer').style.display='block';
+  document.getElementById('headerName').textContent=currentUser.display_name;
+  const pos=userMeta[currentUser.ID]?.position||'Staff';
+  const rate=PAY_RATES[pos.toLowerCase()]||DEFAULT_RATE;
+  document.getElementById('headerRole').textContent=`${pos} · $${rate}/hr`;
+  showTab('timesheet',document.querySelector('.tab'));
+}
+
+function showTab(id,el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='timesheet')renderTimesheet();
+  if(id==='schedule')renderSchedule();
+  if(id==='overtime')loadOTRequests();
+  if(id==='policies')loadPolicies();
+  if(id==='documents')renderDocs();
+}
+
+function fmtDate(d){return d.toLocaleDateString('en-CA',{month:'short',day:'numeric'})}
+function fmtDateFull(d){return d.toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})}
+function getWeekRange(offset){
+  const now=new Date();const day=now.getDay();const diff=now.getDate()-day+(day===0?-6:1);
+  const mon=new Date(now);mon.setDate(diff+offset*7);
+  const sun=new Date(mon);sun.setDate(sun.getDate()+6);
+  return{mon,sun};
+}
+
+async function loadTimeclock(){
+  if(timeclockCache)return timeclockCache;
+  timeclockCache=await sbFetch('csi_posts','?post_type=eq.timeclock&select=post_title&limit=5000');
+  return timeclockCache;
+}
+
+function parseTimeclockTitle(title){
+  const parts=title.split('-');
+  if(parts.length<3)return null;
+  return{userId:parts[0],dateStr:parts[1],timestamp:parseInt(parts[2])};
+}
+
+// MY TIMESHEET
+function changeTsWeek(d){tsWeekOffset=d===0?0:tsWeekOffset+d;renderTimesheet();}
+
+async function renderTimesheet(){
+  const{mon,sun}=getWeekRange(tsWeekOffset);
+  document.getElementById('tsWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
+  const el=document.getElementById('tsContent');
+  el.innerHTML='<div class="loading-msg">Loading timeclock data...</div>';
+  
+  try{
+    const posts=await loadTimeclock();
+    const uid=String(currentUser.ID);
+    const monStr=mon.getFullYear()*10000+(mon.getMonth()+1)*100+mon.getDate();
+    const sunStr=sun.getFullYear()*10000+(sun.getMonth()+1)*100+sun.getDate();
+    
+    // Group by date for this user
+    const shifts={};
+    posts.forEach(p=>{
+      const parsed=parseTimeclockTitle(p.post_title);
+      if(!parsed||parsed.userId!==uid)return;
+      const d=parseInt(parsed.dateStr);
+      if(d<monStr||d>sunStr)return;
+      if(!shifts[parsed.dateStr])shifts[parsed.dateStr]=[];
+      shifts[parsed.dateStr].push(parsed.timestamp);
+    });
+    
+    const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    let totalHrs=0;
+    let html='<table><thead><tr><th>Date</th><th>Day</th><th>Clock In</th><th>Clock Out</th><th>Hours</th></tr></thead><tbody>';
+    
+    const sortedDates=Object.keys(shifts).sort();
+    if(!sortedDates.length){
+      html+='<tr><td colspan="5" class="empty-state">No timeclock entries for this week</td></tr>';
+    }
+    
+    sortedDates.forEach(dateStr=>{
+      const times=shifts[dateStr].sort((a,b)=>a-b);
+      const dateObj=new Date(dateStr.replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3'));
+      const dayName=dayNames[dateObj.getDay()];
+      const clockIn=new Date(times[0]*1000);
+      const clockOut=times.length>=2?new Date(times[1]*1000):null;
+      const hrs=clockOut?Math.max(0,(times[1]-times[0])/3600):0;
+      totalHrs+=hrs;
+      
+      html+=`<tr>
+        <td>${fmtDate(dateObj)}</td>
+        <td>${dayName}</td>
+        <td>${clockIn.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})}</td>
+        <td>${clockOut?clockOut.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'}):'<span style="color:var(--danger)">Missing</span>'}</td>
+        <td><strong>${hrs.toFixed(2)}h</strong></td>
+      </tr>`;
+    });
+    
+    html+=`</tbody><tfoot><tr style="font-weight:700;background:var(--surface2)"><td colspan="4">Total</td><td>${totalHrs.toFixed(2)}h</td></tr></tfoot></table>`;
+    
+    const rate=PAY_RATES[(userMeta[currentUser.ID]?.position||'').toLowerCase()]||DEFAULT_RATE;
+    html+=`<div style="margin-top:12px;color:var(--muted);font-size:13px">Estimated gross: <strong>$${(totalHrs*rate).toFixed(2)}</strong> at $${rate}/hr</div>`;
+    
+    el.innerHTML=html;
+  }catch(e){
+    el.innerHTML=`<div class="empty-state">Error: ${e.message}</div>`;
+  }
+}
+
+// SCHEDULE
+function changeSchedWeek(d){schedWeekOffset=d===0?0:schedWeekOffset+d;renderSchedule();}
+
+async function renderSchedule(){
+  const{mon,sun}=getWeekRange(schedWeekOffset);
+  document.getElementById('schedWeekLabel').textContent=fmtDate(mon)+' – '+fmtDateFull(sun);
+  const el=document.getElementById('schedContent');
+  el.innerHTML='<div class="loading-msg">Loading...</div>';
+  
+  try{
+    const uid=String(currentUser.ID);
+    const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
+    const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
+    
+    const stats=await sbFetch('csi_tomorrow_stats',`?user=eq.${uid}&limit=500`);
+    const weekStats=stats.filter(s=>dateStrs.includes(s.sdate));
+    
+    const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    let html='<div>';
+    let totalHrs=0;
+    
+    days.forEach((d,i)=>{
+      const ds=dateStrs[i];
+      const entry=weekStats.find(s=>s.sdate===ds);
+      const hasData=entry&&['aa8','ab8','aa10','ab10','aa12','ab12','aa2','ab2','aa4','ab4','aa6','ab6'].some(c=>entry[c]&&parseInt(entry[c])>0);
+      
+      if(hasData){
+        html+=`<div class="my-sched-day"><span class="day-name">${dayNames[i]}</span><span class="shift"><span class="badge badge-blue">Scheduled</span></span></div>`;
+        totalHrs+=8;
+      }else{
+        html+=`<div class="my-sched-day off"><span class="day-name">${dayNames[i]}</span><span class="shift">OFF</span></div>`;
+      }
+    });
+    
+    html+=`<div style="margin-top:12px;padding-top:12px;border-top:2px solid var(--border);font-weight:600">Scheduled: ~${totalHrs} hours/week</div>`;
+    html+='</div>';
+    el.innerHTML=html;
+  }catch(e){
+    el.innerHTML=`<div class="empty-state">Error: ${e.message}</div>`;
+  }
+}
+
+// OVERTIME
+async function loadOTRequests(){
+  try{
+    const uid=String(currentUser.ID);
+    const reqs=await sbFetch('overtime_requests',`?user_id=eq.${uid}&order=created_at.desc&limit=50`);
+    const body=document.getElementById('otList');
+    if(!reqs.length){body.innerHTML='<tr><td colspan="6" class="empty-state">No overtime requests</td></tr>';return;}
+    body.innerHTML=reqs.map(r=>{
+      const sc=r.status==='Pending'?'badge-pending':r.status==='Approved'?'badge-approved':'badge-denied';
+      return`<tr><td>${r.date||r.created_at?.split('T')[0]||'—'}</td><td>${r.scheduled_end||'—'}</td><td>${r.actual_end||'—'}</td><td>${r.hours||'—'}</td><td>${r.reason||'—'}</td><td><span class="badge ${sc}">${r.status||'Pending'}</span></td></tr>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('otList').innerHTML=`<tr><td colspan="6" class="empty-state">Could not load: ${e.message}</td></tr>`;
+  }
+}
+
+async function submitOT(){
+  const date=document.getElementById('ot-date').value;
+  const schedEnd=document.getElementById('ot-sched-end').value;
+  const actualEnd=document.getElementById('ot-actual-end').value;
+  const reason=document.getElementById('ot-reason').value;
+  const notes=document.getElementById('ot-notes').value;
+  if(!date||!actualEnd)return alert('Please fill in date and actual end time');
+  
+  const sh=parseInt(schedEnd.split(':')[0])+parseInt(schedEnd.split(':')[1])/60;
+  const ah=parseInt(actualEnd.split(':')[0])+parseInt(actualEnd.split(':')[1])/60;
+  const hours=Math.max(0,Math.round((ah-sh)*100)/100);
+  
+  try{
+    await sbInsert('overtime_requests',{
+      user_id:String(currentUser.ID),
+      user_name:currentUser.display_name,
+      date,cheduled_end:schedEnd,scheduled_end:schedEnd,
+      actual_end:actualEnd,hours,reason,notes,status:'Pending'
+    });
+    alert('Overtime request submitted!');
+    document.getElementById('ot-date').value='';
+    document.getElementById('ot-notes').value='';
+    loadOTRequests();
+  }catch(e){
+    alert('Error submitting: '+e.message);
+  }
+}
+
+// POLICIES
+async function loadPolicies(){
+  const el=document.getElementById('policyItems');
+  try{
+    const policies=await sbFetch('policies','?order=created_at.desc&limit=100');
+    if(!policies.length){
+      el.innerHTML='<div class="empty-state">No policies found</div>';return;
+    }
+    el.innerHTML=policies.map((p,i)=>`
+      <div class="policy-item" onclick="togglePolicy(${i})">
+        <div class="policy-dot ${p.viewed?'viewed':''}"></div>
+        <div class="policy-info">
+          <div class="policy-title">${p.title||p.name||'Untitled'} ${!p.viewed?'<span class="badge badge-blue" style="font-size:9px">NEW</span>':''}</div>
+          <div class="policy-meta">${p.category||''} · ${p.created_at?new Date(p.created_at).toLocaleDateString('en-CA'):'—'}</div>
+        </div>
+      </div>
+      <div class="policy-detail" id="pd-${i}">${p.content||p.description||'No content available.'}</div>
+    `).join('');
+  }catch(e){
+    el.innerHTML=`<div class="empty-state">Could not load policies: ${e.message}</div>`;
+  }
+}
+
+function togglePolicy(i){
+  document.getElementById('pd-'+i).classList.toggle('open');
+}
+
+// DOCUMENTS
+function renderDocs(){
+  const docs=[
+    {icon:'📄',name:'TD1 Federal Form',date:'Jan 2026'},
+    {icon:'📋',name:'Employment Contract',date:'Jan 2026'},
+    {icon:'📑',name:'T4 Tax Slip 2025',date:'Feb 2026'},
+    {icon:'📝',name:'Benefits Enrollment Form',date:'Jan 2026'},
+    {icon:'💼',name:'Direct Deposit Form',date:'Jan 2026'},
+    {icon:'📞',name:'Emergency Contact Form',date:'Jan 2026'},
+  ];
+  document.getElementById('docList').innerHTML=docs.map(d=>
+    `<div class="doc-item"><span class="doc-icon">${d.icon}</span><div class="doc-info"><div class="doc-name">${d.name}</div><div class="doc-date">${d.date}</div></div><button class="btn btn-outline btn-sm">View</button></div>`
+  ).join('');
+}
+
+initLogin();
 </script>
 </body>
 </html>
