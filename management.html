@@ -123,16 +123,25 @@ function rp(){const c=document.getElementById('ct');if(!DL){c.innerHTML='<div cl
 async function sf(t,q=''){let r=[],o=0;const hasLimit=/[&?]limit=/.test(q);if(hasLimit){const f=await fetch(SU+'/rest/v1/'+t+(q?'?'+q:''),{headers:{apikey:SAK,Authorization:'Bearer '+SAK}});return await f.json()}while(true){const f=await fetch(SU+'/rest/v1/'+t+'?'+(q?q+'&':'')+'offset='+o+'&limit=1000',{headers:{apikey:SAK,Authorization:'Bearer '+SAK}});const b=await f.json();if(!b.length)break;r=r.concat(b);if(b.length<1000)break;o+=1000}return r}
 
 async function ld(){
-try{const[u,m]=await Promise.all([sf('csi_users'),sf('csi_usermeta')]);
+try{const[u,m,ot,dp,pf]=await Promise.all([sf('csi_users'),sf('csi_usermeta'),sf('overtime_requests'),sf('csi_daily_deposit','order=ddate.desc&limit=500'),sf('csi_pf_totals','order=mdy.desc&limit=500')]);
 SM={};u.forEach(x=>{SM[x.ID]={id:x.ID,login:x.user_login,name:x.display_name,email:x.user_email}});
 m.forEach(x=>{const sid=x.user_id;if(!SM[sid])return;SM[sid][x.meta_key]=x.meta_value});
-TC=await sf('csi_posts','post_type=eq.timeclock&select=ID,post_title,post_date&order=ID.desc');
-TC=TC.map(ptc).filter(Boolean);
-const[ot,dp,pf]=await Promise.all([sf('overtime_requests'),sf('csi_daily_deposit','order=ddate.desc&limit=500'),sf('csi_pf_totals','order=mdy.desc&limit=500')]);
-OT=ot;DP=dp;PF=pf;DL=true;rp();
+OT=ot;DP=dp;PF=pf;TC=[];DL=true;await loadWeek(mon(new Date()));
 }catch(e){console.error(e);document.getElementById('ct').innerHTML='<div class="ld">Error loading data: '+e.message+'</div>'}}
 
-function ptc(p){const ps=p.post_title.split('-');if(ps.length<5)return null;const uid=parseInt(ps[0]),ds=ps[1],ts=parseInt(ps[2]);if(isNaN(ts))return null;const fn=ps[3],ln=ps.slice(4).join('-');return{id:p.ID,uid,date:ds,ts,time:new Date(ts*1000),name:fn+' '+ln,pd:p.post_date}}
+let loadedWeeks={};
+function loadWeekForOffset(){const now=new Date(),mn=mon(now);mn.setDate(mn.getDate()+WO*7);loadWeek(mn)}
+async function loadWeek(mn){
+const s=ds(mn),sn=new Date(mn);sn.setDate(sn.getDate()+6);const e=ds(sn);
+const key=s+'-'+e;
+if(loadedWeeks[key]){rp();return;}
+// Fetch latest 2000 timeclock entries and filter to this week
+const week=await sf('csi_posts','post_type=eq.timeclock&select=ID,post_title,post_date&order=ID.desc&limit=2000');
+const parsed=week.map(ptc).filter(Boolean).filter(p=>p.date>=s&&p.date<=e);
+TC=TC.concat(parsed);loadedWeeks[key]=true;rp();
+}
+
+function ptc(p){const ps=p.post_title.split('-');if(ps.length<5)return null;const uid=parseInt(ps[0]),ds2=ps[1],ts=parseInt(ps[2]);if(isNaN(ts))return null;const fn=ps[3],ln=ps.slice(4).join('-');return{id:p.ID,uid,date:ds2,ts,time:new Date(ts*1000),name:fn+' '+ln,pd:p.post_date}}
 
 function gs(s,e){const m={};TC.forEach(p=>{const k=p.uid+'-'+p.date;if(!m[k])m[k]={uid:p.uid,date:p.date,name:p.name,en:[]};m[k].en.push(p)});const r=[];
 Object.values(m).forEach(s2=>{s2.en.sort((a,b)=>a.ts-b.ts);for(let i=0;i<s2.en.length;i+=2){const ci=s2.en[i],co=s2.en[i+1],ct=co?co.ts:ci.ts,h=Math.max(0,(ct-ci.ts)/3600);if(s2.date>=s&&s2.date<=e){const st=SM[s2.uid]||{};r.push({uid:s2.uid,date:s2.date,name:s2.name,cin:ci.time,cout:co?co.time:null,cinTs:ci.ts,coutTs:ct,hours:h,pos:st.position||'',cl:st.clinic||''})}}});return r}
@@ -157,7 +166,7 @@ const hrs=['6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','
 const tds=ds(now),sclr={};let ci=0;shifts.forEach(s=>{if(!(s.uid in sclr)){sclr[s.uid]=ci%6;ci++}});
 const wl=fd(days[0])+' — '+fd(days[6]);
 const dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-let h='<div class="ch"><div class="cn"><button onclick="WO--;WO<0?WO=0:0;rp()">◀</button><span class="wl">'+wl+'</span><button onclick="WO++;rp()">▶</button><button class="btn btn-o" style="margin-left:8px" onclick="WO=0;rp()">Today</button></div><select onchange="SC=this.value;rp()"><option value="">All Clinics</option>';Object.entries(CL).forEach(([k,v])=>{h+='<option value="'+k+'"'+(SC===k?' selected':'')+'>'+v+'</option>'});h+='</select></div>';
+let h='<div class="ch"><div class="cn"><button onclick="WO--;WO<0?WO=0:0;loadWeekForOffset()">◀</button><span class="wl">'+wl+'</span><button onclick="WO++;loadWeekForOffset()">▶</button><button class="btn btn-o" style="margin-left:8px" onclick="WO=0;loadWeekForOffset()">Today</button></div><select onchange="SC=this.value;rp()"><option value="">All Clinics</option>';Object.entries(CL).forEach(([k,v])=>{h+='<option value="'+k+'"'+(SC===k?' selected':'')+'>'+v+'</option>'});h+='</select></div>';
 h+='<div class="cg"><div></div>';days.forEach((d,i)=>{const isT=ds(d)===tds,isW=i>=5;h+='<div class="dh'+(isW?' wk':'')+(isT?' td':'')+'"><span class="dn">'+d.getDate()+'</span><span class="dname">'+dn[i]+'</span></div>'});
 hrs.forEach((hr,ri)=>{const baseH=6+ri;h+='<div class="tl">'+hr+'</div>';days.forEach((d,di)=>{const isW=di>=5;h+='<div class="cc'+(isW?' wk':'')+'">';shifts.forEach(s=>{if(s.date!==ds(d))return;const ch=s.cin.getHours(),dur=Math.max(s.hours,0.5);if(ch===baseH){const top=0,ht=Math.max(dur*48,20);const clr=sclr[s.uid]||0;h+='<div class="shb c'+clr+'" style="top:'+top+'px;height:'+ht+'px" onclick="sm(\''+s.name.replace(/'/g,"\\'")+'\',\''+(CL[s.cl]||s.cl)+'\',\''+ft(s.cin)+'\',\''+(s.cout?ft(s.cout):'—')+'\',\''+s.hours.toFixed(1)+'\',\''+s.pos+'\',\''+(s.uid)+'\')"><div class="sn">'+s.name+'</div><div class="st">'+ft(s.cin)+(s.cout?'-'+ft(s.cout):'')+'</div></div>'}});h+='</div>'})});h+='</div>';c.innerHTML=h}
 
