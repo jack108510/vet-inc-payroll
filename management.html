@@ -409,16 +409,56 @@ function renderStaff(){
 
 // TIMESHEETS
 let timeclockData=null;
+async function loadTimeclockForWeek(mon,sun){
+  // Build date strings for the week
+  const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
+  const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
+  
+  // Fetch all active user IDs for this clinic filter
+  const clinic=document.getElementById('clinicFilter')?.value||'';
+  const active=getActiveUsers();
+  const uids=active.map(u=>String(u.ID));
+  
+  // Build OR filter for all date strings - use like patterns
+  // Fetch in batches by user to avoid huge queries
+  let all=[];
+  const userBatches=[];
+  for(let i=0;i<uids.length;i+=10)userBatches.push(uids.slice(i,i+10));
+  
+  for(const batch of userBatches){
+    const orParts=dateStrs.map(ds=>`post_title.like.*-${ds}-*`);
+    const orStr=orParts.join(',');
+    try{
+      const rows=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&or=(${orStr})&limit=5000`);
+      all=all.concat(rows);
+    }catch(e){
+      // Fallback: try loading by each user
+      for(const uid of batch){
+        for(const ds of dateStrs){
+          try{
+            const rows=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&post_title=like.*${uid}-${ds}*&limit=100`);
+            all=all.concat(rows);
+          }catch(e2){}
+        }
+      }
+    }
+  }
+  return all;
+}
+
 async function loadTimeclock(){
   if(timeclockData)return timeclockData;
-  let all=[],offset=0;
-  while(true){
-    const batch=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&limit=1000&offset=${offset}`);
-    all=all.concat(batch);
-    if(batch.length<1000)break;
-    offset+=1000;
+  // For timesheets/payroll that need broader data, load by active users
+  const active=getActiveUsers();
+  let all=[];
+  for(const u of active){
+    try{
+      const rows=await sbFetch('csi_posts',`?post_type=eq.timeclock&select=post_title,post_date&post_author=eq.${u.ID}&limit=5000`);
+      all=all.concat(rows);
+    }catch(e){}
   }
-  timeclockData=all;return all;
+  timeclockData=all;
+  return all;
 }
 
 function parseTimeclockTitle(title){
@@ -589,7 +629,7 @@ async function renderSchedule(){
   card.innerHTML='<div class="loading-msg">Loading schedule from timeclock data...</div>';
   
   try{
-    const posts=await loadTimeclock();
+    const posts=await loadTimeclockForWeek(mon,sun);
     const clinic=document.getElementById('clinicFilter')?.value||'';
     const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);days.push(d);}
     const dateStrs=days.map(d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
