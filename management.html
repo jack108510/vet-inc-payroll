@@ -15,10 +15,8 @@
   --text: #1e3a5f;
   --muted: #64748b;
   --green: #16a34a;
+  --green-light: #dcfce7;
   --red: #ef4444;
-  --purple: #7c3aed;
-  --emerald: #059669;
-  --orange: #ea580c;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -32,12 +30,13 @@ body {
 
 /* Header */
 .header {
-  position: sticky; top: 0; z-index: 100;
   background: var(--surface);
-  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
   padding: 0 2rem;
-  height: 64px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 1px 12px rgba(37,99,235,.07);
 }
 .header-left { display: flex; align-items: center; gap: 1rem; }
 .logo {
@@ -73,36 +72,26 @@ body {
 .user-badge:hover { background: var(--border); }
 .avatar {
   width: 30px; height: 30px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--purple));
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: #fff; display: flex; align-items: center; justify-content: center;
   font-weight: 600; font-size: 12px;
 }
 
-/* Tabs */
-.tabs {
-  position: sticky; top: 64px; z-index: 99;
+/* Tab Nav */
+.tab-nav {
   background: var(--surface);
-  display: flex; align-items: center; gap: .4rem;
-  padding: .6rem 2rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.04);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 2rem; gap: 4px; height: 52px;
 }
-.tab {
-  padding: 9px 20px; border-radius: 50px;
-  font-size: 13px; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  transition: all .25s ease;
-  user-select: none;
+.tab-btn {
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  font-size: 0.85rem; font-weight: 600;
+  padding: 7px 16px; border-radius: 8px; transition: all 0.15s;
+  white-space: nowrap;
 }
-.tab:hover { background: var(--surface2); color: var(--text); }
-.tab.active {
-  background: var(--primary); color: #fff;
-  box-shadow: 0 2px 8px rgba(37,99,235,.25);
-}
+.tab-btn:hover { background: var(--surface2); color: var(--text); }
+.tab-btn.active { background: var(--primary); color: #fff; }
 
 /* Content */
 .content { padding: 2rem; max-width: 1400px; margin: 0 auto; }
@@ -110,66 +99,64 @@ body {
 .section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Cards */
-.card {
-  background: var(--surface);
-  border-radius: 16px; padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
-  margin-bottom: 1.25rem;
-  border: 1px solid rgba(0,0,0,.04);
+/* KPI Cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+.kpi-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem 1.5rem;
+  position: relative; overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
-.card-title {
-  font-size: 12px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: .6px; margin-bottom: 1rem;
+.kpi-card:hover { box-shadow: 0 8px 28px rgba(37,99,235,.11); transform: translateY(-2px); }
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
 }
+.kpi-label { font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+.kpi-value { font-size: 1.75rem; font-weight: 900; color: var(--text); line-height: 1.1; }
 
-/* Stat Cards — 3 columns, colored left border */
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
-.stat-card {
-  background: var(--surface);
-  border-radius: 16px; padding: 1.5rem 1.5rem 1.5rem 1.75rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
-  border: 1px solid rgba(0,0,0,.04);
-  position: relative;
-  overflow: hidden;
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
-.stat-card::before {
-  content: '';
-  position: absolute; left: 0; top: 0; bottom: 0;
-  width: 4px; border-radius: 4px 0 0 4px;
-}
-.stat-card:nth-child(1)::before { background: var(--primary); }
-.stat-card:nth-child(2)::before { background: var(--emerald); }
-.stat-card:nth-child(3)::before { background: var(--orange); }
-.stat-card:nth-child(4)::before { background: var(--purple); }
-.stat-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; margin-bottom: .75rem;
-}
-.stat-card:nth-child(1) .stat-icon { background: #dbeafe; }
-.stat-card:nth-child(2) .stat-icon { background: #d1fae5; }
-.stat-card:nth-child(3) .stat-icon { background: #ffedd5; }
-.stat-card:nth-child(4) .stat-icon { background: #ede9fe; }
-.stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
-.stat-value { font-size: 32px; font-weight: 700; color: var(--text); margin-top: .15rem; letter-spacing: -.5px; }
-.stat-sub { font-size: 12px; color: var(--muted); margin-top: .2rem; }
+/* 4-col variant */
+.kpi-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
-/* Tables */
+/* Table Cards */
+.table-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(37,99,235,.04);
+}
+.table-header {
+  padding: 1rem 1.5rem; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.table-header-title { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
 .table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-th {
-  background: var(--surface2); font-size: 11px; font-weight: 600;
-  color: var(--muted); text-transform: uppercase; letter-spacing: .4px;
-  padding: 12px 16px; text-align: left;
-  border-bottom: 1px solid var(--border);
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+thead th {
+  background: #f8faff; color: var(--muted);
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
 }
-td { padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,.04); font-size: 13px; }
-tbody tr:nth-child(even) td { background: rgba(239,246,255,.3); }
-tbody tr { transition: background .15s; }
-tbody tr:hover td { background: var(--surface2); }
+tbody tr { border-bottom: 1px solid rgba(219,234,254,0.7); }
+tbody tr:nth-child(even) { background: rgba(240,246,255,0.5); }
+tbody tr:hover { background: var(--surface2) !important; }
+tbody td { padding: 0.7rem 1rem; color: var(--text); }
+
+/* Campaign Cards (inbox items) */
+.campaign-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; margin-bottom: 1.75rem; overflow: hidden;
+  box-shadow: 0 2px 16px rgba(37,99,235,.05);
+}
+.campaign-header {
+  padding: 1.4rem 1.75rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.campaign-header::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+}
 
 /* Badges */
 .badge {
@@ -178,11 +165,8 @@ tbody tr:hover td { background: var(--surface2); }
   transition: transform .15s;
 }
 .badge-green { background: #dcfce7; color: var(--green); }
-.badge-red { background: #fee2e2; color: var(--red); }
 .badge-blue { background: #dbeafe; color: var(--primary); }
-.badge-orange { background: #ffedd5; color: var(--orange); }
-.badge-purple { background: #ede9fe; color: var(--purple); }
-.badge-yellow { background: #fef3c7; color: #b45309; }
+.badge-muted { background: var(--surface2); color: var(--muted); }
 
 /* Buttons */
 .btn {
@@ -197,11 +181,7 @@ tbody tr:hover td { background: var(--surface2); }
 .btn-ghost:hover { background: var(--surface2); border-color: var(--primary-light); }
 .btn-green { background: var(--green); color: #fff; }
 .btn-green:hover { background: #15803d; box-shadow: 0 2px 8px rgba(22,163,74,.25); }
-.btn-red { background: var(--red); color: #fff; }
-.btn-red:hover { background: #dc2626; }
 .btn-sm { padding: 6px 14px; font-size: 12px; }
-.btn-orange { background: var(--orange); color: #fff; }
-.btn-orange:hover { background: #c2410c; }
 
 /* Inputs */
 input, select {
@@ -212,8 +192,6 @@ input, select {
 input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
 
 /* Grid helpers */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
 .flex { display: flex; align-items: center; gap: .75rem; }
 .flex-between { display: flex; align-items: center; justify-content: space-between; }
 
@@ -224,12 +202,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   display: grid; grid-template-columns: repeat(7, 1fr); gap: .6rem;
 }
 .week-day {
-  background: var(--surface); border: 1px solid rgba(0,0,0,.04); border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
   min-height: 220px; padding: .65rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.04);
-  transition: box-shadow .2s;
+  box-shadow: 0 2px 12px rgba(37,99,235,.04);
+  transition: box-shadow .2s, transform .2s;
 }
-.week-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.week-day:hover { box-shadow: 0 8px 28px rgba(37,99,235,.11); transform: translateY(-2px); }
 .week-day-header {
   font-size: 11px; font-weight: 600; color: var(--muted);
   text-transform: uppercase; padding: 6px; letter-spacing: .3px;
@@ -243,9 +221,9 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 .shift-block:hover { transform: translateX(2px); }
 .shift-block.tg { background: #dbeafe; color: var(--primary); border-left: 3px solid var(--primary); }
 .shift-block.ros { background: #dcfce7; color: var(--green); border-left: 3px solid var(--green); }
-.shift-block.rvv { background: #ede9fe; color: var(--purple); border-left: 3px solid var(--purple); }
-.shift-block.gcc { background: #ffedd5; color: var(--orange); border-left: 3px solid var(--orange); }
-.shift-block.upc { background: #fef3c7; color: #b45309; border-left: 3px solid #b45309; }
+.shift-block.rvv { background: #dbeafe; color: var(--primary); border-left: 3px solid var(--primary); }
+.shift-block.gcc { background: #dcfce7; color: var(--green); border-left: 3px solid var(--green); }
+.shift-block.upc { background: #dbeafe; color: var(--primary); border-left: 3px solid var(--primary); }
 .shift-block .shift-name { font-weight: 600; }
 .shift-block .shift-time { opacity: .85; }
 
@@ -260,26 +238,19 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Activity */
-.activity-item {
-  display: flex; align-items: flex-start; gap: .85rem;
-  padding: .85rem 0; border-bottom: 1px solid rgba(0,0,0,.04);
-}
-.activity-item:last-child { border-bottom: none; }
-.activity-dot {
-  width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
-}
-.activity-text { font-size: 13px; }
-.activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-/* Action buttons in tables */
-.btn-group { display: flex; gap: .4rem; }
-
 /* Inbox */
-.inbox-empty { color: var(--muted); padding: 1.5rem; text-align: center; font-size: 13px; }
+.inbox-empty {
+  padding: 2.5rem 1.5rem; text-align: center;
+}
+.inbox-empty-title {
+  font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: .4rem;
+}
+.inbox-empty-sub {
+  font-size: 0.78rem; color: var(--muted);
+}
 .inbox-item {
   display: flex; align-items: center; justify-content: space-between;
-  padding: .85rem 1rem; border-bottom: 1px solid rgba(0,0,0,.04);
+  padding: .85rem 1.5rem; border-bottom: 1px solid var(--border);
   transition: background .15s;
 }
 .inbox-item:last-child { border-bottom: none; }
@@ -289,26 +260,29 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   display: inline-block; padding: 3px 10px; border-radius: 20px;
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; flex-shrink: 0;
 }
-.inbox-badge-ot { background: #ffedd5; color: var(--orange); }
-.inbox-badge-to { background: #ede9fe; color: var(--purple); }
+.inbox-badge-ot { background: #dbeafe; color: var(--primary); }
+.inbox-badge-to { background: #dcfce7; color: var(--green); }
 .inbox-badge-os { background: #dbeafe; color: var(--primary); }
 .inbox-desc { font-size: 13px; min-width: 0; }
 .inbox-desc strong { color: var(--text); }
 .inbox-desc span { color: var(--muted); }
 .inbox-actions { display: flex; gap: .4rem; flex-shrink: 0; margin-left: .75rem; }
 
+/* Action buttons in tables */
+.btn-group { display: flex; gap: .4rem; }
+
 /* Responsive */
 @media (max-width: 900px) {
-  .stats { grid-template-columns: 1fr 1fr; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
   .week-grid { grid-template-columns: repeat(3, 1fr); }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
   .content { padding: 1rem; }
-  .stats { grid-template-columns: 1fr; }
+  .kpi-grid, .kpi-grid-4 { grid-template-columns: 1fr; }
   .week-grid { grid-template-columns: repeat(2, 1fr); }
   .header { padding: 0 1rem; }
-  .tabs { padding: .5rem .75rem; }
+  .tab-nav { padding: 0 .75rem; }
   .header-center { display: none; }
 }
 </style>
@@ -340,16 +314,16 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   </div>
 </div>
 
-<!-- Tabs -->
-<div class="tabs">
-  <div class="tab active" data-tab="dashboard">Dashboard</div>
-  <div class="tab" data-tab="schedule">Schedule</div>
-  <div class="tab" data-tab="staff">Staff</div>
-  <div class="tab" data-tab="payroll">Payroll</div>
-  <div class="tab" data-tab="financials">Financials</div>
-  <div class="tab" data-tab="overtime">Overtime</div>
-  <div class="tab" data-tab="timeoff">Time Off</div>
-  <div class="tab" data-tab="openshifts">Open Shifts</div>
+<!-- Tab Nav -->
+<div class="tab-nav">
+  <div class="tab-btn active" data-tab="dashboard">Dashboard</div>
+  <div class="tab-btn" data-tab="schedule">Schedule</div>
+  <div class="tab-btn" data-tab="staff">Staff</div>
+  <div class="tab-btn" data-tab="payroll">Payroll</div>
+  <div class="tab-btn" data-tab="financials">Financials</div>
+  <div class="tab-btn" data-tab="overtime">Overtime</div>
+  <div class="tab-btn" data-tab="timeoff">Time Off</div>
+  <div class="tab-btn" data-tab="openshifts">Open Shifts</div>
 </div>
 
 <!-- Content -->
@@ -357,16 +331,25 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Dashboard -->
   <div class="section active" id="sec-dashboard">
-    <div class="stats" id="dash-stats">
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--primary);">IN</div><div class="stat-label">Clocked In Today</div><div class="stat-value" id="stat-clockedin">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--emerald);">$$</div><div class="stat-label">Weekly Payroll</div><div class="stat-value" id="stat-weeklypay">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--orange);">OT</div><div class="stat-label">Pending OT</div><div class="stat-value" id="stat-pendingot">—</div></div>
-    </div>
-    <div class="card" id="inbox-card">
-      <div class="flex-between" style="margin-bottom:1rem;">
-        <div class="card-title" style="margin-bottom:0;">Inbox <span class="badge badge-orange" id="inbox-count" style="display:none;">0</span></div>
+    <div class="kpi-grid" id="dash-stats">
+      <div class="kpi-card">
+        <div class="kpi-label">Clocked In Today</div>
+        <div class="kpi-value" id="stat-clockedin">--</div>
       </div>
-      <div id="inbox-list"><div class="spinner">Loading</div></div>
+      <div class="kpi-card">
+        <div class="kpi-label">Weekly Payroll</div>
+        <div class="kpi-value" id="stat-weeklypay">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Pending OT</div>
+        <div class="kpi-value" id="stat-pendingot">--</div>
+      </div>
+    </div>
+    <div class="table-card" id="inbox-card">
+      <div class="table-header">
+        <div class="table-header-title">Inbox <span class="badge badge-blue" id="inbox-count" style="display:none;vertical-align:middle;margin-left:6px;">0</span></div>
+      </div>
+      <div id="inbox-list"><div class="inbox-empty"><div class="inbox-empty-title">No pending items</div><div class="inbox-empty-sub">All caught up. Pending approvals and requests will appear here.</div></div></div>
     </div>
   </div>
 
@@ -374,12 +357,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   <div class="section" id="sec-schedule">
     <div class="flex-between">
       <div class="week-nav">
-        <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">← Prev</button>
-        <strong id="week-label">—</strong>
-        <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">Next →</button>
+        <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">Prev</button>
+        <strong id="week-label">--</strong>
+        <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">Next</button>
       </div>
     </div>
-    <div class="week-grid" id="sched-grid"><div class="spinner">Loading schedule</div></div>
+    <div class="week-grid" id="sched-grid"><div class="spinner" style="grid-column:1/-1">Loading schedule</div></div>
   </div>
 
   <!-- Staff -->
@@ -388,7 +371,10 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
       <input type="text" id="staff-search" placeholder="Search staff..." oninput="renderStaff()" style="width:240px;">
       <select id="staff-pos-filter" onchange="renderStaff()"><option value="">All Positions</option></select>
     </div>
-    <div class="card" style="padding:0; overflow:hidden;">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Staff Directory</div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Clinic</th><th>Position</th><th>Status</th></tr></thead>
       <tbody id="staff-table"><tr><td colspan="5" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -398,19 +384,34 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   <div class="section" id="sec-payroll">
     <div class="flex-between" style="margin-bottom:1.25rem;">
       <div class="week-nav">
-        <button class="btn btn-ghost btn-sm" onclick="changePayWeek(-1)">← Prev</button>
-        <strong id="pay-week-label">—</strong>
-        <button class="btn btn-ghost btn-sm" onclick="changePayWeek(1)">Next →</button>
+        <button class="btn btn-ghost btn-sm" onclick="changePayWeek(-1)">Prev</button>
+        <strong id="pay-week-label">--</strong>
+        <button class="btn btn-ghost btn-sm" onclick="changePayWeek(1)">Next</button>
       </div>
       <button class="btn btn-primary btn-sm" onclick="exportCSV()">Export CSV</button>
     </div>
-    <div class="stats" id="pay-stats">
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--primary);">HRS</div><div class="stat-label">Total Hours</div><div class="stat-value" id="pay-total-hours">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--emerald);">$$</div><div class="stat-label">Total Gross</div><div class="stat-value" id="pay-total-gross">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--purple);">STF</div><div class="stat-label">Staff Count</div><div class="stat-value" id="pay-staff-count">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--orange);">AVG</div><div class="stat-label">Avg Hours/Staff</div><div class="stat-value" id="pay-avg-hours">—</div></div>
+    <div class="kpi-grid kpi-grid-4" id="pay-stats">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Hours</div>
+        <div class="kpi-value" id="pay-total-hours">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Gross</div>
+        <div class="kpi-value" id="pay-total-gross">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Staff Count</div>
+        <div class="kpi-value" id="pay-staff-count">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Hours / Staff</div>
+        <div class="kpi-value" id="pay-avg-hours">--</div>
+      </div>
     </div>
-    <div class="card" style="padding:0; overflow:hidden;">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Payroll Details</div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Clinic</th><th>Position</th><th>Hours</th><th>Rate</th><th>Gross</th></tr></thead>
       <tbody id="pay-table"><tr><td colspan="6" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -422,12 +423,24 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
       <input type="date" id="fin-date-from" onchange="renderFinancials()">
       <input type="date" id="fin-date-to" onchange="renderFinancials()">
     </div>
-    <div class="stats" id="fin-stats">
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--primary);">DEP</div><div class="stat-label">Total Deposits</div><div class="stat-value" id="fin-total-deposit">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--purple);">CHQ</div><div class="stat-label">Total Cheques</div><div class="stat-value" id="fin-total-cheques">—</div></div>
-      <div class="stat-card"><div class="stat-icon" style="font-size:14px;font-weight:700;color:var(--green);">SUM</div><div class="stat-label">Total Sum</div><div class="stat-value" id="fin-total-sum">—</div></div>
+    <div class="kpi-grid" id="fin-stats">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Deposits</div>
+        <div class="kpi-value" id="fin-total-deposit">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Cheques</div>
+        <div class="kpi-value" id="fin-total-cheques">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Sum</div>
+        <div class="kpi-value" id="fin-total-sum">--</div>
+      </div>
     </div>
-    <div class="card" style="padding:0; overflow:hidden;">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Deposit Records</div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>User</th><th>Clinic</th><th>Deposit</th><th>Cheques</th><th>Sum</th><th>Status</th></tr></thead>
       <tbody id="fin-table"><tr><td colspan="7" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -435,7 +448,10 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Overtime -->
   <div class="section" id="sec-overtime">
-    <div class="card" style="padding:0; overflow:hidden;">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Overtime Records</div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Date</th><th>Regular Hours</th><th>OT Hours</th><th>Start Time</th><th>End Time</th><th>Clinic</th><th>Notes</th><th>Status</th></tr></thead>
       <tbody id="ot-table"><tr><td colspan="9" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -443,7 +459,10 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
 
   <!-- Time Off -->
   <div class="section" id="sec-timeoff">
-    <div class="card" style="padding:0; overflow:hidden;">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Time Off Requests</div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Date(s)</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
       <tbody id="to-table"><tr><td colspan="5" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -453,9 +472,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px 
   <div class="section" id="sec-openshifts">
     <div class="flex-between" style="margin-bottom:1.25rem;">
       <div></div>
-      <button class="btn btn-orange btn-sm" onclick="alert('Reminder sent! (visual only)')">Send Reminder</button>
+      <button class="btn btn-primary btn-sm" onclick="alert('Reminder sent! (visual only)')">Send Reminder</button>
     </div>
-    <div class="card" style="padding:0; overflow:hidden;">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Open Shifts</div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Day</th><th>Start Time</th><th>Hours</th><th>Clinic</th><th>Notes</th></tr></thead>
       <tbody id="os-table"><tr><td colspan="6" class="spinner">Loading</td></tr></tbody></table></div>
     </div>
@@ -480,10 +502,9 @@ let state = {
   otShifts: [],
 };
 
-// Global clinic filter
 function onGlobalClinicChange() {
   state.globalClinic = document.getElementById('global-clinic-filter').value;
-  const activeTab = document.querySelector('.tab.active')?.dataset.tab;
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
   if (activeTab === 'dashboard') renderDashboard();
   else if (activeTab === 'schedule') renderSchedule();
   else if (activeTab === 'staff') renderStaff();
@@ -499,7 +520,6 @@ function applyClinicFilter(arr, clinicField='clinic') {
   return arr.filter(x => x[clinicField] === state.globalClinic);
 }
 
-// Supabase fetch helper
 async function sbFetch(table, query='') {
   const r = await fetch(`${SB_URL}/rest/v1/${table}${query}`, {
     headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
@@ -508,7 +528,6 @@ async function sbFetch(table, query='') {
   return r.json();
 }
 
-// Init
 async function init() {
   try {
     const [users, usermeta, overtime, deposits, pfTotals] = await Promise.all([
@@ -527,7 +546,6 @@ async function init() {
     const scott = users.find(u => u.display_name && u.display_name.toLowerCase().includes('scott'));
     state.scottId = scott ? scott.ID : users[0]?.ID;
 
-    // Position filter
     ['doctor','aht','rvt','receptionist'].forEach(p => {
       const el = document.getElementById('staff-pos-filter');
       const o = document.createElement('option'); o.value = p; o.textContent = p.charAt(0).toUpperCase()+p.slice(1); el.appendChild(o);
@@ -543,7 +561,6 @@ async function init() {
   }
 }
 
-// Helpers
 function getMeta(userId, key) {
   const m = state.usermeta.find(x => x.user_id == userId && x.meta_key === key);
   return m ? m.meta_value : null;
@@ -551,7 +568,7 @@ function getMeta(userId, key) {
 function getUserById(id) { return state.users.find(u => u.ID == id); }
 function getClinic(userId) {
   const c = getMeta(userId, 'clinic');
-  return c ? CLINICS[c] || c : '—';
+  return c ? CLINICS[c] || c : '--';
 }
 function getClinicCode(userId) { return getMeta(userId, 'clinic') || ''; }
 function getPosition(userId) { return getMeta(userId, 'position') || ''; }
@@ -560,12 +577,11 @@ function getWeekStart(d) {
   const r = new Date(d); r.setDate(r.getDate() - r.getDay()); r.setHours(0,0,0,0); return r;
 }
 function fmtDate(d) { return d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''; }
-function fmtDateFull(d) { return d ? d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}) : ''; }
 
 // Tab switching
-document.querySelectorAll('.tab').forEach(t => {
+document.querySelectorAll('.tab-btn').forEach(t => {
   t.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById('sec-' + t.dataset.tab).classList.add('active');
@@ -587,10 +603,9 @@ function formatDateYYYYMMDD(d) {
 
 function resolveStaffName(staffId) {
   const u = getUserById(staffId);
-  return u ? (u.display_name || '—') : '—';
+  return u ? (u.display_name || '--') : '--';
 }
 
-// Load shifts from csi_postmeta — with deduplication by post_id
 async function loadShifts(startDate, endDate) {
   const startStr = formatDateYYYYMMDD(startDate);
   const endStr = formatDateYYYYMMDD(endDate);
@@ -599,7 +614,6 @@ async function loadShifts(startDate, endDate) {
 
   const edRows = await sbFetch('csi_postmeta', `?select=post_id&meta_key=eq.event_date&meta_value=gte.${startStr}&meta_value=lte.${endStr}`);
   if (!edRows.length) { state.shiftsCache[cacheKey] = []; return []; }
-  // Deduplicate post_ids immediately
   const postIds = [...new Set(edRows.map(r => r.post_id))];
   
   let allMeta = [];
@@ -610,16 +624,14 @@ async function loadShifts(startDate, endDate) {
     allMeta = allMeta.concat(rows);
   }
 
-  // Group meta by post_id — this naturally deduplicates since we key by post_id
   const byPost = {};
   allMeta.forEach(m => {
     if (!byPost[m.post_id]) byPost[m.post_id] = {};
-    // If a meta_key appears multiple times for the same post_id, keep the last one
     byPost[m.post_id][m.meta_key] = m.meta_value;
   });
 
   const shifts = [];
-  const seenPostIds = new Set(); // Extra safety: ensure each post_id yields at most one shift
+  const seenPostIds = new Set();
   Object.entries(byPost).forEach(([postId, meta]) => {
     if (seenPostIds.has(postId)) return;
     seenPostIds.add(postId);
@@ -672,7 +684,6 @@ async function loadShifts(startDate, endDate) {
   return shifts;
 }
 
-// Dashboard — 3 cards + Inbox
 async function renderDashboard() {
   const pendingOTRequests = state.overtime.filter(o => o.status === 'pending');
   document.getElementById('stat-pendingot').textContent = pendingOTRequests.length;
@@ -698,7 +709,6 @@ async function renderDashboard() {
   // Build inbox items
   const inboxItems = [];
 
-  // 1. Pending OT from shifts (ot_reason exists, ot_approval is not '1')
   const lookStart = new Date(today); lookStart.setDate(lookStart.getDate() - 28);
   const lookEnd = new Date(today); lookEnd.setDate(lookEnd.getDate() + 7);
   const recentShifts = await loadShifts(lookStart, lookEnd);
@@ -710,21 +720,14 @@ async function renderDashboard() {
     });
   });
 
-  // 2. Pending time-off requests from overtime_requests table
-  const pendingTimeOff = pendingOTRequests.filter(o => {
-    if (state.globalClinic) {
-      // Can't easily filter by clinic here, show all
-    }
-    return true;
-  });
+  const pendingTimeOff = pendingOTRequests;
   pendingTimeOff.forEach(o => {
     inboxItems.push({
-      type: 'to', badge: 'Time Off', staffName: resolveStaffName(o.user_id), date: o.request_date || '—',
+      type: 'to', badge: 'Time Off', staffName: resolveStaffName(o.user_id), date: o.request_date || '--',
       detail: o.reason || o.notes || '', requestId: o.id
     });
   });
 
-  // 3. Open shifts (staff_member=0) for upcoming days
   const futureStart = new Date(today); futureStart.setDate(futureStart.getDate() + 1);
   const futureEnd = new Date(today); futureEnd.setDate(futureEnd.getDate() + 14);
   const futureShifts = await loadShifts(futureStart, futureEnd);
@@ -741,7 +744,7 @@ async function renderDashboard() {
 
   if (inboxItems.length === 0) {
     countBadge.style.display = 'none';
-    inboxList.innerHTML = '<div class="inbox-empty">No pending items</div>';
+    inboxList.innerHTML = '<div class="inbox-empty"><div class="inbox-empty-title">No pending items</div><div class="inbox-empty-sub">All caught up. Pending approvals and requests will appear here.</div></div>';
   } else {
     countBadge.style.display = 'inline-block';
     countBadge.textContent = inboxItems.length;
@@ -749,16 +752,16 @@ async function renderDashboard() {
       const badgeClass = item.type === 'ot' ? 'inbox-badge-ot' : item.type === 'to' ? 'inbox-badge-to' : 'inbox-badge-os';
       let actions = '';
       if (item.type === 'ot') {
-        actions = `<button class="btn btn-green btn-sm" onclick="handleOT(${item.postId},'approve')">Approve</button><button class="btn btn-red btn-sm" onclick="handleOT(${item.postId},'deny')">Deny</button>`;
+        actions = `<button class="btn btn-green btn-sm" onclick="handleOT(${item.postId},'approve')">Approve</button><button class="btn btn-ghost btn-sm" onclick="handleOT(${item.postId},'deny')">Deny</button>`;
       } else if (item.type === 'to') {
-        actions = `<button class="btn btn-green btn-sm" onclick="handleTimeOffInbox(${item.requestId},'approve')">Approve</button><button class="btn btn-red btn-sm" onclick="handleTimeOffInbox(${item.requestId},'deny')">Deny</button>`;
+        actions = `<button class="btn btn-green btn-sm" onclick="handleTimeOffInbox(${item.requestId},'approve')">Approve</button><button class="btn btn-ghost btn-sm" onclick="handleTimeOffInbox(${item.requestId},'deny')">Deny</button>`;
       } else {
         actions = `<button class="btn btn-ghost btn-sm" onclick="document.querySelector('[data-tab=openshifts]').click()">View</button>`;
       }
       return `<div class="inbox-item">
         <div class="inbox-left">
           <span class="inbox-badge ${badgeClass}">${item.badge}</span>
-          <div class="inbox-desc"><strong>${item.staffName}</strong> <span>${item.date}${item.detail ? ' — ' + item.detail : ''}</span></div>
+          <div class="inbox-desc"><strong>${item.staffName}</strong> <span>${item.date}${item.detail ? ' -- ' + item.detail : ''}</span></div>
         </div>
         <div class="inbox-actions">${actions}</div>
       </div>`;
@@ -766,7 +769,6 @@ async function renderDashboard() {
   }
 }
 
-// Schedule
 function changeWeek(dir) {
   state.schedWeek = new Date(state.schedWeek);
   state.schedWeek.setDate(state.schedWeek.getDate() + dir * 7);
@@ -775,7 +777,7 @@ function changeWeek(dir) {
 async function renderSchedule() {
   const ws = state.schedWeek;
   const we = new Date(ws); we.setDate(we.getDate()+7);
-  document.getElementById('week-label').textContent = `${fmtDate(ws)} — ${fmtDate(new Date(we.getTime()-86400000))}`;
+  document.getElementById('week-label').textContent = `${fmtDate(ws)} -- ${fmtDate(new Date(we.getTime()-86400000))}`;
 
   const grid = document.getElementById('sched-grid');
   grid.innerHTML = '<div class="spinner" style="grid-column:1/-1">Loading schedule</div>';
@@ -795,8 +797,8 @@ async function renderSchedule() {
         dayShifts.map(s => {
           const cc = s.clinic;
           const inT = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
-          const outT = s.clockOut ? new Date(s.clockOut).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—';
-          return `<div class="shift-block ${cc}"><div class="shift-name">${s.name||'—'}</div><div class="shift-time">${inT}–${outT}</div><div>${s.hours?s.hours.toFixed(1)+'h':''}</div></div>`;
+          const outT = s.clockOut ? new Date(s.clockOut).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '--';
+          return `<div class="shift-block ${cc}"><div class="shift-name">${s.name||'--'}</div><div class="shift-time">${inT}–${outT}</div><div>${s.hours?s.hours.toFixed(1)+'h':''}</div></div>`;
         }).join('')
       }
     </div>`;
@@ -804,7 +806,6 @@ async function renderSchedule() {
   grid.innerHTML = html;
 }
 
-// Staff
 function renderStaff() {
   const search = (document.getElementById('staff-search').value || '').toLowerCase();
   const posF = document.getElementById('staff-pos-filter').value;
@@ -824,16 +825,15 @@ function renderStaff() {
     const isActive = pos !== 'terminated';
     const initials = (u.display_name||'??').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     return `<tr>
-      <td><div class="flex"><div class="avatar">${initials}</div><strong>${u.display_name||'—'}</strong></div></td>
-      <td style="color:var(--muted)">${u.user_email||'—'}</td>
+      <td><div class="flex"><div class="avatar">${initials}</div><strong>${u.display_name||'--'}</strong></div></td>
+      <td style="color:var(--muted)">${u.user_email||'--'}</td>
       <td>${getClinic(u.ID)}</td>
-      <td><span class="badge badge-blue">${pos||'—'}</span></td>
-      <td><span class="badge ${isActive?'badge-green':'badge-red'}">${isActive?'Active':'Terminated'}</span></td>
+      <td><span class="badge badge-blue">${pos||'--'}</span></td>
+      <td><span class="badge ${isActive?'badge-green':'badge-muted'}">${isActive?'Active':'Terminated'}</span></td>
     </tr>`;
   }).join('');
 }
 
-// Payroll
 function changePayWeek(dir) {
   state.payWeek = new Date(state.payWeek);
   state.payWeek.setDate(state.payWeek.getDate() + dir * 7);
@@ -842,7 +842,7 @@ function changePayWeek(dir) {
 async function renderPayroll() {
   const ws = state.payWeek;
   const we = new Date(ws); we.setDate(we.getDate()+7);
-  document.getElementById('pay-week-label').textContent = `${fmtDate(ws)} — ${fmtDate(new Date(we.getTime()-86400000))}`;
+  document.getElementById('pay-week-label').textContent = `${fmtDate(ws)} -- ${fmtDate(new Date(we.getTime()-86400000))}`;
 
   const shifts = await loadShifts(ws, we);
   const filtered = applyClinicFilter(shifts);
@@ -867,9 +867,9 @@ async function renderPayroll() {
       const gross = s.hours * rate;
       totalGross += gross;
       return `<tr>
-        <td><strong>${s.name||'—'}</strong></td>
+        <td><strong>${s.name||'--'}</strong></td>
         <td>${getClinic(s.staffId)}</td>
-        <td><span class="badge badge-blue">${pos||'—'}</span></td>
+        <td><span class="badge badge-blue">${pos||'--'}</span></td>
         <td>${s.hours.toFixed(1)}</td>
         <td>$${rate.toFixed(2)}</td>
         <td><strong>$${gross.toFixed(2)}</strong></td>
@@ -903,7 +903,6 @@ async function exportCSV() {
   a.download = `payroll-${fmtDate(ws)}.csv`; a.click();
 }
 
-// Financials
 function renderFinancials() {
   let data = state.deposits;
   if (state.globalClinic) data = data.filter(d => d.clinic === state.globalClinic);
@@ -929,14 +928,13 @@ function renderFinancials() {
   } else {
     tbody.innerHTML = data.slice(0,100).map(d => {
       const statusBadge = d.status === 'verified' ? '<span class="badge badge-green">Verified</span>' :
-        d.status === 'pending' ? '<span class="badge badge-orange">Pending</span>' :
-        '<span class="badge badge-blue">' + (d.status||'—') + '</span>';
-      return `<tr><td>${d.ddate||'—'}</td><td>${resolveStaffName(d.depositUID)||'—'}</td><td>${CLINICS[d.clinic]||d.clinic||'—'}</td><td>$${(parseFloat(d.deposit)||0).toFixed(2)}</td><td>${d.cheques?'$'+parseFloat(d.cheques).toFixed(2):'—'}</td><td><strong>$${(parseFloat(d.sum)||0).toFixed(2)}</strong></td><td>${statusBadge}</td></tr>`;
+        d.status === 'pending' ? '<span class="badge badge-blue">Pending</span>' :
+        '<span class="badge badge-muted">' + (d.status||'--') + '</span>';
+      return `<tr><td>${d.ddate||'--'}</td><td>${resolveStaffName(d.depositUID)||'--'}</td><td>${CLINICS[d.clinic]||d.clinic||'--'}</td><td>$${(parseFloat(d.deposit)||0).toFixed(2)}</td><td>${d.cheques?'$'+parseFloat(d.cheques).toFixed(2):'--'}</td><td><strong>$${(parseFloat(d.sum)||0).toFixed(2)}</strong></td><td>${statusBadge}</td></tr>`;
     }).join('');
   }
 }
 
-// Overtime Tab
 async function renderOvertime() {
   const tbody = document.getElementById('ot-table');
   tbody.innerHTML = '<tr><td colspan="9" class="spinner">Loading overtime</td></tr>';
@@ -956,29 +954,29 @@ async function renderOvertime() {
   tbody.innerHTML = filtered.map(s => {
     const regHours = Math.min(s.hours, 8).toFixed(1);
     const otHours = Math.max(0, s.hours - 8).toFixed(1);
-    const inTime = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—';
-    const outTime = s.clockOut ? new Date(s.clockOut).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—';
+    const inTime = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '--';
+    const outTime = s.clockOut ? new Date(s.clockOut).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '--';
     
     let status, actions;
     if (s.otApproval === '1') {
       status = '<span class="badge badge-green">Approved</span>';
-      actions = '—';
+      actions = '--';
     } else if (s.otApproval === '0' || s.otApproval === 'denied') {
-      status = '<span class="badge badge-red">Denied</span>';
-      actions = '—';
+      status = '<span class="badge badge-muted">Denied</span>';
+      actions = '--';
     } else {
-      status = '<span class="badge badge-orange">Pending</span>';
-      actions = `<div class="btn-group"><button class="btn btn-green btn-sm" onclick="handleOT(${s.postId},'approve')">Approve</button><button class="btn btn-red btn-sm" onclick="handleOT(${s.postId},'deny')">Deny</button></div>`;
+      status = '<span class="badge badge-blue">Pending</span>';
+      actions = `<div class="btn-group"><button class="btn btn-green btn-sm" onclick="handleOT(${s.postId},'approve')">Approve</button><button class="btn btn-ghost btn-sm" onclick="handleOT(${s.postId},'deny')">Deny</button></div>`;
     }
 
     return `<tr>
-      <td><strong>${s.name||'—'}</strong></td>
+      <td><strong>${s.name||'--'}</strong></td>
       <td>${fmtDate(s.date)}</td>
       <td>${regHours}h</td>
       <td>${otHours}h</td>
       <td>${inTime}</td>
       <td>${outTime}</td>
-      <td>${CLINICS[s.clinic]||s.clinic||'—'}</td>
+      <td>${CLINICS[s.clinic]||s.clinic||'--'}</td>
       <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;" title="${s.otReason}">${s.otReason}</td>
       <td>${status}<br>${actions}</td>
     </tr>`;
@@ -995,7 +993,7 @@ function handleOT(postId, action) {
   } else {
     if (row && row.querySelector) {
       const td = row.querySelector('td:last-child') || row.querySelector('.inbox-actions');
-      if (td) td.innerHTML = '<span class="badge badge-red">Denied</span>';
+      if (td) td.innerHTML = '<span class="badge badge-muted">Denied</span>';
     }
   }
 }
@@ -1004,11 +1002,10 @@ function handleTimeOffInbox(requestId, action) {
   const row = event.target.closest('.inbox-item');
   if (row) {
     const actions = row.querySelector('.inbox-actions');
-    if (actions) actions.innerHTML = action === 'approve' ? '<span class="badge badge-green">Approved</span>' : '<span class="badge badge-red">Denied</span>';
+    if (actions) actions.innerHTML = action === 'approve' ? '<span class="badge badge-green">Approved</span>' : '<span class="badge badge-muted">Denied</span>';
   }
 }
 
-// Time Off Tab
 async function renderTimeOff() {
   const tbody = document.getElementById('to-table');
   const now = new Date();
@@ -1023,25 +1020,21 @@ async function renderTimeOff() {
   const filtered = applyClinicFilter(timeOffShifts);
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--muted);padding:2rem;text-align:center;">
-      <div style="font-size:16px;margin-bottom:.5rem;">No Time Off Requests</div>
-      <div style="font-size:13px;">Time off requests will appear here when submitted by staff.</div>
-    </td></tr>`;
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);padding:2rem;text-align:center;">No time off requests found</td></tr>';
     return;
   }
 
   tbody.innerHTML = filtered.map(s => {
     return `<tr>
-      <td><strong>${s.name||'—'}</strong></td>
+      <td><strong>${s.name||'--'}</strong></td>
       <td>${fmtDate(s.date)}</td>
-      <td><span class="badge badge-purple">${(s.meta?.type||'Time Off').replace('_',' ')}</span></td>
-      <td><span class="badge badge-orange">Pending</span></td>
-      <td>${s.otReason || '—'}</td>
+      <td><span class="badge badge-green">${(s.meta?.type||'Time Off').replace('_',' ')}</span></td>
+      <td><span class="badge badge-blue">Pending</span></td>
+      <td>${s.otReason || '--'}</td>
     </tr>`;
   }).join('');
 }
 
-// Open Shifts Tab
 async function renderOpenShifts() {
   const tbody = document.getElementById('os-table');
   tbody.innerHTML = '<tr><td colspan="6" class="spinner">Loading open shifts</td></tr>';
@@ -1055,28 +1048,24 @@ async function renderOpenShifts() {
   const filtered = applyClinicFilter(openShifts);
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="color:var(--muted);padding:2rem;text-align:center;">
-      <div style="font-size:16px;margin-bottom:.5rem;">No Open Shifts</div>
-      <div style="font-size:13px;">All shifts are filled for the next 2 weeks.</div>
-    </td></tr>`;
+    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:2rem;text-align:center;">No open shifts found</td></tr>';
     return;
   }
 
   const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   tbody.innerHTML = filtered.map(s => {
-    const inTime = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—';
+    const inTime = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '--';
     return `<tr>
       <td><span style="color:var(--muted)">Unassigned</span></td>
       <td>${days[s.date.getDay()]} ${fmtDate(s.date)}</td>
       <td>${inTime}</td>
-      <td>${s.hours?s.hours.toFixed(1)+'h':'—'}</td>
-      <td>${CLINICS[s.clinic]||s.clinic||'—'}</td>
-      <td>${s.otReason || '—'}</td>
+      <td>${s.hours?s.hours.toFixed(1)+'h':'--'}</td>
+      <td>${CLINICS[s.clinic]||s.clinic||'--'}</td>
+      <td>${s.otReason || '--'}</td>
     </tr>`;
   }).join('');
 }
 
-// Init on load
 init().then(() => {
   renderStaff();
   renderFinancials();
