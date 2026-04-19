@@ -3,252 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vet INC — Team Portal</title>
+<title>Vet INC - Team Portal</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f0f6ff;--surface:#ffffff;--surface2:#eff6ff;--border:#dbeafe;
-  --primary:#2563eb;--primary-light:#60a5fa;--text:#1e3a5f;--muted:#64748b;
-}
+:root{--bg:#f0f6ff;--surface:#ffffff;--surface2:#eff6ff;--border:#dbeafe;--primary:#2563eb;--primary-light:#60a5fa;--text:#1e3a5f;--muted:#64748b;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444}
+*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-header{background:var(--surface);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 12px rgba(37,99,235,.07);position:sticky;top:0;z-index:50}
-.logo{font-size:22px;font-weight:700;letter-spacing:-.5px}.logo span{color:var(--primary)}
-.staff-info{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
-.staff-info .badge{background:var(--surface2);color:var(--primary);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
-.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
-.tabs{display:flex;gap:6px;padding:16px 28px 0;max-width:900px;margin:0 auto}
-.tab{padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--muted);border:1px solid var(--border);transition:.15s}
-.tab:hover{color:var(--text)}
-.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.main{max-width:900px;margin:0 auto;padding:20px 28px 40px}
-.card{background:var(--surface);border-radius:12px;box-shadow:0 1px 12px rgba(37,99,235,.07);padding:24px;margin-bottom:16px}
-.card-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.status{font-size:12px;padding:4px 12px;border-radius:20px;font-weight:600}
-.status.draft{background:#fef3c7;color:#92400e}
-.status.submitted{background:#dbeafe;color:#1e40af}
-.status.approved{background:#d1fae5;color:#065f46}
+.header{background:var(--surface);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+.logo{font-size:22px;font-weight:700;color:var(--text)}.logo .inc{color:var(--primary)}
+.header-right{text-align:right}.header-right .name{font-weight:600;font-size:14px}.header-right .role{font-size:12px;color:var(--muted)}
+.tabs{background:var(--surface);padding:10px 28px 0;display:flex;gap:4px;border-bottom:1px solid var(--border)}
+.tab{padding:10px 20px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);border-radius:10px 10px 0 0;transition:.2s}
+.tab.active{background:var(--primary);color:#fff}.tab:hover:not(.active){background:var(--surface2);color:var(--text)}
+.content{padding:24px 28px;max-width:1200px;margin:0 auto}
+.tab-content{display:none}.tab-content.active{display:block}
+.card{background:var(--surface);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:20px;margin-bottom:16px}
+h2{font-size:18px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
+th{background:var(--surface2);font-weight:600;font-size:12px;text-transform:uppercase;color:var(--muted)}
+input[type="number"],input[type="text"],input[type="date"],input[type="time"],select,textarea{border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.btn{padding:8px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#1d4ed8}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--surface2)}
+.btn-danger{background:var(--danger);color:#fff}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-draft{background:#e0e7ff;color:#4338ca}.badge-submitted{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
+.badge-pending{background:#fef3c7;color:#92400e}.badge-denied{background:#fee2e2;color:#991b1b}
+.badge-new{background:var(--primary);color:#fff}
+.badge-safety{background:#fee2e2;color:#991b1b}.badge-hr{background:#dbeafe;color:#1e40af}.badge-conduct{background:#fef3c7;color:#92400e}.badge-benefits{background:#dcfce7;color:#166534}
 .week-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.week-nav button{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text)}
-.week-nav button:hover{background:var(--surface2)}
-.week-nav span{font-size:14px;font-weight:600}
-table.timesheet{width:100%;border-collapse:collapse}
-.timesheet th{text-align:left;padding:8px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:2px solid var(--border)}
-.timesheet td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:14px}
-.timesheet tr:last-child td{border-bottom:none}
-.timesheet input[type=number]{width:70px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-align:center;outline:none}
-.timesheet input[type=number]:focus{border-color:var(--primary)}
-.timesheet input[type=text]{width:100%;max-width:260px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none}
-.timesheet input[type=text]:focus{border-color:var(--primary)}
-.total-row{font-weight:700;background:var(--surface2)}
-.total-row td{border-bottom:none!important}
-.btn{padding:10px 24px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:#1d4ed8}
-.btn-primary:disabled{background:var(--primary-light);cursor:not-allowed}
-.schedule-toggle{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:16px;width:fit-content}
-.schedule-toggle button{padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted)}
-.schedule-toggle button.active{background:var(--primary);color:#fff}
-.shift-list{list-style:none}
-.shift-list li{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
-.shift-list li:last-child{border-bottom:none}
-.shift-day{font-weight:600;width:80px}
-.shift-time{color:var(--muted)}
-.shift-off{color:#cbd5e1;font-style:italic}
-.grid-table{width:100%;border-collapse:collapse;font-size:13px}
-.grid-table th{padding:10px 8px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:2px solid var(--border)}
-.grid-table th:first-child{text-align:left}
-.grid-table td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--border)}
-.grid-table td:first-child{text-align:left;font-weight:600}
-.grid-table tr:last-child td{border-bottom:none}
-.shift-chip{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;color:#fff}
-.role-vet{background:#2563eb}.role-tech{background:#16a34a}.role-reception{background:#9333ea}
-.role-assistant{background:#ea580c}.role-manager{background:#ec4899}
-.doc-list{list-style:none}
-.doc-list li{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
-.doc-list li:last-child{border-bottom:none}
-.doc-left{display:flex;align-items:center;gap:12px}
-.doc-icon{width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px}
-.doc-name{font-weight:600;font-size:14px}
-.doc-date{font-size:12px;color:var(--muted)}
-.btn-outline{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--primary);font-size:13px;font-weight:600;cursor:pointer}
-.btn-outline:hover{background:var(--surface2)}
-.hidden{display:none}
-@media(max-width:640px){
-  .tabs{padding:12px 12px 0;gap:4px;flex-wrap:wrap}
-  .main{padding:16px 12px}
-  .card{padding:16px}
-  .grid-table{font-size:11px}
-}
+.week-nav span{font-weight:600;font-size:14px;min-width:200px;text-align:center}
+.var-ok{color:var(--success);font-weight:600}.var-less{color:var(--warning);font-weight:600}.var-more{color:var(--danger);font-weight:600}
+.totals td{font-weight:700;background:var(--surface2);border-top:2px solid var(--border)}
+.role-vet{background:#dbeafe}.role-tech{background:#dcfce7}.role-reception{background:#f3e8ff}.role-assistant{background:#ffedd5}.role-manager{background:#fce7f3}.role-off{background:#f1f5f9;color:#94a3b8}
+.toggle-bar{display:flex;gap:8px;margin-bottom:16px}
+.toggle-btn{padding:8px 18px;border:1px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit}
+.toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.sub-section{display:none}.sub-section.active{display:block}
+.chat-container{display:flex;flex-direction:column;height:480px}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chat-msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+.chat-msg.user{align-self:flex-end;background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.ai{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-msg .sender{font-size:11px;font-weight:600;margin-bottom:4px}
+.chat-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
+.chat-input input{flex:1}
+.policy-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:.15s}
+.policy-item:hover{background:var(--surface2)}.policy-item:last-child{border-bottom:none}
+.policy-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0}
+.policy-dot.viewed{background:var(--border)}
+.policy-info{flex:1}.policy-title{font-weight:600;font-size:13px}.policy-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.policy-detail{display:none;padding:16px;background:var(--surface2);border-radius:8px;margin:8px 12px 12px;font-size:13px;line-height:1.6}
+.policy-detail.open{display:block}
+.doc-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.doc-icon{font-size:20px}.doc-info{flex:1}.doc-name{font-weight:600;font-size:13px}.doc-date{font-size:11px;color:var(--muted)}
+.my-sched-day{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.my-sched-day:last-child{border:none}.my-sched-day .day-name{font-weight:600;width:80px}.my-sched-day .shift{flex:1}.my-sched-day.off{color:var(--muted)}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">Vet <span>INC</span></div>
-  <div class="staff-info">
-    <span class="badge">Vet Tech</span>
-    <span>Sarah K.</span>
-    <div class="avatar">SK</div>
-  </div>
-</header>
-
+<div class="header">
+  <div class="logo">Vet <span class="inc">INC</span></div>
+  <div class="header-right"><div class="name">Sarah K.</div><div class="role">Vet Tech · $28/hr</div></div>
+</div>
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('timesheet')">My Timesheet</div>
-  <div class="tab" onclick="switchTab('schedule')">Schedule</div>
-  <div class="tab" onclick="switchTab('documents')">Documents</div>
+  <button class="tab active" onclick="showTab('timesheet',this)">My Timesheet</button>
+  <button class="tab" onclick="showTab('overtime',this)">Overtime Requests</button>
+  <button class="tab" onclick="showTab('schedule',this)">Schedule</button>
+  <button class="tab" onclick="showTab('policies',this)">Policies</button>
+  <button class="tab" onclick="showTab('documents',this)">Documents</button>
+</div>
+<div class="content">
+
+<div id="tab-timesheet" class="tab-content active">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="margin:0">My Timesheet</h2><span class="badge badge-draft" id="ts-status">Draft</span>
+    </div>
+    <div class="week-nav">
+      <button class="btn btn-outline btn-sm" onclick="changeWeek(-1)">← Prev</button>
+      <span id="ts-week-label"></span>
+      <button class="btn btn-outline btn-sm" onclick="changeWeek(1)">Next →</button>
+    </div>
+    <table><thead><tr><th>Day</th><th>Scheduled Shift</th><th>Actual Hours</th><th>Variance</th><th>Notes</th><th></th></tr></thead><tbody id="ts-body"></tbody>
+    <tfoot><tr class="totals"><td colspan="2">Totals</td><td id="ts-total-actual"></td><td id="ts-total-var"></td><td id="ts-total-ot" colspan="2"></td></tr></tfoot></table>
+    <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
+      <button class="btn btn-primary" id="ts-submit-btn" onclick="submitTimesheet()">Submit for Approval</button>
+      <span style="font-size:12px;color:var(--muted)">Auto-calculated from your schedule</span>
+    </div>
+  </div>
 </div>
 
-<div class="main">
-
-  <!-- TIMESHEET TAB -->
-  <div id="tab-timesheet">
-    <div class="card">
-      <div class="card-title">
-        <span>Weekly Timesheet</span>
-        <span class="status draft" id="ts-status">Draft</span>
-      </div>
-      <div class="week-nav">
-        <button onclick="changeWeek(-1)">← Prev</button>
-        <span id="week-label"></span>
-        <button onclick="changeWeek(1)">Next →</button>
-      </div>
-      <table class="timesheet">
-        <thead><tr><th>Day</th><th>Hours Worked</th><th>Notes</th></tr></thead>
-        <tbody id="ts-body"></tbody>
-        <tfoot>
-          <tr class="total-row"><td colspan="1">Weekly Total</td><td id="ts-total" colspan="2">0 hrs</td></tr>
-        </tfoot>
-      </table>
-      <div style="margin-top:18px;text-align:right">
-        <button class="btn btn-primary" id="ts-submit" onclick="submitTimesheet()">Submit for Approval</button>
-      </div>
+<div id="tab-overtime" class="tab-content">
+  <div class="card">
+    <h2>Submit Overtime Request</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+      <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Date</label><input type="date" id="ot-date" style="width:100%"></div>
+      <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Scheduled End</label><input type="time" id="ot-sched-end" value="16:00" style="width:100%"></div>
+      <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Actual End</label><input type="time" id="ot-actual-end" style="width:100%"></div>
     </div>
-  </div>
-
-  <!-- SCHEDULE TAB -->
-  <div id="tab-schedule" class="hidden">
-    <div class="card">
-      <div class="card-title"><span>Schedule</span></div>
-      <div class="schedule-toggle">
-        <button class="active" onclick="toggleSchedule('my',this)">My Schedule</button>
-        <button onclick="toggleSchedule('team',this)">Full Team</button>
-      </div>
-      <div class="week-nav">
-        <button onclick="changeSchedWeek(-1)">← Prev</button>
-        <span id="sched-week-label"></span>
-        <button onclick="changeSchedWeek(1)">Next →</button>
-      </div>
-      <div id="my-schedule">
-        <ul class="shift-list" id="my-shifts"></ul>
-      </div>
-      <div id="team-schedule" class="hidden">
-        <table class="grid-table">
-          <thead><tr><th>Staff</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
-          <tbody id="team-grid"></tbody>
-        </table>
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Reason</label>
+        <select id="ot-reason" style="width:100%"><option>Patient emergency</option><option>Short-staffed</option><option>Volunteered</option><option>Other</option></select></div>
+      <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Notes</label><input type="text" id="ot-notes" placeholder="Optional details..." style="width:100%"></div>
     </div>
+    <button class="btn btn-primary" onclick="submitOT()">Submit Request</button>
   </div>
-
-  <!-- DOCUMENTS TAB -->
-  <div id="tab-documents" class="hidden">
-    <div class="card">
-      <div class="card-title"><span>Documents</span></div>
-      <ul class="doc-list" id="doc-list"></ul>
-    </div>
-  </div>
-
+  <div class="card"><h2>My Overtime Requests</h2><table><thead><tr><th>Date</th><th>Sched. End</th><th>Actual End</th><th>Hours</th><th>Reason</th><th>Status</th></tr></thead><tbody id="ot-list"></tbody></table></div>
 </div>
 
+<div id="tab-schedule" class="tab-content">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="margin:0">Schedule</h2>
+      <div class="toggle-bar" style="margin:0">
+        <button class="toggle-btn active" onclick="toggleSched('my',this)">My Schedule</button>
+        <button class="toggle-btn" onclick="toggleSched('team',this)">Full Team</button>
+      </div>
+    </div>
+    <div class="week-nav">
+      <button class="btn btn-outline btn-sm" onclick="changeSchedWeek(-1)">← Prev</button>
+      <span id="sched-week-label"></span>
+      <button class="btn btn-outline btn-sm" onclick="changeSchedWeek(1)">Next →</button>
+    </div>
+    <div id="sched-my"></div>
+    <div id="sched-team" style="display:none"></div>
+  </div>
+</div>
+
+<div id="tab-policies" class="tab-content">
+  <div class="card">
+    <div class="toggle-bar">
+      <button class="toggle-btn active" onclick="togglePol('ai',this)">AI Policy Aid</button>
+      <button class="toggle-btn" onclick="togglePol('list',this)">View All Policies</button>
+    </div>
+    <div id="policy-ai" class="sub-section active">
+      <div class="chat-container" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)">
+        <div class="chat-messages" id="chat-msgs">
+          <div class="chat-msg ai"><div class="sender">Policy Assistant</div>Hi Sarah! I can help you understand Vet INC workplace policies. Ask me anything about sick days, overtime, benefits, or any other policy.</div>
+          <div class="chat-msg user"><div class="sender">You</div>How many sick days do I get?</div>
+          <div class="chat-msg ai"><div class="sender">Policy Assistant</div>Full-time staff receive <b>10 paid sick days</b> per year. Part-time staff receive a pro-rated amount based on hours worked. Sick days can be used for personal illness, medical appointments, or caring for an ill family member. Please notify your manager at least 1 hour before your shift if possible.</div>
+          <div class="chat-msg user"><div class="sender">You</div>What's the overtime policy?</div>
+          <div class="chat-msg ai"><div class="sender">Policy Assistant</div>Overtime is paid at <b>1.5x your regular rate</b> after 80 hours per pay period (bi-weekly). Any hours worked beyond your scheduled shift must be pre-approved by your manager via an Overtime Request. Unauthorized overtime may not be compensated. Statutory holiday overtime is paid at 2x.</div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="chat-input" placeholder="Ask about a policy..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="btn btn-primary" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </div>
+    <div id="policy-list" class="sub-section"><div id="policy-items"></div></div>
+  </div>
+</div>
+
+<div id="tab-documents" class="tab-content">
+  <div class="card"><h2>My Documents</h2><div id="doc-list"></div></div>
+</div>
+
+</div>
 <script>
-const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-const today=new Date();
-function getWeekStart(d){const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);return new Date(d.getFullYear(),d.getMonth(),diff)}
-function fmtRange(start){const end=new Date(start);end.setDate(end.getDate()+6);const s=start.toLocaleDateString('en-US',{month:'short',day:'numeric'});const e=end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});return s+' — '+e}
-
-// Timesheet data
-const timesheets=[
-  {offset:-2,hours:[8,8,8,8,8,0,0],notes:['','','','','','',''],status:'approved'},
-  {offset:-1,hours:[8,7.5,8,8,7,0,0],notes:['','','Training','','','',''],status:'approved'},
-  {offset:0,hours:[8,8,8,8,7,0,0],notes:['','','','','','',''],status:'draft'}
-];
-let currentWeek=0;
-
-function renderTimesheet(){
-  const ts=timesheets[currentWeek];
-  const ws=getWeekStart(new Date(today));ws.setDate(ws.getDate()+ts.offset*7);
-  document.getElementById('week-label').textContent=fmtRange(ws);
-  document.getElementById('ts-status').textContent=ts.status.charAt(0).toUpperCase()+ts.status.slice(1);
-  document.getElementById('ts-status').className='status '+ts.status;
-  const readonly=ts.status!=='draft';
-  const tbody=document.getElementById('ts-body');
-  tbody.innerHTML='';
-  let total=0;
-  DAYS.forEach((d,i)=>{
-    total+=ts.hours[i];
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${d}</td><td><input type="number" min="0" max="24" step="0.5" value="${ts.hours[i]}" ${readonly?'disabled':''} onchange="updateHours(${i},this.value)"></td><td><input type="text" placeholder="Optional" value="${ts.notes[i]}" ${readonly?'disabled':''} onchange="updateNotes(${i},this.value)"></td>`;
-    tbody.appendChild(tr);
-  });
-  document.getElementById('ts-total').textContent=total+' hrs';
-  document.getElementById('ts-submit').disabled=readonly;
-}
-
-function updateHours(i,v){timesheets[currentWeek].hours[i]=parseFloat(v)||0;renderTimesheet()}
-function updateNotes(i,v){timesheets[currentWeek].notes[i]=v}
-function changeWeek(dir){currentWeek=Math.max(0,Math.min(timesheets.length-1,currentWeek+dir));renderTimesheet()}
-function submitTimesheet(){timesheets[currentWeek].status='submitted';renderTimesheet()}
-
-// Schedule data
-const staff=[
-  {name:'Dr. Patel',role:'vet',shifts:['8:00–16:00','8:00–16:00','8:00–16:00','8:00–16:00','8:00–14:00','OFF','OFF']},
-  {name:'Dr. Chen',role:'vet',shifts:['OFF','8:00–16:00','8:00–16:00','8:00–16:00','8:00–16:00','9:00–13:00','OFF']},
-  {name:'Sarah K.',role:'tech',shifts:['8:00–16:00','8:00–16:00','8:00–16:00','8:00–16:00','8:00–15:00','OFF','OFF']},
-  {name:'Mike R.',role:'tech',shifts:['9:00–17:00','9:00–17:00','OFF','9:00–17:00','9:00–17:00','9:00–13:00','OFF']},
-  {name:'Lisa T.',role:'reception',shifts:['7:30–15:30','7:30–15:30','7:30–15:30','7:30–15:30','7:30–15:30','OFF','OFF']},
-  {name:'Emma W.',role:'reception',shifts:['OFF','OFF','12:00–20:00','12:00–20:00','12:00–20:00','8:00–16:00','10:00–14:00']},
-  {name:'Jake P.',role:'assistant',shifts:['8:00–14:00','8:00–14:00','8:00–14:00','OFF','8:00–14:00','8:00–12:00','OFF']},
-  {name:'Rosa M.',role:'manager',shifts:['8:00–17:00','8:00–17:00','8:00–17:00','8:00–17:00','8:00–17:00','OFF','OFF']}
-];
-const roleClass={vet:'role-vet',tech:'role-tech',reception:'role-reception',assistant:'role-assistant',manager:'role-manager'};
-let schedWeek=0;
-
-function renderSchedule(){
-  const ws=getWeekStart(new Date(today));ws.setDate(ws.getDate()+schedWeek*7);
-  document.getElementById('sched-week-label').textContent=fmtRange(ws);
-  const me=staff.find(s=>s.name==='Sarah K.');
-  document.getElementById('my-shifts').innerHTML=me.shifts.map((sh,i)=>`<li><span class="shift-day">${DAYS[i]}</span><span class="${sh==='OFF'?'shift-off':'shift-time'}">${sh}</span></li>`).join('');
-  document.getElementById('team-grid').innerHTML=staff.map(s=>`<tr><td><span class="shift-chip ${roleClass[s.role]}">${s.name}</span></td>${s.shifts.map(sh=>`<td style="${sh==='OFF'?'color:#cbd5e1;font-style:italic':''}">${sh}</td>`).join('')}</tr>`).join('');
-}
-function changeSchedWeek(d){schedWeek+=d;renderSchedule()}
-function toggleSchedule(view,btn){
-  document.querySelectorAll('.schedule-toggle button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('my-schedule').classList.toggle('hidden',view!=='my');
-  document.getElementById('team-schedule').classList.toggle('hidden',view!=='team');
-}
-
-// Documents
-const docs=[
-  {name:'TD1 Personal Tax Credits Return',icon:'📋',date:'Jan 15, 2026',type:'PDF'},
-  {name:'TD1AB Alberta Tax Credits Return',icon:'📋',date:'Jan 15, 2026',type:'PDF'},
-  {name:'Employee Handbook',icon:'📖',date:'Feb 1, 2026',type:'PDF'},
-  {name:'Respectful Workplace Policy',icon:'🤝',date:'Feb 1, 2026',type:'PDF'},
-  {name:'Employment Contract',icon:'📝',date:'Dec 1, 2025',type:'PDF'}
-];
-document.getElementById('doc-list').innerHTML=docs.map(d=>`<li><div class="doc-left"><div class="doc-icon">${d.icon}</div><div><div class="doc-name">${d.name}</div><div class="doc-date">${d.type} · Uploaded ${d.date}</div></div></div><button class="btn-outline" onclick="alert('Document preview — ${d.name}')">View</button></li>`).join('');
-
-// Tab switching
-function switchTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  event.target.classList.add('active');
-  ['timesheet','schedule','documents'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab);
-  });
-}
-
-renderTimesheet();
-renderSchedule();
+const DAYS=['Mon','Tue','Wed','Thu','Fri'],FULL_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let curWeek=0,schedWk=0;
+const schedule={Mon:'8:00 - 16:00',Tue:'8:00 - 16:00',Wed:'8:00 - 16:00',Thu:'8:00 - 16:00',Fri:'8:00 - 16:00',Sat:'OFF',Sun:'OFF'};
+const schedH={Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0,Sun:0};
+const timesheets={0:{Mon:8.5,Tue:8,Wed:8,Thu:9,Fri:7,status:'Draft',notes:{Fri:'Left early - feeling unwell'}},'-1':{Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,status:'Approved',notes:{}},'-2':{Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,status:'Approved',notes:{}}};
+let otReqs=[{date:'Apr 14, 2026',schedEnd:'16:00',actualEnd:'16:30',hours:0.5,reason:'Patient emergency',notes:'Emergency surgery ran over',status:'Pending'},{date:'Apr 17, 2026',schedEnd:'16:00',actualEnd:'17:00',hours:1.0,reason:'Short-staffed',notes:'Covered for absent coworker',status:'Pending'},{date:'Apr 7, 2026',schedEnd:'16:00',actualEnd:'17:30',hours:1.5,reason:'Patient emergency',notes:'Critical care case',status:'Approved'},{date:'Mar 28, 2026',schedEnd:'16:00',actualEnd:'16:45',hours:0.75,reason:'Volunteered',notes:'Helped close clinic',status:'Denied'}];
+const policies=[{title:'Respectful Workplace Policy',cat:'HR',date:'Mar 1, 2026',viewed:false,text:'Vet INC is committed to providing a respectful, inclusive workplace free from harassment, discrimination, and bullying. All employees are expected to treat colleagues, clients, and animals with dignity and respect. Any reports of misconduct will be investigated promptly and confidentially.'},{title:'Social Media Policy',cat:'Conduct',date:'Feb 15, 2026',viewed:false,text:'Employees must not share confidential client or patient information on social media. Photos of animals in care require written client consent. Represent Vet INC professionally online. Violations may result in disciplinary action.'},{title:'Overtime Policy',cat:'Benefits',date:'Jan 20, 2026',viewed:false,text:'Overtime is paid at 1.5x regular rate after 80 hours per bi-weekly pay period. All overtime must be pre-approved via the Overtime Request system. Unauthorized overtime may not be compensated. Statutory holiday overtime is paid at 2x.'},{title:'Employee Handbook',cat:'HR',date:'Jan 1, 2026',viewed:true,text:'This handbook outlines your rights, responsibilities, and benefits as a Vet INC employee. It covers employment terms, workplace expectations, compensation, leave policies, and grievance procedures. All employees must acknowledge this document within their first week.'},{title:'Attendance Policy',cat:'HR',date:'Dec 10, 2025',viewed:true,text:'Employees are expected to arrive on time for all scheduled shifts. Notify your manager at least 1 hour before your shift if unable to attend. Excessive unexcused absences (3+ per month) may result in disciplinary action.'},{title:'Health & Safety',cat:'Safety',date:'Nov 5, 2025',viewed:true,text:'All staff must follow safety protocols when handling animals and equipment. Report hazards immediately. Protective equipment must be worn when required. Incident reports must be filed within 24 hours of any workplace injury.'},{title:'Drug & Alcohol Policy',cat:'Conduct',date:'Oct 15, 2025',viewed:true,text:'Vet INC maintains a drug and alcohol-free workplace. Employees must not report to work under the influence. Prescription medication that may impair performance must be reported to HR. Violations will result in immediate suspension pending investigation.'},{title:'Confidentiality Agreement',cat:'Conduct',date:'Sep 1, 2025',viewed:true,text:'All client information, medical records, and business operations are confidential. Do not discuss client cases outside of professional necessity. Breach of confidentiality may result in termination and legal action.'},{title:'Vacation Policy',cat:'Benefits',date:'Aug 1, 2025',viewed:true,text:'Full-time employees accrue 2 vacation days per month (10 days/year after 1 year, 15 after 5 years). Requests must be submitted 2 weeks in advance. Vacation conflicts are resolved by seniority.'},{title:'Emergency Procedures',cat:'Safety',date:'Jul 1, 2025',viewed:true,text:'Familiarize yourself with all emergency exits and fire extinguisher locations. In case of animal bite or scratch, follow the incident protocol immediately. For fire, evacuate all humans and animals if safe. Assembly point: north parking lot.'}];
+const docs=[{icon:'📄',name:'TD1 Federal Form',date:'Jan 15, 2026'},{icon:'📋',name:'Employment Contract',date:'Jan 10, 2026'},{icon:'💰',name:'Pay Stub - Apr 1, 2026',date:'Apr 1, 2026'},{icon:'💰',name:'Pay Stub - Mar 15, 2026',date:'Mar 15, 2026'},{icon:'💰',name:'Pay Stub - Mar 1, 2026',date:'Mar 1, 2026'},{icon:'📑',name:'2025 T4 Tax Slip',date:'Feb 28, 2026'},{icon:'📝',name:'Benefits Enrollment Form',date:'Jan 20, 2026'}];
+const team=[{name:'Dr. James M.',role:'Veterinarian',shifts:{Mon:'8:00-16:00',Tue:'8:00-16:00',Wed:'OFF',Thu:'8:00-16:00',Fri:'8:00-16:00',Sat:'9:00-13:00',Sun:'OFF'}},{name:'Dr. Lisa R.',role:'Veterinarian',shifts:{Mon:'OFF',Tue:'8:00-16:00',Wed:'8:00-16:00',Thu:'OFF',Fri:'8:00-16:00',Sat:'OFF',Sun:'OFF'}},{name:'Sarah K.',role:'Vet Tech',shifts:{Mon:'8:00-16:00',Tue:'8:00-16:00',Wed:'8:00-16:00',Thu:'8:00-16:00',Fri:'8:00-16:00',Sat:'OFF',Sun:'OFF'}},{name:'Mike T.',role:'Vet Tech',shifts:{Mon:'8:00-16:00',Tue:'OFF',Wed:'8:00-16:00',Thu:'8:00-16:00',Fri:'OFF',Sat:'9:00-17:00',Sun:'OFF'}},{name:'Emma W.',role:'Receptionist',shifts:{Mon:'8:00-17:00',Tue:'8:00-17:00',Wed:'8:00-17:00',Thu:'8:00-17:00',Fri:'8:00-17:00',Sat:'9:00-13:00',Sun:'OFF'}},{name:'Carlos P.',role:'Receptionist',shifts:{Mon:'OFF',Tue:'12:00-17:00',Wed:'8:00-17:00',Thu:'12:00-17:00',Fri:'8:00-17:00',Sat:'OFF',Sun:'OFF'}},{name:'Amy L.',role:'Assistant',shifts:{Mon:'8:00-16:00',Tue:'8:00-16:00',Wed:'OFF',Thu:'8:00-16:00',Fri:'8:00-16:00',Sat:'9:00-13:00',Sun:'OFF'}},{name:'Rachel D.',role:'Practice Manager',shifts:{Mon:'8:00-17:00',Tue:'8:00-17:00',Wed:'8:00-17:00',Thu:'8:00-17:00',Fri:'8:00-12:00',Sat:'OFF',Sun:'OFF'}}];
+function roleClass(r){return r.includes('Veterinarian')?'role-vet':r.includes('Tech')?'role-tech':r.includes('Reception')?'role-reception':r.includes('Assistant')?'role-assistant':'role-manager'}
+function showTab(id,el){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active')}
+function weekLabel(off){const d=new Date(2026,3,13);d.setDate(d.getDate()+off*7);const e=new Date(d);e.setDate(e.getDate()+4);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+e.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function renderTS(){const ts=timesheets[curWeek];document.getElementById('ts-week-label').textContent=weekLabel(curWeek);if(!ts){document.getElementById('ts-body').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No timesheet for this week</td></tr>';document.getElementById('ts-total-actual').textContent='';document.getElementById('ts-total-var').textContent='';document.getElementById('ts-total-ot').textContent='';document.getElementById('ts-submit-btn').style.display='none';return}document.getElementById('ts-submit-btn').style.display='';const se=document.getElementById('ts-status');se.className='badge badge-'+ts.status.toLowerCase();se.textContent=ts.status;const dis=ts.status!=='Draft'?'disabled':'';let h='',tA=0,tS=0,tOT=0;DAYS.forEach(d=>{const sh=schedH[d],a=ts[d]||0,v=a-sh,vc=v===0?'var-ok':v<0?'var-less':'var-more';tS+=sh;tA+=a;if(v>0)tOT+=v;const n=ts.notes?.[d]||'';h+='<tr><td style="font-weight:600">'+d+'</td><td>'+schedule[d]+'</td><td><input type="number" value="'+a+'" min="0" max="24" step="0.5" style="width:70px" '+dis+' onchange="updTS(\''+d+'\',this.value)"></td><td class="'+vc+'">'+(v>0?'+':'')+v+'</td><td><input type="text" value="'+n+'" style="width:160px" placeholder="Notes..." '+dis+'></td><td>'+(v>0&&ts.status==='Draft'?'<button class="btn btn-danger btn-sm" onclick="otFromTS(\''+d+'\')">Request Overtime</button>':'')+'</td></tr>'});document.getElementById('ts-body').innerHTML=h;const tv=tA-tS;document.getElementById('ts-total-actual').textContent=tA+' hrs';document.getElementById('ts-total-var').innerHTML='<span class="'+(tv===0?'var-ok':tv<0?'var-less':'var-more')+'">'+(tv>0?'+':'')+tv+'</span>';document.getElementById('ts-total-ot').textContent='OT: '+tOT+' hrs'}
+function updTS(d,v){if(timesheets[curWeek])timesheets[curWeek][d]=parseFloat(v)||0;renderTS()}
+function changeWeek(d){curWeek+=d;if(curWeek>0)curWeek=0;if(curWeek<-2)curWeek=-2;renderTS()}
+function submitTimesheet(){if(timesheets[curWeek]&&timesheets[curWeek].status==='Draft'){timesheets[curWeek].status='Submitted';renderTS()}}
+function otFromTS(day){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab')[1].classList.add('active');document.getElementById('tab-overtime').classList.add('active')}
+function renderOT(){let h='';otReqs.forEach(r=>{const sc=r.status==='Pending'?'badge-pending':r.status==='Approved'?'badge-approved':'badge-denied';h+='<tr><td>'+r.date+'</td><td>'+r.schedEnd+'</td><td>'+r.actualEnd+'</td><td>'+r.hours+'</td><td>'+r.reason+'</td><td><span class="badge '+sc+'">'+r.status+'</span></td></tr>'});document.getElementById('ot-list').innerHTML=h}
+function submitOT(){const d=document.getElementById('ot-date').value,se=document.getElementById('ot-sched-end').value,ae=document.getElementById('ot-actual-end').value,r=document.getElementById('ot-reason').value,n=document.getElementById('ot-notes').value;if(!d||!ae){alert('Please fill in date and actual end time');return}const dh=((parseInt(ae.split(':')[0])+parseInt(ae.split(':')[1])/60)-(parseInt(se.split(':')[0])+parseInt(se.split(':')[1])/60));otReqs.unshift({date:new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),schedEnd:se,actualEnd:ae,hours:Math.round(dh*100)/100,reason:r,notes:n,status:'Pending'});renderOT();document.getElementById('ot-date').value='';document.getElementById('ot-notes').value=''}
+function renderSchedMy(){const d=new Date(2026,3,12);d.setDate(d.getDate()+schedWk*7);document.getElementById('sched-week-label').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+new Date(d.getFullYear(),d.getMonth(),d.getDate()+6).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});let h='',th=0;FULL_DAYS.forEach(day=>{const s=schedule[day],off=s==='OFF';if(!off)th+=schedH[day];h+='<div class="my-sched-day'+(off?' off':'')+'"><span class="day-name">'+day+'</span><span class="shift">'+s+'</span></div>'});h+='<div style="margin-top:12px;padding-top:12px;border-top:2px solid var(--border);font-weight:600">Total: '+th+' hours/week</div>';document.getElementById('sched-my').innerHTML=h}
+function renderSchedTeam(){let h='<div style="overflow-x:auto"><table><thead><tr><th>Staff</th>';FULL_DAYS.forEach(d=>h+='<th>'+d+'</th>');h+='</tr></thead><tbody>';team.forEach(m=>{const rc=roleClass(m.role);h+='<tr><td><strong>'+m.name+'</strong><br><span class="role-label '+rc+'" style="font-size:11px;padding:1px 6px;border-radius:4px;display:inline-block">'+m.role+'</span></td>';FULL_DAYS.forEach(d=>{const s=m.shifts[d],off=s==='OFF';h+='<td class="'+(off?'role-off':rc)+'" style="font-size:12px">'+s+'</td>'});h+='</tr>'});h+='</tbody></table></div>';document.getElementById('sched-team').innerHTML=h}
+function toggleSched(v,el){el.parentElement.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('sched-my').style.display=v==='my'?'':'none';document.getElementById('sched-team').style.display=v==='team'?'':'none'}
+function changeSchedWeek(d){schedWk+=d;renderSchedMy()}
+function togglePol(v,el){el.parentElement.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('policy-ai').classList.toggle('active',v==='ai');document.getElementById('policy-list').classList.toggle('active',v==='list')}
+function renderPolicies(){const sorted=[...policies].sort((a,b)=>a.viewed-b.viewed);let h='';sorted.forEach((p,i)=>{const bc=p.cat==='Safety'?'badge-safety':p.cat==='HR'?'badge-hr':p.cat==='Conduct'?'badge-conduct':'badge-benefits';h+='<div class="policy-item" onclick="togglePolDetail('+i+')"><div class="policy-dot'+(p.viewed?' viewed':'')+'"></div><div class="policy-info"><div class="policy-title">'+p.title+' '+(!p.viewed?'<span class="badge badge-new" style="font-size:9px">NEW</span>':'')+'</div><div class="policy-meta"><span class="badge '+bc+'">'+p.cat+'</span> · '+p.date+'</div></div></div><div class="policy-detail" id="pd-'+i+'">'+p.text+'</div>'});document.getElementById('policy-items').innerHTML=h}
+function togglePolDetail(i){const el=document.getElementById('pd-'+i);el.classList.toggle('open');const p=policies[i];if(!p.viewed){p.viewed=true;renderPolicies()}}
+function sendChat(){const inp=document.getElementById('chat-input'),msg=inp.value.trim();if(!msg)return;const msgs=document.getElementById('chat-msgs');msgs.innerHTML+='<div class="chat-msg user"><div class="sender">You</div>'+msg+'</div>';const answers={'sick':'Full-time staff receive 10 paid sick days per year. Part-time staff receive a pro-rated amount. Notify your manager at least 1 hour before your shift.','overtime':'Overtime is paid at 1.5x after 80 hours per pay period. All OT must be pre-approved. Statutory holiday OT is 2x.','vacation':'Full-time employees accrue 2 vacation days per month. Submit requests 2 weeks in advance.','benefits':'Vet INC offers health insurance, dental coverage, and a matching retirement plan. See your benefits enrollment form for details.','dress':'Scrubs are required for veterinary staff. Reception staff should wear business casual. Closed-toe shoes are mandatory.','break':'You are entitled to a 30-minute unpaid lunch and two 15-minute paid breaks per 8-hour shift.'};const low=msg.toLowerCase();let ans='I don\'t have specific information about that topic. Please check the full policies list or contact HR for details.';for(const[k,v]of Object.entries(answers)){if(low.includes(k)){ans=v;break}}setTimeout(()=>{msgs.innerHTML+='<div class="chat-msg ai"><div class="sender">Policy Assistant</div>'+ans+'</div>';msgs.scrollTop=msgs.scrollHeight},500);inp.value='';msgs.scrollTop=msgs.scrollHeight}
+function renderDocs(){let h='';docs.forEach(d=>{h+='<div class="doc-item"><span class="doc-icon">'+d.icon+'</span><div class="doc-info"><div class="doc-name">'+d.name+'</div><div class="doc-date">'+d.date+'</div></div><button class="btn btn-outline btn-sm">View</button></div>'});document.getElementById('doc-list').innerHTML=h}
+renderTS();renderOT();renderSchedMy();renderSchedTeam();renderPolicies();renderDocs();
 </script>
 </body>
 </html>
