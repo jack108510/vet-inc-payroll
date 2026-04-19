@@ -398,11 +398,11 @@ async function sbFetch(table, query='') {
 async function init() {
   try {
     const [users, usermeta, overtime, deposits, pfTotals] = await Promise.all([
-      sbFetch('csi_users', '?select=id,user_login,display_name,user_email'),
+      sbFetch('csi_users', '?select=ID,user_login,display_name,user_email'),
       sbFetch('csi_usermeta', '?select=user_id,meta_key,meta_value'),
       sbFetch('overtime_requests', '?select=*&order=request_date.desc&limit=50'),
       sbFetch('csi_daily_deposit', '?select=*&order=ddate.desc&limit=500'),
-      sbFetch('csi_pf_totals', '?select=*&order=id.desc&limit=90')
+      sbFetch('csi_pf_totals', '?select=*&order=ID.desc&limit=90')
     ]);
     state.users = users;
     state.usermeta = usermeta;
@@ -454,8 +454,8 @@ function getRate(pos) { return RATES[pos] || 25; }
 function getWeekStart(d) {
   const r = new Date(d); r.setDate(r.getDate() - r.getDay()); r.setHours(0,0,0,0); return r;
 }
-function fmtDate(d) { return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
-function fmtDateFull(d) { return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}); }
+function fmtDate(d) { return d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''; }
+function fmtDateFull(d) { return d ? d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}) : ''; }
 function fmtTime(h) {
   if (!h && h !== 0) return '—';
   const hrs = Math.floor(h); const mins = Math.round((h - hrs)*60);
