@@ -5,241 +5,857 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vet INC — Payroll Management</title>
 <style>
-:root{--sb:#1e293b;--sbh:#334155;--pri:#3b82f6;--suc:#22c55e;--warn:#f59e0b;--dan:#ef4444;--bg:#f1f5f9;--sf:#fff;--tx:#1e293b;--mt:#64748b;--bd:#e2e8f0;--r:10px;--sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shm:0 4px 12px rgba(0,0,0,.1);--shl:0 10px 30px rgba(0,0,0,.12)}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--tx);background:var(--bg);line-height:1.5;overflow:hidden;height:100vh}
-#login{display:flex;align-items:center;justify-content:center;height:100vh;width:100vw;background:linear-gradient(135deg,#1e293b,#3b82f6,#1e293b);position:fixed;inset:0;z-index:9999;transition:opacity .4s,visibility .4s}
-#login.hide{opacity:0;visibility:hidden;pointer-events:none}
-.lc{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-radius:16px;padding:48px 40px;width:380px;box-shadow:var(--shl);text-align:center}
-.lc h1{font-size:1.6rem;margin-bottom:4px}.lc p{color:var(--mt);margin-bottom:28px;font-size:.95rem}
-.lc input{width:100%;padding:12px 16px;border:2px solid var(--bd);border-radius:8px;font-size:1rem;outline:none;transition:border-color .2s}.lc input:focus{border-color:var(--pri)}
-.lc button{width:100%;margin-top:16px;padding:12px;background:var(--pri);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .2s,transform .1s}.lc button:hover{background:#2563eb}.lc button:active{transform:scale(.98)}
-.le{color:var(--dan);margin-top:12px;font-size:.85rem;min-height:20px}
-#app{display:flex;height:100vh;opacity:0;transition:opacity .4s}#app.vis{opacity:1}
-.side{width:240px;min-width:240px;background:var(--sb);color:#fff;display:flex;flex-direction:column;height:100vh;z-index:100;transition:transform .3s}
-.sbrand{padding:20px 24px;font-size:1.25rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
-.sbrand span{color:var(--pri)}
-.snav{flex:1;padding:12px 0;overflow-y:auto}
-.ni{display:flex;align-items:center;gap:12px;padding:11px 24px;cursor:pointer;transition:background .2s;color:rgba(255,255,255,.65);font-size:.95rem;border-left:3px solid transparent;user-select:none}
-.ni:hover{background:var(--sbh);color:#fff}.ni.act{background:var(--sbh);color:#fff;border-left-color:var(--pri)}
-.ni svg{width:20px;height:20px;flex-shrink:0}
-.sft{padding:16px 24px;border-top:1px solid rgba(255,255,255,.08);font-size:.8rem;color:rgba(255,255,255,.4)}
-.mn{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.hdr{height:60px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.hdr-l{display:flex;align-items:center;gap:16px}.hdr h2{font-size:1.2rem;font-weight:600}
-.ham{display:none;background:none;border:none;cursor:pointer;padding:4px}.ham svg{width:24px;height:24px}
-.hdr-r{display:flex;align-items:center;gap:12px}
-.av{width:32px;height:32px;border-radius:50%;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem}
-.uname{color:var(--mt);font-size:.9rem}
-.ct{flex:1;overflow-y:auto;padding:28px}
-.pg{display:none;animation:fi .3s ease}.pg.act{display:block}
-@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.cd{background:var(--sf);border-radius:var(--r);padding:24px;box-shadow:var(--sh);transition:box-shadow .2s}.cd:hover{box-shadow:var(--shm)}
-.cdh{font-size:1.05rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.sc{background:var(--sf);border-radius:var(--r);padding:20px 24px;box-shadow:var(--sh);position:relative;overflow:hidden}
-.sc::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--pri);border-radius:0 2px 2px 0}
-.sc.gn::after{background:var(--suc)}.sc.yl::after{background:var(--warn)}.sc.rd::after{background:var(--dan)}
-.sl{font-size:.8rem;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.sv{font-size:1.8rem;font-weight:700}.ss{font-size:.8rem;color:var(--mt);margin-top:4px}
-.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:10px 14px;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:var(--mt);border-bottom:2px solid var(--bd);font-weight:600}
-td{padding:10px 14px;border-bottom:1px solid var(--bd);font-size:.9rem}tr:hover td{background:var(--bg)}
-.bg{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
-.bg-a{background:#dcfce7;color:#166534}.bg-t{background:#fee2e2;color:#991b1b}.bg-p{background:#fef3c7;color:#92400e}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:500;transition:background .2s,transform .1s}.btn:active{transform:scale(.97)}
-.btn-p{background:var(--pri);color:#fff}.btn-p:hover{background:#2563eb}
-.btn-o{background:transparent;border:1px solid var(--bd);color:var(--tx)}.btn-o:hover{background:var(--bg)}
-.btn-s{background:var(--suc);color:#fff}.btn-d{background:var(--dan);color:#fff}
-select,.inp{padding:8px 12px;border:1px solid var(--bd);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;background:var(--sf)}select:focus,.inp:focus{border-color:var(--pri)}
-.sp{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--pri);border-radius:50%;animation:sp .7s linear infinite;margin:40px auto}
-@keyframes sp{to{transform:rotate(360deg)}}
-.ld{text-align:center;padding:40px;color:var(--mt)}
-.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.cn{display:flex;align-items:center;gap:8px}
-.cn button{width:36px;height:36px;border-radius:8px;border:1px solid var(--bd);background:var(--sf);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}.cn button:hover{background:var(--bg)}
-.cn .wl{font-weight:600;font-size:1rem;min-width:220px;text-align:center}
-.cg{display:grid;grid-template-columns:60px repeat(7,1fr);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;background:var(--sf);box-shadow:var(--sh)}
-.dh{padding:10px 4px;text-align:center;font-size:.75rem;font-weight:600;background:var(--sf);border-bottom:1px solid var(--bd);border-right:1px solid var(--bd)}
-.dh:last-child{border-right:none}.dh.wk{background:#f8fafc}.dh.td{color:var(--pri)}
-.dh .dn{font-size:1.1rem;display:block;font-weight:700}.dh .dname{color:var(--mt)}
-.tl{padding:4px 6px;font-size:.65rem;color:var(--mt);text-align:right;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:flex-start;justify-content:flex-end}
-.cc{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);position:relative;min-height:48px;padding:1px}.cc:last-child{border-right:none}.cc.wk{background:#fafbfc}
-.shb{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 5px;font-size:.68rem;color:#fff;cursor:pointer;overflow:hidden;transition:transform .15s,box-shadow .15s;z-index:2;white-space:nowrap}
-.shb:hover{transform:scale(1.03);box-shadow:var(--shm);z-index:5}
-.shb .sn{font-weight:600;overflow:hidden;text-overflow:ellipsis}.shb .st{opacity:.85;font-size:.6rem}
-.c0{background:#3b82f6}.c1{background:#8b5cf6}.c2{background:#ec4899}.c3{background:#f59e0b}.c4{background:#10b981}.c5{background:#6366f1}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
-.mo.op{opacity:1;visibility:visible}
-.mb{background:var(--sf);border-radius:12px;padding:28px;width:440px;max-width:90vw;box-shadow:var(--shl);transform:translateY(10px);transition:transform .2s}
-.mo.op .mb{transform:translateY(0)}.mb h3{margin-bottom:16px;font-size:1.15rem}
-.mr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)}.mr:last-child{border-bottom:none}
-.ml{color:var(--mt);font-size:.85rem}.mv{font-weight:600}
-.clk{font-size:4rem;font-weight:200;text-align:center;padding:30px;letter-spacing:2px}
-.cld{text-align:center;color:var(--mt);margin-bottom:24px;font-size:1rem}
-.cb{display:block;margin:0 auto 32px;padding:16px 48px;font-size:1.1rem;font-weight:600;border:none;border-radius:12px;cursor:pointer;transition:background .2s,transform .1s;color:#fff}.cb:active{transform:scale(.97)}
-.cb.in{background:var(--suc)}.cb.in:hover{background:#16a34a}.cb.out{background:var(--dan)}.cb.out:hover{background:#dc2626}
-.fi{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}.fi:last-child{border-bottom:none}
-.fd{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}.ft{font-size:.85rem}.ftm{font-size:.75rem;color:var(--mt)}
-.bc{display:flex;align-items:flex-end;gap:4px;height:120px}
-.bar{flex:1;border-radius:4px 4px 0 0;background:var(--pri);min-height:4px;transition:height .4s;cursor:pointer}.bar:hover{opacity:.8}
-.blb{text-align:center;flex:1;font-size:.6rem;color:var(--mt);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@media(max-width:900px){.side{position:fixed;left:0;top:0;transform:translateX(-100%)}.side.op{transform:translateX(0)}.ham{display:block}.g4{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
-@media(max-width:600px){.g4{grid-template-columns:1fr}.ct{padding:16px}.cg{grid-template-columns:40px repeat(7,1fr)}}
+:root {
+  --bg: #f0f6ff;
+  --surface: #ffffff;
+  --surface2: #eff6ff;
+  --border: #dbeafe;
+  --primary: #2563eb;
+  --primary-light: #60a5fa;
+  --text: #1e3a5f;
+  --muted: #64748b;
+  --green: #16a34a;
+  --red: #ef4444;
+  --purple: #7c3aed;
+  --emerald: #059669;
+  --orange: #ea580c;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+}
+/* Header */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.header-left { display: flex; align-items: center; gap: .75rem; }
+.logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 16px;
+}
+.brand { font-size: 18px; font-weight: 700; color: var(--text); }
+.brand-sub { font-size: 13px; color: var(--muted); margin-left: .5rem; }
+.header-right { display: flex; align-items: center; gap: .75rem; }
+.user-badge {
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--surface2); padding: 6px 14px; border-radius: 8px;
+  font-weight: 500; font-size: 13px;
+}
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 12px;
+}
+/* Tabs */
+.tabs {
+  position: sticky; top: 60px; z-index: 99;
+  background: var(--surface);
+  height: 52px;
+  display: flex; align-items: center; gap: .5rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 8px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  transition: all .2s;
+}
+.tab:hover { background: var(--surface2); color: var(--text); }
+.tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+/* Content */
+.content { padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
+.section { display: none; animation: fadeIn .3s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* Cards */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  margin-bottom: 1rem;
+}
+.card-title {
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: .75rem;
+}
+/* Stat Cards */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .3px; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--text); margin-top: .25rem; }
+.stat-sub { font-size: 12px; color: var(--muted); margin-top: .25rem; }
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: var(--surface2); font-size: 12px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: .3px;
+  padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border);
+}
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+tr:hover td { background: var(--surface2); }
+/* Badges */
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge-green { background: #dcfce7; color: var(--green); }
+.badge-red { background: #fee2e2; color: var(--red); }
+.badge-blue { background: #dbeafe; color: var(--primary); }
+.badge-orange { background: #ffedd5; color: var(--orange); }
+.badge-purple { background: #ede9fe; color: var(--purple); }
+/* Buttons */
+.btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; transition: all .2s;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface2); }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: #15803d; }
+.btn-red { background: var(--red); color: #fff; }
+.btn-red:hover { background: #dc2626; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+/* Inputs */
+input, select {
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text);
+  outline: none; transition: border-color .2s;
+}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+/* Grid helpers */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.flex { display: flex; align-items: center; gap: .75rem; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+/* Schedule */
+.week-nav { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+.week-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem;
+}
+.week-day {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  min-height: 200px; padding: .5rem;
+}
+.week-day-header { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; padding: 4px; }
+.week-day-header span { display: block; font-size: 16px; color: var(--text); font-weight: 700; }
+.shift-block {
+  margin-top: .35rem; padding: 6px 8px; border-radius: 6px;
+  font-size: 11px; line-height: 1.3;
+}
+.shift-block.tg { background: #dbeafe; color: var(--primary); border-left: 3px solid var(--primary); }
+.shift-block.ros { background: #dcfce7; color: var(--green); border-left: 3px solid var(--green); }
+.shift-block.rvv { background: #ede9fe; color: var(--purple); border-left: 3px solid var(--purple); }
+.shift-block.gcc { background: #ffedd5; color: var(--orange); border-left: 3px solid var(--orange); }
+.shift-block.upc { background: #fef3c7; color: #b45309; border-left: 3px solid #b45309; }
+.shift-block .shift-name { font-weight: 600; }
+.shift-block .shift-time { opacity: .85; }
+/* Live clock */
+.live-clock { font-size: 48px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; }
+.clock-date { font-size: 16px; color: var(--muted); margin-top: .25rem; }
+/* Spinner */
+.spinner {
+  display: flex; align-items: center; justify-content: center; padding: 3rem; color: var(--muted);
+}
+.spinner::after {
+  content: ''; width: 28px; height: 28px; border: 3px solid var(--border);
+  border-top-color: var(--primary); border-radius: 50%;
+  animation: spin .6s linear infinite; margin-left: .5rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+/* Activity */
+.activity-item {
+  display: flex; align-items: flex-start; gap: .75rem;
+  padding: .75rem 0; border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot {
+  width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+}
+.activity-text { font-size: 13px; }
+.activity-time { font-size: 11px; color: var(--muted); }
+/* Responsive */
+@media (max-width: 768px) {
+  .content { padding: 1rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .week-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .header { padding: 0 1rem; }
+  .tabs { padding: 0 .5rem; }
+}
+/* Filter bar */
+.filter-bar { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+/* Summary row */
+.summary-row { display: flex; gap: 2rem; padding: .75rem 0; font-size: 14px; font-weight: 600; }
 </style>
 </head>
 <body>
-<div id="login"><div class="lc"><h1>🐾 Vet INC</h1><p>Payroll Management Portal</p><input type="password" id="lp" placeholder="Enter password" autocomplete="off"><button onclick="doLogin()">Sign In</button><div class="le" id="le"></div></div></div>
-<div id="app"><aside class="side" id="side"><div class="sbrand">🐾 Vet <span>INC</span></div><nav class="snav" id="sn"></nav><div class="sft">© 2026 Vet INC</div></aside><div class="mn"><header class="hdr"><div class="hdr-l"><button class="ham" onclick="document.getElementById('side').classList.toggle('op')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><h2 id="pt">Dashboard</h2></div><div class="hdr-r"><div class="uname"><div class="av">SW</div> Scott Wilde</div></div></header><div class="ct" id="ct"></div></div></div>
-<div class="mo" id="mo" onclick="if(event.target===this)cm()"><div class="mb" id="mbd"></div></div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">V</div>
+    <span class="brand">Vet INC</span>
+    <span class="brand-sub">Payroll Management</span>
+  </div>
+  <div class="header-right">
+    <div class="user-badge">
+      <div class="avatar">SW</div>
+      <span>Scott Wilde</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" data-tab="dashboard">Dashboard</div>
+  <div class="tab" data-tab="schedule">Schedule</div>
+  <div class="tab" data-tab="timeclock">Time Clock</div>
+  <div class="tab" data-tab="staff">Staff</div>
+  <div class="tab" data-tab="payroll">Payroll</div>
+  <div class="tab" data-tab="financials">Financials</div>
+  <div class="tab" data-tab="resources">Resources</div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <!-- Dashboard -->
+  <div class="section active" id="sec-dashboard">
+    <div class="stats" id="dash-stats">
+      <div class="stat-card"><div class="stat-label">Active Staff</div><div class="stat-value" id="stat-staff">—</div></div>
+      <div class="stat-card"><div class="stat-label">Clocked In Today</div><div class="stat-value" id="stat-clockedin">—</div></div>
+      <div class="stat-card"><div class="stat-label">Weekly Payroll</div><div class="stat-value" id="stat-weeklypay">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pending OT</div><div class="stat-value" id="stat-pendingot">—</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Today's Shifts</div>
+        <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Clinic</th><th>In</th><th>Out</th><th>Hours</th></tr></thead>
+        <tbody id="dash-shifts"><tr><td colspan="5" class="spinner">Loading</td></tr></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Recent Activity</div>
+        <div id="dash-activity"><div class="spinner">Loading</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule -->
+  <div class="section" id="sec-schedule">
+    <div class="flex-between">
+      <div class="week-nav">
+        <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">← Prev</button>
+        <strong id="week-label">—</strong>
+        <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">Next →</button>
+      </div>
+      <div class="filter-bar">
+        <select id="sched-clinic-filter" onchange="renderSchedule()"><option value="">All Clinics</option></select>
+      </div>
+    </div>
+    <div class="week-grid" id="sched-grid"><div class="spinner">Loading schedule</div></div>
+  </div>
+
+  <!-- Time Clock -->
+  <div class="section" id="sec-timeclock">
+    <div class="card" style="text-align:center;padding:2rem;">
+      <div class="live-clock" id="live-clock">--:--:--</div>
+      <div class="clock-date" id="live-date">—</div>
+      <div style="margin-top:1.5rem;">
+        <button class="btn btn-green" id="clock-btn" onclick="toggleClock()" style="font-size:16px;padding:12px 36px;">Clock In</button>
+      </div>
+      <div id="clock-status" style="margin-top:.75rem;font-size:13px;color:var(--muted);"></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Today's Entries</div>
+        <div class="table-wrap"><table><thead><tr><th>Time</th><th>Action</th></tr></thead>
+        <tbody id="tc-entries"><tr><td colspan="2" style="color:var(--muted)">No entries yet</td></tr></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Weekly Summary</div>
+        <div id="tc-summary"><div class="spinner">Loading</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff -->
+  <div class="section" id="sec-staff">
+    <div class="filter-bar">
+      <input type="text" id="staff-search" placeholder="Search staff..." oninput="renderStaff()" style="width:220px;">
+      <select id="staff-clinic-filter" onchange="renderStaff()"><option value="">All Clinics</option></select>
+      <select id="staff-pos-filter" onchange="renderStaff()"><option value="">All Positions</option></select>
+    </div>
+    <div class="card" style="padding:0;">
+      <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Clinic</th><th>Position</th><th>Status</th></tr></thead>
+      <tbody id="staff-table"><tr><td colspan="5" class="spinner">Loading</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Payroll -->
+  <div class="section" id="sec-payroll">
+    <div class="flex-between" style="margin-bottom:1rem;">
+      <div class="week-nav">
+        <button class="btn btn-ghost btn-sm" onclick="changePayWeek(-1)">← Prev</button>
+        <strong id="pay-week-label">—</strong>
+        <button class="btn btn-ghost btn-sm" onclick="changePayWeek(1)">Next →</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="stats" id="pay-stats">
+      <div class="stat-card"><div class="stat-label">Total Hours</div><div class="stat-value" id="pay-total-hours">—</div></div>
+      <div class="stat-card"><div class="stat-label">Total Gross</div><div class="stat-value" id="pay-total-gross">—</div></div>
+      <div class="stat-card"><div class="stat-label">Staff Count</div><div class="stat-value" id="pay-staff-count">—</div></div>
+      <div class="stat-card"><div class="stat-label">Avg Hours/Staff</div><div class="stat-value" id="pay-avg-hours">—</div></div>
+    </div>
+    <div class="card" style="padding:0;">
+      <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Clinic</th><th>Position</th><th>Hours</th><th>Rate</th><th>Gross</th></tr></thead>
+      <tbody id="pay-table"><tr><td colspan="6" class="spinner">Loading</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Financials -->
+  <div class="section" id="sec-financials">
+    <div class="filter-bar">
+      <select id="fin-clinic-filter" onchange="renderFinancials()"><option value="">All Clinics</option></select>
+      <input type="date" id="fin-date-from" onchange="renderFinancials()">
+      <input type="date" id="fin-date-to" onchange="renderFinancials()">
+    </div>
+    <div class="stats" id="fin-stats">
+      <div class="stat-card"><div class="stat-label">Total Deposits</div><div class="stat-value" id="fin-total-deposit">—</div></div>
+      <div class="stat-card"><div class="stat-label">Total Cheques</div><div class="stat-value" id="fin-total-cheques">—</div></div>
+      <div class="stat-card"><div class="stat-label">Total Sum</div><div class="stat-value" id="fin-total-sum">—</div></div>
+      <div class="stat-card"><div class="stat-label">Entries</div><div class="stat-value" id="fin-entries">—</div></div>
+    </div>
+    <div class="card" style="padding:0;">
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>User</th><th>Clinic</th><th>Deposit</th><th>Cheques</th><th>Sum</th><th>Status</th></tr></thead>
+      <tbody id="fin-table"><tr><td colspan="7" class="spinner">Loading</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="section" id="sec-resources">
+    <div class="card">
+      <div class="card-title">Documents & Resources</div>
+      <div id="res-list"></div>
+    </div>
+  </div>
+
+</div>
+
 <script>
-const SU='https://rnqhhzatlxmyvccdvqkr.supabase.co',SAK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJucWhoemF0bHhteXZjY2R2cWtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTQ5ODUsImV4cCI6MjA5MDU5MDk4NX0.zokle21pVEPG5bIOFiyZIWYkYIwhkolWNOhJ7Cbub30';
-const CL={tg:'Tudor Glen',ros:'Rosslyn',rvv:'River Valley',gcc:'GCC',upc:'UPC'};
-const RT={doctor:85,aht:28,rvt:30,receptionist:22,terminated:0};
-const SV={
-  dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
-  sched:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
-  tc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
-  staff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
-  pay:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
-  fin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
-  res:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+const SB_URL = 'https://rnqhhzatlxmyvccdvqkr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJucWhoemF0bHhteXZjY2R2cWtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMTQ5ODUsImV4cCI6MjA5MDU5MDk4NX0.zokle21pVEPG5bIOFiyZIWYkYIwhkolWNOhJ7Cbub30';
+
+const CLINICS = { tg:'Tudor Glen', ros:'Rosslyn', rvv:'River Valley', gcc:'GCC', upc:'UPC' };
+const RATES = { doctor:85, aht:28, rvt:30, receptionist:22, terminated:0 };
+const CLINIC_COLORS = ['tg','ros','rvv','gcc','upc'];
+
+let state = {
+  users: [], usermeta: [], overtime: [], deposits: [], pfTotals: [],
+  timeclock: null, // lazy loaded
+  scottId: null,
+  schedWeek: null, payWeek: null,
+  clockedIn: false,
 };
-const PG=[{id:'dash',l:'Dashboard',ic:'dash'},{id:'sched',l:'Schedule',ic:'sched'},{id:'tc',l:'Time Clock',ic:'tc'},{id:'staff',l:'Staff Directory',ic:'staff'},{id:'pay',l:'Payroll',ic:'pay'},{id:'fin',l:'Financials',ic:'fin'},{id:'res',l:'Resources',ic:'res'}];
 
-let cp='dash',SM={},TC=[],MM={},OT=[],DP=[],PF=[],DL=false,WO=0,SC='',PO=0,FC='';
-
-function doLogin(){if(document.getElementById('lp').value==='Scotia@9199'){document.getElementById('login').classList.add('hide');document.getElementById('app').classList.add('vis');init()}else document.getElementById('le').textContent='Incorrect password'}
-document.getElementById('lp').onkeydown=e=>{if(e.key==='Enter')doLogin()};
-
-async function init(){rNav();rp();await ld()}
-
-function rNav(){const n=document.getElementById('sn');n.innerHTML=PG.map(p=>'<div class="ni'+(p.id===cp?' act':'')+'" data-p="'+p.id+'">'+SV[p.ic]+'<span>'+p.l+'</span></div>').join('');n.querySelectorAll('.ni').forEach(e=>{e.onclick=()=>{nav(e.dataset.p);document.getElementById('side').classList.remove('op')}})}
-function nav(p){cp=p;document.getElementById('pt').textContent=PG.find(x=>x.id===p)?.l||p;document.querySelectorAll('.ni').forEach(e=>e.classList.toggle('act',e.dataset.p===p));rp()}
-function rp(){const c=document.getElementById('ct');if(!DL){c.innerHTML='<div class="sp"></div><div class="ld">Loading data…</div>';return}({dash:rDa,sched:rSc,tc:rTc,staff:rSt,pay:rPa,fin:rFi,res:rRe})[cp](c)}
-
-async function sf(t,q=''){let r=[],o=0;const hasLimit=/[&?]limit=/.test(q);if(hasLimit){const f=await fetch(SU+'/rest/v1/'+t+(q?'?'+q:''),{headers:{apikey:SAK,Authorization:'Bearer '+SAK}});return await f.json()}while(true){const f=await fetch(SU+'/rest/v1/'+t+'?'+(q?q+'&':'')+'offset='+o+'&limit=1000',{headers:{apikey:SAK,Authorization:'Bearer '+SAK}});const b=await f.json();if(!b.length)break;r=r.concat(b);if(b.length<1000)break;o+=1000}return r}
-
-async function ld(){
-try{const[u,m,ot,dp,pf]=await Promise.all([sf('csi_users'),sf('csi_usermeta'),sf('overtime_requests'),sf('csi_daily_deposit','order=ddate.desc&limit=500'),sf('csi_pf_totals','order=mdy.desc&limit=500')]);
-SM={};u.forEach(x=>{SM[x.ID]={id:x.ID,login:x.user_login,name:x.display_name,email:x.user_email}});
-m.forEach(x=>{const sid=x.user_id;if(!SM[sid])return;SM[sid][x.meta_key]=x.meta_value});
-OT=ot;DP=dp;PF=pf;TC=[];DL=true;await loadWeek(mon(new Date()));
-}catch(e){console.error(e);document.getElementById('ct').innerHTML='<div class="ld">Error loading data: '+e.message+'</div>'}}
-
-let loadedWeeks={};
-function loadWeekForOffset(){const now=new Date(),mn=mon(now);mn.setDate(mn.getDate()+WO*7);loadWeek(mn)}
-async function loadWeek(mn){
-const s=ds(mn),sn=new Date(mn);sn.setDate(sn.getDate()+6);const e=ds(sn);
-const key=s+'-'+e;
-if(loadedWeeks[key]){rp();return;}
-// Fetch latest 2000 timeclock entries and filter to this week
-const week=await sf('csi_posts','post_type=eq.timeclock&select=ID,post_title,post_date&order=ID.desc&limit=2000');
-const parsed=week.map(ptc).filter(Boolean).filter(p=>p.date>=s&&p.date<=e);
-TC=TC.concat(parsed);loadedWeeks[key]=true;rp();
+// Supabase fetch helper
+async function sbFetch(table, query='') {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}${query}`, {
+    headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
+  });
+  if (!r.ok) throw new Error(`Fetch ${table} failed: ${r.status}`);
+  return r.json();
 }
 
-function ptc(p){const ps=p.post_title.split('-');if(ps.length<5)return null;const uid=parseInt(ps[0]),ds2=ps[1],ts=parseInt(ps[2]);if(isNaN(ts))return null;const fn=ps[3],ln=ps.slice(4).join('-');return{id:p.ID,uid,date:ds2,ts,time:new Date(ts*1000),name:fn+' '+ln,pd:p.post_date}}
+// Init
+async function init() {
+  try {
+    const [users, usermeta, overtime, deposits, pfTotals] = await Promise.all([
+      sbFetch('csi_users', '?select=id,user_login,display_name,user_email'),
+      sbFetch('csi_usermeta', '?select=user_id,meta_key,meta_value'),
+      sbFetch('overtime_requests', '?select=*&order=request_date.desc&limit=50'),
+      sbFetch('csi_daily_deposit', '?select=*&order=ddate.desc&limit=500'),
+      sbFetch('csi_pf_totals', '?select=*&order=id.desc&limit=90')
+    ]);
+    state.users = users;
+    state.usermeta = usermeta;
+    state.overtime = overtime;
+    state.deposits = deposits;
+    state.pfTotals = pfTotals;
 
-function gs(s,e){const m={};TC.forEach(p=>{const k=p.uid+'-'+p.date;if(!m[k])m[k]={uid:p.uid,date:p.date,name:p.name,en:[]};m[k].en.push(p)});const r=[];
-Object.values(m).forEach(s2=>{s2.en.sort((a,b)=>a.ts-b.ts);for(let i=0;i<s2.en.length;i+=2){const ci=s2.en[i],co=s2.en[i+1],ct=co?co.ts:ci.ts,h=Math.max(0,(ct-ci.ts)/3600);if(s2.date>=s&&s2.date<=e){const st=SM[s2.uid]||{};r.push({uid:s2.uid,date:s2.date,name:s2.name,cin:ci.time,cout:co?co.time:null,cinTs:ci.ts,coutTs:ct,hours:h,pos:st.position||'',cl:st.clinic||''})}}});return r}
+    // Find Scott
+    const scott = users.find(u => u.display_name && u.display_name.toLowerCase().includes('scott'));
+    state.scottId = scott ? scott.ID : users[0]?.ID;
 
-function ft(d){return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})}
-function fd(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
-function fm(n){return'$'+((Number(n)||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','))}
-function rt(p){return RT[p]||25}
-function mon(d){d=new Date(d);const dy=d.getDay();d.setDate(d.getDate()-dy+(dy===0?-6:1));d.setHours(0,0,0,0);return d}
-function ds(d){return d.toISOString().slice(0,10).replace(/-/g,'')}
+    // Build clinic filter options
+    Object.entries(CLINICS).forEach(([k,v]) => {
+      ['sched-clinic-filter','staff-clinic-filter','fin-clinic-filter'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { const o = document.createElement('option'); o.value = k; o.textContent = v; el.appendChild(o); }
+      });
+    });
+    ['doctor','aht','rvt','receptionist'].forEach(p => {
+      const el = document.getElementById('staff-pos-filter');
+      const o = document.createElement('option'); o.value = p; o.textContent = p.charAt(0).toUpperCase()+p.slice(1); el.appendChild(o);
+    });
 
-function ac(){document.querySelectorAll('[data-c]').forEach(el=>{const t=+el.dataset.c,pr=el.dataset.pre||'',dur=800,st=performance.now();(function f(n){const p=Math.min((n-st)/dur,1),e=1-Math.pow(1-p,3);el.textContent=pr+Math.round(e*t).toLocaleString();if(p<1)requestAnimationFrame(f)})(st)})}
+    // Set week defaults
+    const now = new Date();
+    state.schedWeek = getWeekStart(now);
+    state.payWeek = getWeekStart(now);
+
+    renderDashboard();
+    startClock();
+  } catch(e) {
+    console.error('Init error:', e);
+  }
+}
+
+// Helper: get meta value for user
+function getMeta(userId, key) {
+  const m = state.usermeta.find(x => x.user_id == userId && x.meta_key === key);
+  return m ? m.meta_value : null;
+}
+function getUserById(id) { return state.users.find(u => u.ID == id); }
+function getClinic(userId) {
+  const c = getMeta(userId, 'clinic');
+  return c ? CLINICS[c] || c : '—';
+}
+function getClinicCode(userId) { return getMeta(userId, 'clinic') || ''; }
+function getPosition(userId) { return getMeta(userId, 'position') || ''; }
+function getRate(pos) { return RATES[pos] || 25; }
+function getWeekStart(d) {
+  const r = new Date(d); r.setDate(r.getDate() - r.getDay()); r.setHours(0,0,0,0); return r;
+}
+function fmtDate(d) { return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtDateFull(d) { return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}); }
+function fmtTime(h) {
+  if (!h && h !== 0) return '—';
+  const hrs = Math.floor(h); const mins = Math.round((h - hrs)*60);
+  const ampm = hrs >= 12 ? 'PM' : 'AM';
+  const h12 = hrs % 12 || 12;
+  return `${h12}:${String(mins).padStart(2,'0')} ${ampm}`;
+}
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + t.dataset.tab).classList.add('active');
+    if (t.dataset.tab === 'schedule') renderSchedule();
+    if (t.dataset.tab === 'timeclock') renderTimeClock();
+    if (t.dataset.tab === 'staff') renderStaff();
+    if (t.dataset.tab === 'payroll') renderPayroll();
+    if (t.dataset.tab === 'financials') renderFinancials();
+  });
+});
+
+// Lazy load timeclock
+async function ensureTimeclock() {
+  if (state.timeclock) return state.timeclock;
+  const data = await sbFetch('csi_posts', '?select=ID,post_title,post_date,post_type&post_type=eq.timeclock&order=post_date.desc&limit=2000');
+  state.timeclock = data;
+  return data;
+}
+
+// Parse shifts from timeclock entries for a date range
+function parseShifts(entries, startDate, endDate) {
+  // Group entries by userID + date
+  const groups = {};
+  entries.forEach(e => {
+    const parts = (e.post_title || '').split('-');
+    if (parts.length < 3) return;
+    const userId = parts[0];
+    const dateStr = parts[1]; // YYYYMMDD
+    const dateObj = new Date(parseInt(dateStr.substring(0,4)), parseInt(dateStr.substring(4,6))-1, parseInt(dateStr.substring(6,8)));
+    if (dateObj < startDate || dateObj >= endDate) return;
+    const key = `${userId}-${dateStr}`;
+    if (!groups[key]) groups[key] = { userId, date: dateObj, dateStr, entries: [] };
+    groups[key].entries.push(e);
+  });
+
+  const shifts = [];
+  Object.values(groups).forEach(g => {
+    // Sort by post_date (or ID as proxy for insertion order)
+    g.entries.sort((a,b) => new Date(a.post_date) - new Date(b.post_date));
+    // Pair: first = clock in, second = clock out
+    for (let i = 0; i < g.entries.length; i += 2) {
+      const clockIn = g.entries[i];
+      const clockOut = g.entries[i+1] || null;
+      const parts = (clockIn.post_title || '').split('-');
+      const firstName = parts[3] || '';
+      const lastName = parts[4] || '';
+      let hours = 0;
+      if (clockOut) {
+        const t1 = new Date(clockIn.post_date);
+        const t2 = new Date(clockOut.post_date);
+        hours = (t2 - t1) / 3600000;
+        if (hours < 0 || hours > 24) hours = 0; // garbage guard
+      }
+      shifts.push({
+        userId: g.userId,
+        name: `${firstName} ${lastName}`.trim(),
+        clockIn: clockIn.post_date,
+        clockOut: clockOut ? clockOut.post_date : null,
+        hours,
+        date: g.date
+      });
+    }
+  });
+  return shifts;
+}
 
 // Dashboard
-function rDa(c){const now=new Date(),td=ds(now),act=Object.values(SM).filter(s=>s.position&&s.position!=='terminated'),ts=gs(td,td),mn=mon(now),sn=new Date(mn);sn.setDate(sn.getDate()+6);const ws=gs(ds(mn),ds(sn)),wp=ws.reduce((s,x)=>s+x.hours*rt(x.pos),0),pot=OT.filter(o=>o.status==='pending').length,rec=TC.slice(0,10);
-c.innerHTML='<div style="margin-bottom:24px"><h3 style="font-size:1.4rem;font-weight:700">Welcome back, Scott 👋</h3><p style="color:var(--mt)">'+fd(now)+' · '+now.toLocaleDateString('en-US',{weekday:'long'})+'</p></div><div class="g4" style="margin-bottom:28px"><div class="sc"><div class="sl">Active Staff</div><div class="sv" data-c="'+act.length+'">0</div><div class="ss">Across all clinics</div></div><div class="sc gn"><div class="sl">Shifts Today</div><div class="sv" data-c="'+ts.length+'">0</div><div class="ss">Recorded today</div></div><div class="sc yl"><div class="sl">Weekly Payroll</div><div class="sv" data-c="'+Math.round(wp)+'" data-pre="$">$0</div><div class="ss">'+ws.reduce((s,x)=>s+x.hours,0).toFixed(1)+' total hrs</div></div><div class="sc rd"><div class="sl">Pending OT</div><div class="sv" data-c="'+pot+'">0</div><div class="ss">Awaiting approval</div></div></div><div class="g2"><div class="cd"><div class="cdh">Today\'s Shifts</div>'+(ts.length?'<div class="tw"><table><tr><th>Staff</th><th>Clinic</th><th>In</th><th>Out</th><th>Hrs</th></tr>'+ts.map(s=>'<tr><td>'+s.name+'</td><td>'+(CL[s.cl]||s.cl||'—')+'</td><td>'+ft(s.cin)+'</td><td>'+(s.cout?ft(s.cout):'—')+'</td><td>'+s.hours.toFixed(1)+'</td></tr>').join('')+'</table></div>':'<p style="color:var(--mt);padding:12px 0">No shifts today</p>')+'</div><div class="cd"><div class="cdh">Recent Activity</div>'+rec.map(e=>'<div class="fi"><div class="fd" style="background:var(--pri)"></div><div><div class="ft">'+e.name+'</div><div class="ftm">'+e.date+(e.pd?' · '+ft(new Date(e.pd)):'')+'</div></div></div>').join('')+'</div></div>';ac()}
+async function renderDashboard() {
+  // Active staff (non-terminated)
+  const activeStaff = state.users.filter(u => getPosition(u.ID) !== 'terminated');
+  document.getElementById('stat-staff').textContent = activeStaff.length;
+
+  // Pending OT
+  const pendingOT = state.overtime.filter(o => o.status === 'pending');
+  document.getElementById('stat-pendingot').textContent = pendingOT.length;
+
+  // Load recent timeclock for today's data
+  const entries = await ensureTimeclock();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+  const todayShifts = parseShifts(entries, today, tomorrow);
+
+  // Clocked in: shifts without clockOut
+  const clockedIn = todayShifts.filter(s => !s.clockOut);
+  document.getElementById('stat-clockedin').textContent = clockedIn.length;
+
+  // Weekly payroll
+  const weekStart = getWeekStart(new Date());
+  const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+7);
+  const weekShifts = parseShifts(entries, weekStart, weekEnd);
+  let weeklyPay = 0;
+  weekShifts.forEach(s => {
+    const pos = getPosition(s.userId);
+    weeklyPay += s.hours * getRate(pos);
+  });
+  document.getElementById('stat-weeklypay').textContent = '$' + weeklyPay.toFixed(0);
+
+  // Today's shifts table
+  const tbody = document.getElementById('dash-shifts');
+  if (todayShifts.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted)">No shifts today</td></tr>';
+  } else {
+    tbody.innerHTML = todayShifts.map(s => {
+      const cc = getClinicCode(s.userId);
+      const inTime = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—';
+      const outTime = s.clockOut ? new Date(s.clockOut).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '<span class="badge badge-green">Active</span>';
+      return `<tr><td><strong>${s.name||'—'}</strong></td><td>${getClinic(s.userId)}</td><td>${inTime}</td><td>${outTime}</td><td>${s.hours? s.hours.toFixed(1)+'h':'—'}</td></tr>`;
+    }).join('');
+  }
+
+  // Activity feed
+  const actDiv = document.getElementById('dash-activity');
+  const recent = entries.slice(0, 10);
+  if (recent.length === 0) {
+    actDiv.innerHTML = '<div style="color:var(--muted)">No recent activity</div>';
+  } else {
+    actDiv.innerHTML = recent.map(e => {
+      const parts = (e.post_title||'').split('-');
+      const name = (parts[3]||'') + ' ' + (parts[4]||'');
+      const isOut = parts.length > 2 && e.post_date && recent.indexOf(e) % 2 === 1;
+      const action = isOut ? 'clocked out' : 'clocked in';
+      const d = new Date(e.post_date);
+      return `<div class="activity-item"><div class="activity-dot" style="background:${isOut?'var(--orange)':'var(--green)'}"></div><div><div class="activity-text"><strong>${name.trim()||'Unknown'}</strong> ${action}</div><div class="activity-time">${d.toLocaleString()}</div></div></div>`;
+    }).join('');
+  }
+}
 
 // Schedule
-function rSc(c){const now=new Date(),mn=mon(now);mn.setDate(mn.getDate()+WO*7);const days=[];for(let i=0;i<7;i++){const d=new Date(mn);d.setDate(d.getDate()+i);days.push(d)}
-const ss=ds(days[0]),es=ds(days[6]);let shifts=gs(ss,es);if(SC)shifts=shifts.filter(s=>s.cl===SC);
-const hrs=['6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p'];
-const tds=ds(now),sclr={};let ci=0;shifts.forEach(s=>{if(!(s.uid in sclr)){sclr[s.uid]=ci%6;ci++}});
-const wl=fd(days[0])+' — '+fd(days[6]);
-const dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-let h='<div class="ch"><div class="cn"><button onclick="WO--;WO<0?WO=0:0;loadWeekForOffset()">◀</button><span class="wl">'+wl+'</span><button onclick="WO++;loadWeekForOffset()">▶</button><button class="btn btn-o" style="margin-left:8px" onclick="WO=0;loadWeekForOffset()">Today</button></div><select onchange="SC=this.value;rp()"><option value="">All Clinics</option>';Object.entries(CL).forEach(([k,v])=>{h+='<option value="'+k+'"'+(SC===k?' selected':'')+'>'+v+'</option>'});h+='</select></div>';
-h+='<div class="cg"><div></div>';days.forEach((d,i)=>{const isT=ds(d)===tds,isW=i>=5;h+='<div class="dh'+(isW?' wk':'')+(isT?' td':'')+'"><span class="dn">'+d.getDate()+'</span><span class="dname">'+dn[i]+'</span></div>'});
-hrs.forEach((hr,ri)=>{const baseH=6+ri;h+='<div class="tl">'+hr+'</div>';days.forEach((d,di)=>{const isW=di>=5;h+='<div class="cc'+(isW?' wk':'')+'">';shifts.forEach(s=>{if(s.date!==ds(d))return;const ch=s.cin.getHours(),dur=Math.max(s.hours,0.5);if(ch===baseH){const top=0,ht=Math.max(dur*48,20);const clr=sclr[s.uid]||0;h+='<div class="shb c'+clr+'" style="top:'+top+'px;height:'+ht+'px" onclick="sm(\''+s.name.replace(/'/g,"\\'")+'\',\''+(CL[s.cl]||s.cl)+'\',\''+ft(s.cin)+'\',\''+(s.cout?ft(s.cout):'—')+'\',\''+s.hours.toFixed(1)+'\',\''+s.pos+'\',\''+(s.uid)+'\')"><div class="sn">'+s.name+'</div><div class="st">'+ft(s.cin)+(s.cout?'-'+ft(s.cout):'')+'</div></div>'}});h+='</div>'})});h+='</div>';c.innerHTML=h}
+function changeWeek(dir) {
+  state.schedWeek = new Date(state.schedWeek);
+  state.schedWeek.setDate(state.schedWeek.getDate() + dir * 7);
+  renderSchedule();
+}
+async function renderSchedule() {
+  const ws = state.schedWeek;
+  const we = new Date(ws); we.setDate(we.getDate()+7);
+  document.getElementById('week-label').textContent = `${fmtDate(ws)} — ${fmtDate(new Date(we.getTime()-86400000))}`;
 
-function sm(n,cl,ci,co,hr,pos,uid){const r=rt(pos);document.getElementById('mbd').innerHTML='<h3>Shift Details</h3><div class="mr"><span class="ml">Staff</span><span class="mv">'+n+'</span></div><div class="mr"><span class="ml">Clinic</span><span class="mv">'+cl+'</span></div><div class="mr"><span class="ml">Position</span><span class="mv">'+pos+'</span></div><div class="mr"><span class="ml">Clock In</span><span class="mv">'+ci+'</span></div><div class="mr"><span class="ml">Clock Out</span><span class="mv">'+co+'</span></div><div class="mr"><span class="ml">Hours</span><span class="mv">'+hr+'</span></div><div class="mr"><span class="ml">Est. Pay</span><span class="mv">'+fm(parseFloat(hr)*r)+'</span></div><div style="text-align:right;margin-top:16px"><button class="btn btn-o" onclick="cm()">Close</button></div>';document.getElementById('mo').classList.add('op')}
-function cm(){document.getElementById('mo').classList.remove('op')}
+  const grid = document.getElementById('sched-grid');
+  grid.innerHTML = '<div class="spinner" style="grid-column:1/-1">Loading schedule</div>';
+
+  const entries = await ensureTimeclock();
+  const shifts = parseShifts(entries, ws, we);
+  const clinicFilter = document.getElementById('sched-clinic-filter').value;
+  const filtered = clinicFilter ? shifts.filter(s => getClinicCode(s.userId) === clinicFilter) : shifts;
+
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(ws); day.setDate(day.getDate()+i);
+    const dayShifts = filtered.filter(s => s.date.toDateString() === day.toDateString());
+    const isToday = day.toDateString() === new Date().toDateString();
+    html += `<div class="week-day" style="${isToday?'border-color:var(--primary);':''}">
+      <div class="week-day-header">${days[i]}<span>${day.getDate()}</span></div>
+      ${dayShifts.length === 0 ? '<div style="font-size:11px;color:var(--muted);padding:4px;">No shifts</div>' :
+        dayShifts.map(s => {
+          const cc = getClinicCode(s.userId);
+          const inT = s.clockIn ? new Date(s.clockIn).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
+          const outT = s.clockOut ? new Date(s.clockOut).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—';
+          return `<div class="shift-block ${cc}"><div class="shift-name">${s.name||'—'}</div><div class="shift-time">${inT}–${outT}</div><div>${s.hours?s.hours.toFixed(1)+'h':''}</div></div>`;
+        }).join('')
+      }
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
 
 // Time Clock
-function rTc(c){const now=new Date(),td=ds(now),mn=mon(now),sn=new Date(mn);sn.setDate(sn.getDate()+6);
-const ts=gs(td,td),ws=gs(ds(mn),ds(sn));
-const wHrs={};ws.forEach(s=>{if(!wHrs[s.uid])wHrs[s.uid]={name:s.name,hours:0};wHrs[s.uid].hours+=s.hours});
-const clk=now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
-let h='<div class="cd" style="text-align:center;margin-bottom:24px"><div class="clk" id="clk">'+clk+'</div><div class="cld">'+fd(now)+' · '+now.toLocaleDateString('en-US',{weekday:'long'})+'</div><button class="cb in" id="cbtn" onclick="togClk()">Clock In</button></div>';
-h+='<div class="g2"><div class="cd"><div class="cdh">Today\'s Entries</div>';if(ts.length){h+='<div class="tw"><table><tr><th>Time</th><th>Staff</th><th>Type</th></tr>';ts.forEach(s=>{h+='<tr><td>'+ft(s.cin)+'</td><td>'+s.name+'</td><td>Clock In</td></tr>';if(s.cout)h+='<tr><td>'+ft(s.cout)+'</td><td>'+s.name+'</td><td>Clock Out</td></tr>'});h+='</table></div>'}else h+='<p style="color:var(--mt)">No entries today</p>';h+='</div>';
-h+='<div class="cd"><div class="cdh">Weekly Summary</div>';const wArr=Object.values(wHrs);if(wArr.length){h+='<div class="tw"><table><tr><th>Staff</th><th>Hours</th></tr>'+wArr.map(s=>'<tr><td>'+s.name+'</td><td>'+s.hours.toFixed(1)+'</td></tr>').join('')+'</table></div>'}else h+='<p style="color:var(--mt)">No data this week</p>';h+='</div></div>';
-c.innerHTML=h;
-clearInterval(window._ci);window._ci=setInterval(()=>{const n=new Date();const el=document.getElementById('clk');if(el)el.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})},1000)}
-let clkIn=false;function togClk(){clkIn=!clkIn;const b=document.getElementById('cbtn');if(b){b.textContent=clkIn?'Clock Out':'Clock In';b.className='cb '+(clkIn?'out':'in')}}
+function startClock() {
+  function tick() {
+    const now = new Date();
+    document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('live-date').textContent = fmtDateFull(now);
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+async function toggleClock() {
+  // This is a simulated clock in/out for Scott
+  const btn = document.getElementById('clock-btn');
+  const status = document.getElementById('clock-status');
+  if (!state.clockedIn) {
+    state.clockedIn = true;
+    btn.textContent = 'Clock Out';
+    btn.className = 'btn btn-red';
+    btn.style.fontSize = '16px'; btn.style.padding = '12px 36px';
+    status.textContent = 'Clocked in at ' + new Date().toLocaleTimeString();
+    status.style.color = 'var(--green)';
+  } else {
+    state.clockedIn = false;
+    btn.textContent = 'Clock In';
+    btn.className = 'btn btn-green';
+    btn.style.fontSize = '16px'; btn.style.padding = '12px 36px';
+    status.textContent = 'Clocked out at ' + new Date().toLocaleTimeString();
+    status.style.color = 'var(--muted)';
+  }
+  renderTimeClock();
+}
+
+async function renderTimeClock() {
+  const entries = await ensureTimeclock();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+
+  // Scott's entries today
+  const scottEntries = entries.filter(e => {
+    const parts = (e.post_title||'').split('-');
+    return parts[0] == state.scottId && e.post_date >= today.toISOString() && e.post_date < tomorrow.toISOString();
+  });
+
+  const tbody = document.getElementById('tc-entries');
+  if (scottEntries.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="2" style="color:var(--muted)">No entries today</td></tr>';
+  } else {
+    tbody.innerHTML = scottEntries.map((e, i) => {
+      const action = i % 2 === 0 ? '<span class="badge badge-green">In</span>' : '<span class="badge badge-orange">Out</span>';
+      return `<tr><td>${new Date(e.post_date).toLocaleTimeString()}</td><td>${action}</td></tr>`;
+    }).join('');
+  }
+
+  // Weekly summary
+  const ws = getWeekStart(new Date());
+  const we = new Date(ws); we.setDate(we.getDate()+7);
+  const scottWeek = entries.filter(e => {
+    const parts = (e.post_title||'').split('-');
+    return parts[0] == state.scottId && e.post_date >= ws.toISOString() && e.post_date < we.toISOString();
+  });
+  const shifts = parseShifts(scottWeek, ws, we);
+  const totalHrs = shifts.reduce((a,s) => a + s.hours, 0);
+  document.getElementById('tc-summary').innerHTML = `
+    <div style="font-size:14px;margin-bottom:.5rem;">This week: <strong>${totalHrs.toFixed(1)} hours</strong></div>
+    <div style="font-size:13px;color:var(--muted);">${shifts.length} shifts logged</div>
+    ${shifts.map(s => `<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">${fmtDate(s.date)} — ${s.hours.toFixed(1)}h</div>`).join('')}
+  `;
+}
 
 // Staff
-function rSt(c){const all=Object.values(SM).filter(s=>s.position);
-let h='<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap"><input class="inp" placeholder="Search staff…" id="ss" oninput="filtSt()" style="flex:1;min-width:200px"><select id="scl" onchange="filtSt()"><option value="">All Clinics</option>';Object.entries(CL).forEach(([k,v])=>{h+='<option value="'+k+'">'+v+'</option>'});h+='</select><select id="spo" onchange="filtSt()"><option value="">All Positions</option><option value="doctor">Doctor</option><option value="aht">AHT</option><option value="rvt">RVT</option><option value="receptionist">Receptionist</option><option value="terminated">Terminated</option></select></div>';
-h+='<div class="cd"><div class="tw"><table><thead><tr><th>Name</th><th>Position</th><th>Clinic</th><th>Email</th><th>Status</th></tr></thead><tbody id="stb">';
-all.forEach(s=>{const isTerm=s.position==='terminated';h+='<tr data-n="'+s.name.toLowerCase()+'" data-cl="'+s.clinic+'" data-po="'+s.position+'"><td><div style="display:flex;align-items:center;gap:10px"><div class="av" style="width:30px;height:30px;font-size:.75rem">'+s.name.split(' ').map(w=>w[0]).join('')+'</div>'+s.name+'</div></td><td style="text-transform:capitalize">'+s.position+'</td><td>'+(CL[s.clinic]||s.clinic||'—')+'</td><td style="color:var(--mt)">'+(s.email||'—')+'</td><td><span class="bg '+(isTerm?'bg-t':'bg-a')+'">'+(isTerm?'Terminated':'Active')+'</span></td></tr>'});
-h+='</tbody></table></div></div>';c.innerHTML=h}
-function filtSt(){const q=(document.getElementById('ss')?.value||'').toLowerCase(),cl=document.getElementById('scl')?.value||'',po=document.getElementById('spo')?.value||'';
-document.querySelectorAll('#stb tr').forEach(tr=>{const n=tr.dataset.n||'',c=tr.dataset.cl||'',p=tr.dataset.po||'';const show=(!q||n.includes(q))&&(!cl||c===cl)&&(!po||p===po);tr.style.display=show?'':'none'})}
+function renderStaff() {
+  const search = (document.getElementById('staff-search').value || '').toLowerCase();
+  const clinicF = document.getElementById('staff-clinic-filter').value;
+  const posF = document.getElementById('staff-pos-filter').value;
+
+  let staff = state.users.filter(u => getPosition(u.ID) !== 'terminated' || !posF);
+  if (search) staff = staff.filter(u => (u.display_name||'').toLowerCase().includes(search) || (u.user_email||'').toLowerCase().includes(search));
+  if (clinicF) staff = staff.filter(u => getClinicCode(u.ID) === clinicF);
+  if (posF) staff = staff.filter(u => getPosition(u.ID) === posF);
+
+  const tbody = document.getElementById('staff-table');
+  if (staff.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted)">No staff found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = staff.map(u => {
+    const pos = getPosition(u.ID);
+    const cc = getClinicCode(u.ID);
+    const isActive = pos !== 'terminated';
+    const initials = (u.display_name||'??').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `<tr>
+      <td><div class="flex"><div class="avatar">${initials}</div><strong>${u.display_name||'—'}</strong></div></td>
+      <td style="color:var(--muted)">${u.user_email||'—'}</td>
+      <td>${getClinic(u.ID)}</td>
+      <td><span class="badge badge-blue">${pos||'—'}</span></td>
+      <td><span class="badge ${isActive?'badge-green':'badge-red'}">${isActive?'Active':'Terminated'}</span></td>
+    </tr>`;
+  }).join('');
+}
 
 // Payroll
-function rPa(c){const now=new Date(),mn=mon(now);mn.setDate(mn.getDate()+PO*7);const sn=new Date(mn);sn.setDate(sn.getDate()+6);
-const shifts=gs(ds(mn),ds(sn));const byStaff={};shifts.forEach(s=>{if(!byStaff[s.uid])byStaff[s.uid]={name:s.name,pos:s.pos,cl:s.cl,hours:0};byStaff[s.uid].hours+=s.hours});
-const rows=Object.values(byStaff);const tH=rows.reduce((s,r)=>s+r.hours,0),tG=rows.reduce((s,r)=>s+r.hours*rt(r.pos),0),avg=rows.length?tG/rows.length:0;
-const wl=fd(mn)+' — '+fd(sn);
-let h='<div class="ch"><div class="cn"><button onclick="PO=Math.max(0,PO-1);rp()">◀</button><span class="wl">'+wl+'</span><button onclick="PO++;rp()">▶</button></div><button class="btn btn-p" onclick="expCSV()">Export CSV</button></div>';
-h+='<div class="g4" style="margin-bottom:20px"><div class="sc"><div class="sl">Total Hours</div><div class="sv">'+tH.toFixed(1)+'</div></div><div class="sc gn"><div class="sl">Total Gross</div><div class="sv">'+fm(tG)+'</div></div><div class="sc yl"><div class="sl">Staff Count</div><div class="sv">'+rows.length+'</div></div><div class="sc"><div class="sl">Avg Rate</div><div class="sv">'+fm(avg)+'</div></div></div>';
-h+='<div class="cd"><div class="tw"><table><thead><tr><th>Staff</th><th>Position</th><th>Clinic</th><th>Hours</th><th>Rate</th><th>Gross Pay</th></tr></thead><tbody>';
-rows.forEach(r=>{const rate=rt(r.pos),gross=r.hours*rate;h+='<tr><td>'+r.name+'</td><td style="text-transform:capitalize">'+r.pos+'</td><td>'+(CL[r.cl]||r.cl||'—')+'</td><td>'+r.hours.toFixed(1)+'</td><td>'+fm(rate)+'/hr</td><td>'+fm(gross)+'</td></tr>'});
-h+='</tbody></table></div></div>';c.innerHTML=h}
+function changePayWeek(dir) {
+  state.payWeek = new Date(state.payWeek);
+  state.payWeek.setDate(state.payWeek.getDate() + dir * 7);
+  renderPayroll();
+}
+async function renderPayroll() {
+  const ws = state.payWeek;
+  const we = new Date(ws); we.setDate(we.getDate()+7);
+  document.getElementById('pay-week-label').textContent = `${fmtDate(ws)} — ${fmtDate(new Date(we.getTime()-86400000))}`;
 
-function expCSV(){const now=new Date(),mn=mon(now);mn.setDate(mn.getDate()+PO*7);const sn=new Date(mn);sn.setDate(sn.getDate()+6);
-const shifts=gs(ds(mn),ds(sn));const byStaff={};shifts.forEach(s=>{if(!byStaff[s.uid])byStaff[s.uid]={name:s.name,pos:s.pos,cl:s.cl,hours:0};byStaff[s.uid].hours+=s.hours});
-let csv='Staff,Position,Clinic,Hours,Rate,Gross Pay\n';Object.values(byStaff).forEach(r=>{const rate=rt(r.pos);csv+='"'+r.name+'","'+r.pos+'","'+(CL[r.cl]||r.cl)+'",'+r.hours.toFixed(1)+','+rate.toFixed(2)+','+(r.hours*rate).toFixed(2)+'\n'});
-const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='payroll-'+ds(mn)+'.csv';a.click()}
+  const entries = await ensureTimeclock();
+  const shifts = parseShifts(entries, ws, we);
+
+  // Aggregate by user
+  const staffMap = {};
+  shifts.forEach(s => {
+    if (!staffMap[s.userId]) staffMap[s.userId] = { userId: s.userId, name: s.name, hours: 0 };
+    staffMap[s.userId].hours += s.hours;
+  });
+
+  const staffList = Object.values(staffMap).filter(s => s.hours > 0);
+  let totalHours = 0, totalGross = 0;
+  staffList.forEach(s => { totalHours += s.hours; });
+
+  const tbody = document.getElementById('pay-table');
+  if (staffList.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted)">No payroll data for this period</td></tr>';
+  } else {
+    tbody.innerHTML = staffList.map(s => {
+      const pos = getPosition(s.userId);
+      const rate = getRate(pos);
+      const gross = s.hours * rate;
+      totalGross += gross;
+      return `<tr>
+        <td><strong>${s.name||'—'}</strong></td>
+        <td>${getClinic(s.userId)}</td>
+        <td><span class="badge badge-blue">${pos||'—'}</span></td>
+        <td>${s.hours.toFixed(1)}</td>
+        <td>$${rate.toFixed(2)}</td>
+        <td><strong>$${gross.toFixed(2)}</strong></td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('pay-total-hours').textContent = totalHours.toFixed(1);
+  document.getElementById('pay-total-gross').textContent = '$' + totalGross.toFixed(0);
+  document.getElementById('pay-staff-count').textContent = staffList.length;
+  document.getElementById('pay-avg-hours').textContent = staffList.length ? (totalHours/staffList.length).toFixed(1) : '0';
+}
+
+function exportCSV() {
+  const ws = state.payWeek;
+  const we = new Date(ws); we.setDate(we.getDate()+7);
+  const shifts = parseShifts(state.timeclock||[], ws, we);
+  const staffMap = {};
+  shifts.forEach(s => {
+    if (!staffMap[s.userId]) staffMap[s.userId] = { userId: s.userId, name: s.name, hours: 0 };
+    staffMap[s.userId].hours += s.hours;
+  });
+  let csv = 'Staff,Clinic,Position,Hours,Rate,Gross\n';
+  Object.values(staffMap).forEach(s => {
+    const pos = getPosition(s.userId); const rate = getRate(pos);
+    csv += `"${s.name}","${getClinic(s.userId)}","${pos}",${s.hours.toFixed(1)},${rate},${(s.hours*rate).toFixed(2)}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `payroll-${fmtDate(ws)}.csv`; a.click();
+}
 
 // Financials
-function rFi(c){let h='<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap"><select id="fcl" onchange="rFi2()" style="min-width:160px"><option value="">All Clinics</option>';Object.entries(CL).forEach(([k,v])=>{h+='<option value="'+k+'">'+v+'</option>'});h+='</select><input type="date" class="inp" id="fdd" onchange="rFi2()" style="max-width:180px"><input type="date" class="inp" id="fdf" onchange="rFi2()" style="max-width:180px"></div>';
-h+='<div class="g2"><div class="cd"><div class="cdh">Daily Totals</div><div id="ftb"><p class="ld">Select filters</p></div></div><div class="cd"><div class="cdh">Deposits</div><div id="fdb"><p class="ld">Select filters</p></div></div></div>';
-c.innerHTML=h;rFi2()}
+function renderFinancials() {
+  let data = state.deposits;
+  const clinicF = document.getElementById('fin-clinic-filter').value;
+  const dateFrom = document.getElementById('fin-date-from').value;
+  const dateTo = document.getElementById('fin-date-to').value;
+  if (clinicF) data = data.filter(d => d.clinic === clinicF);
+  if (dateFrom) data = data.filter(d => d.ddate >= dateFrom);
+  if (dateTo) data = data.filter(d => d.ddate <= dateTo);
 
-function rFi2(){const cl=document.getElementById('fcl')?.value||'';
-let tots=PF.slice(0,50);let deps=DP.slice(0,50);
-const dd=document.getElementById('fdd')?.value,df=document.getElementById('fdf')?.value;
-if(dd){const dv=dd.replace(/-/g,'');tots=tots.filter(t=>t.mdy>=dv);deps=deps.filter(d=>d.ddate>=dv)}
-if(df){const dv=df.replace(/-/g,'');tots=tots.filter(t=>t.mdy<=dv);deps=deps.filter(d=>d.ddate<=dv)}
-if(cl)deps=deps.filter(d=>d.clinic===cl);
-// Totals table
-let h='<div class="tw"><table><tr><th>Date</th>';Object.entries(CL).forEach(([k,v])=>{if(cl&&cl!==k)return;h+='<th>'+v+'</th>'});h+='</tr>';
-tots.slice(0,20).forEach(t=>{h+='<tr><td>'+t.mdy+'</td>';Object.entries(CL).forEach(([k])=>{if(cl&&cl!==k)return;h+='<td>'+(t[k]||'—')+'</td>'});h+='</tr>'});h+='</table></div>';
-document.getElementById('ftb').innerHTML=h||'<p class="ld">No data</p>';
-// Deposits
-let h2='<div class="tw"><table><tr><th>Date</th><th>Clinic</th><th>Deposit</th><th>Cheques</th><th>Sum</th><th>Status</th></tr>';
-deps.slice(0,30).forEach(d=>{h2+='<tr><td>'+d.ddate+'</td><td>'+(CL[d.clinic]||d.clinic)+'</td><td>'+fm(d.deposit)+'</td><td>'+fm(d.cheques)+'</td><td>'+fm(d.sum)+'</td><td><span class="bg bg-a">'+d.status+'</span></td></tr>'});h2+='</table></div>';
-document.getElementById('fdb').innerHTML=h2||'<p class="ld">No data</p>'}
+  let totalDep = 0, totalChq = 0, totalSum = 0;
+  data.forEach(d => {
+    totalDep += parseFloat(d.deposit) || 0;
+    totalChq += parseFloat(d.cheques) || 0;
+    totalSum += parseFloat(d.sum) || 0;
+  });
+
+  document.getElementById('fin-total-deposit').textContent = '$' + totalDep.toFixed(2);
+  document.getElementById('fin-total-cheques').textContent = '$' + totalChq.toFixed(2);
+  document.getElementById('fin-total-sum').textContent = '$' + totalSum.toFixed(2);
+  document.getElementById('fin-entries').textContent = data.length;
+
+  const tbody = document.getElementById('fin-table');
+  if (data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted)">No deposit records</td></tr>';
+  } else {
+    tbody.innerHTML = data.slice(0,100).map(d => {
+      const statusBadge = d.status === 'verified' ? '<span class="badge badge-green">Verified</span>' :
+        d.status === 'pending' ? '<span class="badge badge-orange">Pending</span>' :
+        '<span class="badge badge-blue">' + (d.status||'—') + '</span>';
+      return `<tr><td>${d.ddate||'—'}</td><td>${d.u||'—'}</td><td>${CLINICS[d.clinic]||d.clinic||'—'}</td><td>$${(parseFloat(d.deposit)||0).toFixed(2)}</td><td>$${(parseFloat(d.cheques)||0).toFixed(2)}</td><td><strong>$${(parseFloat(d.sum)||0).toFixed(2)}</strong></td><td>${statusBadge}</td></tr>`;
+    }).join('');
+  }
+}
 
 // Resources
-function rRe(c){const links=[
-{t:'Employee Handbook',d:'Company policies and procedures',i:'📄'},
-{t:'Pay Schedule',d:'Bi-weekly payroll calendar',i:'📅'},
-{t:'Time Clock Guide',d:'How to clock in/out',i:'⏰'},
-{t:'OT Request Form',d:'Submit overtime requests',i:'📝'},
-{t:'Benefits Overview',d:'Health & dental plans',i:'🏥'},
-{t:'Contact HR',d:'hr@vetinc.ca',i:'📧'}
-];
-let h='<div class="g2" style="max-width:800px">';links.forEach(l=>{h+='<div class="cd" style="cursor:pointer;transition:transform .15s" onmouseenter="this.style.transform=\'translateY(-2px)\'" onmouseleave="this.style.transform=\'none\'"><div style="display:flex;align-items:center;gap:16px"><span style="font-size:2rem">'+l.i+'</span><div><div style="font-weight:600">'+l.t+'</div><div style="color:var(--mt);font-size:.85rem">'+l.d+'</div></div></div></div>'});h+='</div>';c.innerHTML=h}
+function renderResources() {
+  document.getElementById('res-list').innerHTML = [
+    { name: 'Staff Handbook', desc: 'General policies and procedures' },
+    { name: 'Time Clock Policy', desc: 'Clock in/out rules and overtime guidelines' },
+    { name: 'Pay Schedule', desc: 'Bi-weekly payroll calendar' },
+    { name: 'Holiday Pay Rates', desc: 'Statutory holiday compensation' },
+    { name: 'Overtime Request Form', desc: 'Submit overtime approval requests' },
+    { name: 'Clinic Contact List', desc: 'Emergency and management contacts' },
+  ].map(r => `<div class="activity-item"><div class="activity-dot" style="background:var(--primary)"></div><div><div class="activity-text"><strong>${r.name}</strong></div><div class="activity-time">${r.desc}</div></div></div>`).join('');
+}
+
+// Init on load
+init().then(() => {
+  renderStaff();
+  renderFinancials();
+  renderResources();
+});
 </script>
 </body>
 </html>
